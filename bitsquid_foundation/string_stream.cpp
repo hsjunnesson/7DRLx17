@@ -26,6 +26,20 @@ namespace foundation
 			return b;
 		}
 
+		Buffer & vprintf(Buffer &b, const char *format, va_list args)
+		{
+			int n = vsnprintf(NULL, 0, format, args);
+
+			uint32_t end = array::size(b);
+			array::resize(b, end + n + 1);
+			
+			vsnprintf(array::begin(b) + end, n + 1, format, args);
+			
+			array::resize(b, end + n);
+
+			return b;
+		}
+
 		Buffer & tab(Buffer &b, uint32_t column)
 		{
 			uint32_t current_column = 0;

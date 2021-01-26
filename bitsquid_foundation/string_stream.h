@@ -27,6 +27,9 @@ namespace foundation
 		/// Uses printf to print formatted data to the stream.
 		Buffer & printf(Buffer &b, const char *format, ...);
 
+		/// Uses vprintf to print formatted data to the stream.
+		Buffer & vprintf(Buffer &b, const char *format, va_list arg);
+
 		/// Pushes the raw data to the stream.
 		Buffer & push(Buffer &b, const char *data, uint32_t n);
 

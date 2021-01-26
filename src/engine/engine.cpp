@@ -80,13 +80,13 @@ namespace engine {
 
     	SDL_Window *sdl_window = SDL_CreateWindow("Roguelike", rect.x, rect.y, rect.w, rect.h, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
         if (!sdl_window) {
-            log_error("Couldn't create window: %s", SDL_GetError());
+            log_fatal("Couldn't create window: %s", SDL_GetError());
             return 1;
         }
 
     	SDL_Renderer *sdl_renderer = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
         if (!sdl_renderer) {
-            log_error("Couldn't create renderer: %s", SDL_GetError());
+            log_fatal("Couldn't create renderer: %s", SDL_GetError());
             return 1;
         }
 
@@ -94,13 +94,13 @@ namespace engine {
 
         roguelike::World *world = MAKE_NEW(a, roguelike::World);
         if (!world) {
-            log_error("Couldn't create world");
+            log_fatal("Couldn't create world");
             return 1;
         }
 
         Engine *engine = MAKE_NEW(a, Engine, window, *world);
         if (!engine) {
-            log_error("Couldn't create engine");
+            log_fatal("Couldn't create engine");
             return 1;
         }
 
@@ -117,11 +117,13 @@ namespace engine {
 
 int engine_main(int argc, char *argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		log_error("SDL_Init: %s", SDL_GetError());
+		log_fatal("SDL_Init: %s", SDL_GetError());
+        return 1;
 	}
 
 	if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG) {
-		log_error("IMG_Init: %s", IMG_GetError());
+		log_fatal("IMG_Init: %s", IMG_GetError());
+        return 1;
 	}
 
     foundation::memory_globals::init();
