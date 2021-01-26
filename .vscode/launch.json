@@ -10,7 +10,8 @@
       "name": "Debug",
       "program": "${workspaceFolder}/x64/Debug/7DRLx17.exe",
       "args": [],
-      "cwd": "${workspaceFolder}"
+      "cwd": "${workspaceFolder}",
+      "internalConsoleOptions": "openOnSessionStart"
     }
   ]
 }

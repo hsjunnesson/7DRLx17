@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -22,15 +21,11 @@
     <ClCompile Include="bitsquid_foundation\memory.cpp" />
     <ClCompile Include="bitsquid_foundation\murmur_hash.cpp" />
     <ClCompile Include="bitsquid_foundation\string_stream.cpp" />
-    <ClCompile Include="src\canvas.cpp" />
-    <ClCompile Include="src\game_loop.cpp" />
-    <ClCompile Include="src\input_manager.cpp" />
-    <ClCompile Include="src\log.cpp" />
+    <ClCompile Include="src\engine\engine.cpp" />
+    <ClCompile Include="src\engine\input_manager.cpp" />
+    <ClCompile Include="src\engine\window.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\renderer.cpp" />
-    <ClCompile Include="src\texture.cpp" />
-    <ClCompile Include="src\window.cpp" />
-    <ClCompile Include="src\world.cpp" />
+    <ClCompile Include="src\world\world.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bitsquid_foundation\array.h" />
@@ -45,15 +40,13 @@
     <ClInclude Include="bitsquid_foundation\string_stream.h" />
     <ClInclude Include="bitsquid_foundation\temp_allocator.h" />
     <ClInclude Include="bitsquid_foundation\types.h" />
-    <ClInclude Include="include\canvas.hpp" />
-    <ClInclude Include="include\game_loop.hpp" />
-    <ClInclude Include="include\input_manager.hpp" />
-    <ClInclude Include="include\log.hpp" />
-    <ClInclude Include="include\renderer.hpp" />
-    <ClInclude Include="include\SDL_Utils.hpp" />
-    <ClInclude Include="include\texture.hpp" />
-    <ClInclude Include="include\window.hpp" />
-    <ClInclude Include="include\world.hpp" />
+    <ClInclude Include="src\engine\engine.h" />
+    <ClInclude Include="src\engine\input_manager.h" />
+    <ClInclude Include="src\engine\window.h" />
+    <ClInclude Include="src\log.h" />
+    <ClCompile Include="src\log.cpp" />
+    <ClInclude Include="src\world\world.h" />
+    <Folder Include="src\world\" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -90,10 +83,8 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Label="Shared">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -153,7 +144,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\bitsquid_foundation;C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\include;C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\vendor\SDL2_image-2.0.5\include;C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\vendor\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\bitsquid_foundation;C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\src;C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\vendor\SDL2_image-2.0.5\include;C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\vendor\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -180,6 +171,5 @@
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

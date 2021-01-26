@@ -1,0 +1,29 @@
+#include "input_manager.h"
+
+#include <SDL.h>
+
+
+namespace engine {
+namespace input {
+    bool process_events() {
+        SDL_Event event;
+        bool signal_quit = false;
+
+        while (SDL_PollEvent(&event) != 0) {
+            if (event.type == SDL_QUIT) {
+                signal_quit = true;
+            } else if (event.type == SDL_KEYDOWN) {
+                switch (event.key.keysym.sym) {
+                case SDLK_ESCAPE:
+                    signal_quit = true;
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+
+        return signal_quit;
+    }
+}
+}

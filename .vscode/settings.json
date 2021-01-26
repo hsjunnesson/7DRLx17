@@ -1,6 +1,11 @@
 {
   "files.associations": {
-    "iostream": "cpp"
+    "*.gui_script": "lua",
+    "*.script": "lua",
+    "iostream": "cpp",
+    "new": "cpp",
+    "xmemory": "cpp",
+    "memory": "cpp"
   },
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
 }

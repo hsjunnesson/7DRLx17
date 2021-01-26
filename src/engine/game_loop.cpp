@@ -1,15 +1,11 @@
-#include "game_loop.hpp"
+#include <SDL.h>
+
+#include "game_loop.h"
 
 static const double UPDATE_RATE = 60;
 static const double FIXED_DELTATIME = 1.0 / UPDATE_RATE;
 static const Uint32 DESIRED_FRAMETIME = 1000 / (Uint32)UPDATE_RATE;
 static const int UPDATE_MULTIPLICITY = 1;
-
-GameLoop::GameLoop(Window &window, World &world, InputManager &input_manager)
-  : _window(window)
-  , _world(world)
-  , _input_manager(input_manager)
-  {}
 
 void GameLoop::run() {
   Uint32 prev_frame_time = SDL_GetTicks();
@@ -55,7 +51,7 @@ void GameLoop::run() {
     }
 
     // Render
-    _window.clear();
-    _window.render();
+    window_clear(&m_window);
+    window_render(&m_window);
   }
 }

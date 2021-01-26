@@ -4,39 +4,18 @@
     <Filter Include="src">
       <UniqueIdentifier>{979cbfca-db76-4153-99c7-431db5b2921f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="include">
-      <UniqueIdentifier>{fc405443-263b-4c0b-b80b-483cd7f52a09}</UniqueIdentifier>
-    </Filter>
     <Filter Include="foundation">
       <UniqueIdentifier>{35f3b8a5-8012-4914-a308-d1a1600c4363}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\engine">
+      <UniqueIdentifier>{9e7fc516-af21-478a-803c-1483b3570a2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\world">
+      <UniqueIdentifier>{d663716f-47c2-4809-b153-3cfb107cafc9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\canvas.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\game_loop.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\input_manager.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\log.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\renderer.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\texture.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\window.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\world.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="bitsquid_foundation\memory.cpp">
@@ -48,35 +27,23 @@
     <ClCompile Include="bitsquid_foundation\string_stream.cpp">
       <Filter>foundation</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\engine.cpp">
+      <Filter>src\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\log.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world\world.cpp">
+      <Filter>src\world</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\window.cpp">
+      <Filter>src\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\input_manager.cpp">
+      <Filter>src\engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\canvas.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\game_loop.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\input_manager.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\log.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\renderer.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDL_Utils.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\texture.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\window.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\world.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="bitsquid_foundation\array.h">
       <Filter>foundation</Filter>
     </ClInclude>
@@ -112,6 +79,21 @@
     </ClInclude>
     <ClInclude Include="bitsquid_foundation\types.h">
       <Filter>foundation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\engine.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\log.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\world.h">
+      <Filter>src\world</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\input_manager.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\window.h">
+      <Filter>src\engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
