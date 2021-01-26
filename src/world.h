@@ -4,6 +4,11 @@
 
 namespace world {
     struct World {
+        explicit World(SDL_Renderer *renderer);
+        ~World();
+
+        SDL_Renderer    *m_renderer;
+        SDL_Texture     *m_atlas;
     };
 
     /**
@@ -13,5 +18,12 @@ namespace world {
      * @param t The current time
      * @param dt The delta time since last update
      */
-    void update_world(World world, uint32_t t, double dt);
+    void update_world(World &world, uint32_t t, double dt);
+
+    /**
+     * @brief Renders the world
+     *
+     * @param world The world to render
+     */
+    void render_world(World &world);
 }

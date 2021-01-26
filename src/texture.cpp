@@ -5,18 +5,18 @@
 #include "log.h"
 
 namespace texture {
-	SDL_Texture *loadTexture(SDL_Renderer *renderer, const char *filename) {
-		SDL_Texture *texture = NULL;
+	SDL_Texture *load_texture(SDL_Renderer *renderer, const char *filename) {
+		SDL_Texture *texture = nullptr;
 		texture = IMG_LoadTexture(renderer, filename);
-		if (texture == NULL) {
+		if (!texture) {
 			log_error("Could not load texture: %s", SDL_GetError());
 		}
 		return texture;
 	}
 
-	void renderTexture(SDL_Renderer *renderer, SDL_Texture *texture, int x, int y, int scale) {
+	void render_texture(SDL_Renderer *renderer, SDL_Texture *texture, int x, int y, int scale) {
 		int w, h;
-		SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+		SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
 
 		SDL_Rect rect;
 		rect.x = x;
@@ -24,18 +24,18 @@ namespace texture {
 		rect.w = w * scale;
 		rect.h = h  * scale;
 
-		renderTextureRect(renderer, texture, &rect);
+		render_texture_rect(renderer, texture, &rect);
 	}
 
-	void renderTextureRect(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect *rect) {
-		if (SDL_RenderCopy(renderer, texture, NULL, rect)) {
+	void render_texture_rect(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect *rect) {
+		if (SDL_RenderCopy(renderer, texture, nullptr, rect)) {
 			log_error("Error in renderTextureRect: %s", SDL_GetError());
 		}
 	}
 
-	void renderTextureTile(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect *tile, int x, int y, int scale) {
+	void render_texture_tile(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect *tile, int x, int y, int scale) {
 		int w, h;
-		SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+		SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
 
 		SDL_Rect destination;
 		destination.x = x;

@@ -14,7 +14,7 @@ static const int UPDATE_MULTIPLICITY = 1;
 namespace engine {
     using namespace foundation;
 
-    void clear_window(Window& window) {
+    void clear_window(Window &window) {
         if (SDL_SetRenderDrawColor(window.m_renderer, 0, 0, 0, 255)) {
 		    log_error("SDL_SetRenderDrawColor: %s", SDL_GetError());
         }
@@ -28,7 +28,7 @@ namespace engine {
 	    SDL_RenderPresent(window.m_renderer);
     }
 
-    int run(Engine& engine) {
+    int run(Engine &engine) {
         uint32_t prev_frame_time = SDL_GetTicks();
         uint32_t frame_accumulator = 0;
 
@@ -75,6 +75,7 @@ namespace engine {
 
             // Render
             clear_window(engine.m_window);
+            world::render_world(engine.m_world);
             render_window(engine.m_window);
 
             ++engine.m_frames;
@@ -117,7 +118,7 @@ namespace engine {
 
         Window window = Window(sdl_window, sdl_renderer);
 
-        world::World *world = MAKE_NEW(a, world::World);
+        world::World *world = MAKE_NEW(a, world::World, sdl_renderer);
         if (!world) {
             log_fatal("Couldn't create world");
             return 1;

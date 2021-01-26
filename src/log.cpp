@@ -11,7 +11,7 @@
 using namespace foundation;
 using namespace foundation::string_stream;
 
-void internal_log(LOG_SEVERITY severity, const char* format, ...) {
+void internal_log(LOG_SEVERITY severity, const char *format, ...) {
 	TempAllocator1024 ta;
 	Buffer ss(ta);
 

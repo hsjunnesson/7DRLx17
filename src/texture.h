@@ -10,7 +10,7 @@ namespace texture {
      * @param filename
      * @return SDL_Texture*
      */
-    SDL_Texture *loadTexture(SDL_Renderer *renderer, const char *filename);
+    SDL_Texture* load_texture(SDL_Renderer *renderer, const char *filename);
 
     /**
      * @brief Renders a texture at a point.
@@ -21,7 +21,7 @@ namespace texture {
      * @param y
      * @param scale
      */
-    void renderTexture(SDL_Renderer *renderer, SDL_Texture *texture, int x, int y, int scale = 1);
+    void render_texture(SDL_Renderer *renderer, SDL_Texture *texture, int x, int y, int scale = 1);
 
     /**
      * @brief Renders a texture in a rect.
@@ -30,7 +30,7 @@ namespace texture {
      * @param texture
      * @param rect
      */
-    void renderTextureRect(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect* rect);
+    void render_texture_rect(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect *rect);
 
     /**
      * @brief Renders a texture tile at a point.
@@ -42,6 +42,5 @@ namespace texture {
      * @param y
      * @param scale
      */
-    void renderTextureTile(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect *tile, int x, int y, int scale = 1);
-
+    void render_texture_tile(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect *tile, int x, int y, int scale = 1);
 }
