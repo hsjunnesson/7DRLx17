@@ -7,12 +7,6 @@
     <Filter Include="foundation">
       <UniqueIdentifier>{35f3b8a5-8012-4914-a308-d1a1600c4363}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\engine">
-      <UniqueIdentifier>{9e7fc516-af21-478a-803c-1483b3570a2d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\world">
-      <UniqueIdentifier>{d663716f-47c2-4809-b153-3cfb107cafc9}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -27,20 +21,20 @@
     <ClCompile Include="bitsquid_foundation\string_stream.cpp">
       <Filter>foundation</Filter>
     </ClCompile>
-    <ClCompile Include="src\engine\engine.cpp">
-      <Filter>src\engine</Filter>
-    </ClCompile>
     <ClCompile Include="src\log.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\world\world.cpp">
-      <Filter>src\world</Filter>
+    <ClCompile Include="src\engine.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\engine\window.cpp">
-      <Filter>src\engine</Filter>
+    <ClCompile Include="src\input.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\engine\input_manager.cpp">
-      <Filter>src\engine</Filter>
+    <ClCompile Include="src\texture.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -80,20 +74,20 @@
     <ClInclude Include="bitsquid_foundation\types.h">
       <Filter>foundation</Filter>
     </ClInclude>
-    <ClInclude Include="src\engine\engine.h">
-      <Filter>src\engine</Filter>
-    </ClInclude>
     <ClInclude Include="src\log.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\world\world.h">
-      <Filter>src\world</Filter>
+    <ClInclude Include="src\engine.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\engine\input_manager.h">
-      <Filter>src\engine</Filter>
+    <ClInclude Include="src\input.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\engine\window.h">
-      <Filter>src\engine</Filter>
+    <ClInclude Include="src\texture.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
-extern int engine_main(int argc, char *argv[]);
+#include "engine.h"
 
 int main(int argc, char *argv[]) {
-    return engine_main(argc, argv);
+    return engine::init_engine(argc, argv);
 }

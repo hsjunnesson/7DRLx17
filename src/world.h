@@ -2,7 +2,7 @@
 
 #include <SDL.h>
 
-namespace roguelike {
+namespace world {
     struct World {
     };
 

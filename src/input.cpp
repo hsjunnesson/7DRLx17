@@ -1,9 +1,7 @@
-#include "input_manager.h"
-
 #include <SDL.h>
 
+#include "input.h"
 
-namespace engine {
 namespace input {
     bool process_events() {
         SDL_Event event;
@@ -25,5 +23,4 @@ namespace input {
 
         return signal_quit;
     }
-}
 }

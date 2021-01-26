@@ -21,11 +21,11 @@
     <ClCompile Include="bitsquid_foundation\memory.cpp" />
     <ClCompile Include="bitsquid_foundation\murmur_hash.cpp" />
     <ClCompile Include="bitsquid_foundation\string_stream.cpp" />
-    <ClCompile Include="src\engine\engine.cpp" />
-    <ClCompile Include="src\engine\input_manager.cpp" />
-    <ClCompile Include="src\engine\window.cpp" />
+    <ClCompile Include="src\engine.cpp" />
+    <ClCompile Include="src\input.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\world\world.cpp" />
+    <ClCompile Include="src\texture.cpp" />
+    <ClCompile Include="src\world.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bitsquid_foundation\array.h" />
@@ -40,12 +40,12 @@
     <ClInclude Include="bitsquid_foundation\string_stream.h" />
     <ClInclude Include="bitsquid_foundation\temp_allocator.h" />
     <ClInclude Include="bitsquid_foundation\types.h" />
-    <ClInclude Include="src\engine\engine.h" />
-    <ClInclude Include="src\engine\input_manager.h" />
-    <ClInclude Include="src\engine\window.h" />
+    <ClInclude Include="src\engine.h" />
+    <ClInclude Include="src\input.h" />
     <ClInclude Include="src\log.h" />
     <ClCompile Include="src\log.cpp" />
-    <ClInclude Include="src\world\world.h" />
+    <ClInclude Include="src\texture.h" />
+    <ClInclude Include="src\world.h" />
     <Folder Include="src\world\" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

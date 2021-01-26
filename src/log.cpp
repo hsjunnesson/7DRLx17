@@ -35,6 +35,8 @@ void internal_log(LOG_SEVERITY severity, const char* format, ...) {
 		severity_prefix = " [FATAL] ";
 		stream = stderr;
 		break;
+	default:
+		return;
 	}
 
 	{
