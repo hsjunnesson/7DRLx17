@@ -146,6 +146,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\bitsquid_foundation;C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\src;C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\vendor\SDL2_image-2.0.5\include;C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\vendor\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

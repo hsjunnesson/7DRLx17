@@ -26,7 +26,7 @@ namespace world {
         tile.w = 16;
         tile.h = 16;
 
-        texture::render_texture_tile(world.m_renderer, world.m_atlas, &tile, 32, 32, 1);
+        texture::render_texture_tile(world.m_renderer, world.m_atlas, &tile, 32, 32, 2);
     }
 
 }
