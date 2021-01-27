@@ -4,13 +4,13 @@
 
 namespace world {
     World::World(SDL_Renderer *renderer)
-    : m_renderer(renderer)
-    , m_atlas(texture::load_texture(m_renderer, "assets/colored_transparent.png"))
+    : renderer(renderer)
+    , atlas(texture::load_texture(renderer, "assets/colored_transparent.png"))
     {}
 
     World::~World() {
-        if (m_atlas) {
-            SDL_DestroyTexture(m_atlas);
+        if (atlas) {
+            SDL_DestroyTexture(atlas);
         }
     }
 
@@ -24,7 +24,7 @@ namespace world {
         tile.w = 16;
         tile.h = 16;
 
-        texture::render_texture_tile(world.m_renderer, world.m_atlas, &tile, 32, 32, 2);
+        texture::render_texture_tile(world.renderer, world.atlas, &tile, 32, 32, 2);
     }
 
 }

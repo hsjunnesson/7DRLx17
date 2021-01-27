@@ -7,8 +7,8 @@ namespace world {
         explicit World(SDL_Renderer *renderer);
         ~World();
 
-        SDL_Renderer    *m_renderer;
-        SDL_Texture     *m_atlas;
+        SDL_Renderer    *renderer;
+        SDL_Texture     *atlas;
     };
 
     /**

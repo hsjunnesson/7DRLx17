@@ -1,30 +1,37 @@
 #pragma once
 
 #include <stdint.h>
+#include <SDL.h>
 
 #include "world.h"
 
 namespace engine {
     struct Window {
         explicit Window(SDL_Window *window, SDL_Renderer *renderer)
-        : m_window(window)
-        , m_renderer(renderer)
+        : window(window)
+        , renderer(renderer)
         {}
         
-        SDL_Window      *m_window;
-        SDL_Renderer    *m_renderer;
+        SDL_Window      *window;
+        SDL_Renderer    *renderer;
+    };
+
+    struct Tile {
+        int16_t     x;
+        int16_t     y;
+        uint16_t    tile;
     };
 
     struct Engine {
-        Engine(Window &window, world::World &world)
-        : m_frames(0)
-        , m_window(window)
-        , m_world(world)
+        explicit Engine(Window &window, world::World &world)
+        : frames(0)
+        , window(window)
+        , world(world)
         {}
 
-        uint64_t        m_frames;
-        Window          &m_window;
-        world::World    &m_world;
+        uint64_t        frames;
+        Window          &window;
+        world::World    &world;
     };
 
     /// Clears the window.

@@ -15,17 +15,17 @@ namespace engine {
     using namespace foundation;
 
     void clear_window(Window &window) {
-        if (SDL_SetRenderDrawColor(window.m_renderer, 0, 0, 0, 255)) {
+        if (SDL_SetRenderDrawColor(window.renderer, 0, 0, 0, 255)) {
 		    log_error("SDL_SetRenderDrawColor: %s", SDL_GetError());
         }
 
-        if (SDL_RenderClear(window.m_renderer)) {
+        if (SDL_RenderClear(window.renderer)) {
             log_error("SDL_RenderClear: %s", SDL_GetError());
         }
     }
 
     void render_window(Window& window) {
-	    SDL_RenderPresent(window.m_renderer);
+	    SDL_RenderPresent(window.renderer);
     }
 
     int run(Engine &engine) {
@@ -68,17 +68,17 @@ namespace engine {
             while (frame_accumulator >= DESIRED_FRAMETIME * UPDATE_MULTIPLICITY) {
                 for (int i = 0; i < UPDATE_MULTIPLICITY; i++) {
                     // Update
-                    world::update_world(engine.m_world, current_frame_time, FIXED_DELTATIME);
+                    world::update_world(engine.world, current_frame_time, FIXED_DELTATIME);
                     frame_accumulator -= DESIRED_FRAMETIME;
                 }
             }
 
             // Render
-            clear_window(engine.m_window);
-            world::render_world(engine.m_world);
-            render_window(engine.m_window);
+            clear_window(engine.window);
+            world::render_world(engine.world);
+            render_window(engine.window);
 
-            ++engine.m_frames;
+            ++engine.frames;
         }
 
         return exit_code;
