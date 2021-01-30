@@ -15,15 +15,26 @@ namespace world {
     // Max height of the world.
     static const uint64_t Max_Height = 256;
 
+    /**
+     * @brief A tile struct.
+     * 
+     */
+    struct Tile {
+        int index;
+        SDL_RendererFlip flip;
+    };
+
     // The game world.
     struct World {
         World(Allocator &allocator, SDL_Renderer *renderer);
         ~World();
 
-        Allocator       &allocator;
-        SDL_Renderer    *renderer;
-        Hash<int>       tiles;
-        texture::Atlas  *atlas;
+        Allocator &allocator;
+        SDL_Renderer *renderer;
+        Hash<Tile> tiles;
+        texture::Atlas *atlas;
+        int x_offset;
+        int y_offset;
     };
 
     /**
@@ -47,10 +58,11 @@ namespace world {
      * 
      * @param x The x coord
      * @param y The y coord
+     * @param max_width The maxium width.
      * @return constexpr uint64_t The index.
      */
-    constexpr uint64_t index(uint64_t const x, uint64_t const y) {
-        return x + Max_Width * y;
+    constexpr uint64_t index(uint64_t const x, uint64_t const y, uint64_t max_width) {
+        return x + (max_width - 1) * y;
     }
 
     /**
@@ -59,9 +71,10 @@ namespace world {
      * @param index The index.
      * @param x The pass-by-reference x coord to calculate.
      * @param y The pass-by-reference y coord to calculate.
+     * @param max_width The maxium width.
      */
-    constexpr void coord(uint64_t const index, uint64_t &x, uint64_t &y) {
-        x = index % Max_Width;
-        y = index / Max_Width;
+    constexpr void coord(uint64_t const index, uint64_t &x, uint64_t &y, uint64_t max_width) {
+        x = index % (max_width - 1);
+        y = index / (max_width - 1);
     }
 }

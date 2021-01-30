@@ -48,6 +48,8 @@ namespace texture {
 		atlas->h = h;
 		atlas->tile_size = tile_size;
 		atlas->gutter = gutter;
+		atlas->w_tiles = w / tile_size;
+		atlas->h_tiles = h / tile_size;
 		atlas->texture = texture;
 
 		return atlas;

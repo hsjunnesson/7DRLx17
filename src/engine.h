@@ -12,8 +12,8 @@ namespace engine {
         , renderer(renderer)
         {}
         
-        SDL_Window      *window;
-        SDL_Renderer    *renderer;
+        SDL_Window *window;
+        SDL_Renderer *renderer;
     };
 
     struct Engine {
@@ -24,10 +24,10 @@ namespace engine {
         , clear_color(SDL_Color {34, 35, 35, 255})
         {}
 
-        uint64_t        frames;
-        Window          &window;
-        world::World    &world;
-        SDL_Color       clear_color;
+        uint64_t frames;
+        Window &window;
+        world::World &world;
+        SDL_Color clear_color;
     };
 
     /// Clears the window.

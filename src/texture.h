@@ -17,6 +17,7 @@ namespace texture {
         int w, h;
         int tile_size;
         int gutter;
+        int w_tiles, h_tiles;
         SDL_Texture *texture;
     };
 
