@@ -5,11 +5,25 @@
 #include "log.h"
 
 namespace texture {
-	SDL_Texture *load_texture(SDL_Renderer *renderer, const char *filename) {
+	Atlas::Atlas(SDL_Renderer *renderer, const char *filename, int tile_size, int gutter)
+	: tile_size(tile_size)
+	, gutter(gutter)
+	{
+		sdl_texture = load(renderer, filename);
+		SDL_QueryTexture(sdl_texture, nullptr, nullptr, &w, &h);
+	}
+
+    Atlas::~Atlas() {
+		if (sdl_texture) {
+			SDL_DestroyTexture(sdl_texture);
+		}
+	}
+
+	SDL_Texture *load(SDL_Renderer *renderer, const char *filename) {
 		SDL_Texture *texture = nullptr;
 		texture = IMG_LoadTexture(renderer, filename);
 		if (!texture) {
-			log_error("Could not load texture: %s", SDL_GetError());
+			log_fatal("Could not load texture: %s", SDL_GetError());
 		}
 		return texture;
 	}

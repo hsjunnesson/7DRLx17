@@ -4,13 +4,35 @@
 
 namespace texture {
     /**
+     * @brief A tiled texture atlas
+     * 
+     */
+    struct Atlas {
+        /**
+         * @brief Construct a new Atlas object
+         * 
+         * @param renderer The SDL_Renderer
+         * @param filename The filename of the texture
+         * @param tile_size The square tile size in pixels
+         * @param gutter The gutten between tiles in pixels
+         */
+        Atlas(SDL_Renderer *renderer, const char *filename, int tile_size, int gutter = 0);
+        ~Atlas();
+
+        int w, h;
+        int tile_size;
+        int gutter;
+        SDL_Texture *sdl_texture;
+    };
+
+    /**
      * @brief Loads a texture from a filename.
      *
      * @param renderer
      * @param filename
      * @return SDL_Texture*
      */
-    SDL_Texture* load_texture(SDL_Renderer *renderer, const char *filename);
+    SDL_Texture *load(SDL_Renderer *renderer, const char *filename);
 
     /**
      * @brief Renders a texture at a point.

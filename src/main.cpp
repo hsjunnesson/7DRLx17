@@ -8,6 +8,8 @@
 
 #include "engine.h"
 
+using namespace foundation;
+
 int main(int argc, char *argv[]) {
     return engine::init_engine(argc, argv);
 }
