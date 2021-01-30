@@ -144,15 +144,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\bitsquid_foundation;C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\src;C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\vendor\SDL2_image-2.0.5\include;C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\vendor\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\bitsquid_foundation;$(SolutionDir)\src;$(SolutionDir)\vendor\SDL2_image-2.0.5\include;$(SolutionDir)\vendor\SDL2-2.0.12\include;$(SolutionDir)\vendor\StackWalker\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\vendor\SDL2_image-2.0.5\lib\x64;C:\Users\Hans\Dropbox\Projects\roguelikes\7DRLx17\vendor\SDL2-2.0.12\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\vendor\StackWalker\lib\x64;$(SolutionDir)\vendor\SDL2_image-2.0.5\lib\x64;$(SolutionDir)\vendor\SDL2-2.0.12\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;StackWalker.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
