@@ -3,6 +3,8 @@
 #include <time.h>
 #include <iomanip>
 
+#include <StackWalker.h>
+
 #include "log.h"
 #include "memory.h"
 #include "string_stream.h"
@@ -11,7 +13,7 @@
 using namespace foundation;
 using namespace foundation::string_stream;
 
-void internal_log(LOG_SEVERITY severity, const char *format, ...) {
+void internal_log(LOGGING_SEVERITY severity, const char *format, ...) {
 	TempAllocator1024 ta;
 	Buffer ss(ta);
 
@@ -19,19 +21,19 @@ void internal_log(LOG_SEVERITY severity, const char *format, ...) {
 	FILE* stream = nullptr;
 
 	switch (severity) {
-	case LOG_SEVERITY::DEBUG:
+	case LOGGING_SEVERITY::DEBUG:
 		severity_prefix = " [DEBUG] ";
 		stream = stdout;
 		break;
-	case LOG_SEVERITY::INFO:
+	case LOGGING_SEVERITY::INFO:
 		severity_prefix = " [INFO] ";
 		stream = stdout;
 		break;
-	case LOG_SEVERITY::ERROR:
+	case LOGGING_SEVERITY::ERR:
 		severity_prefix = " [ERROR] ";
 		stream = stderr;
 		break;
-	case LOG_SEVERITY::FATAL:
+	case LOGGING_SEVERITY::FATAL:
 		severity_prefix = " [FATAL] ";
 		stream = stderr;
 		break;
@@ -61,4 +63,13 @@ void internal_log(LOG_SEVERITY severity, const char *format, ...) {
 
 	fprintf(stream, c_str(ss));
 	fflush(stream);
+
+	if (severity == LOGGING_SEVERITY::FATAL || severity == LOGGING_SEVERITY::ERR) {
+		StackWalker sw;
+		sw.ShowCallstack();
+	}
+
+	if (severity == LOGGING_SEVERITY::FATAL) {
+		exit(EXIT_FAILURE);
+	}
 }
