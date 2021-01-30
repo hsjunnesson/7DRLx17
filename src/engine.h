@@ -21,7 +21,7 @@ namespace engine {
         : frames(0)
         , window(window)
         , world(world)
-        , clear_color(SDL_Color {34, 35, 35, 255})
+        , clear_color(SDL_Color {0, 0, 0, 255})
         {}
 
         uint64_t frames;

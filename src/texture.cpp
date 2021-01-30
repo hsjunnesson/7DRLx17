@@ -18,10 +18,11 @@ namespace texture {
 			log_fatal("Could not allocate Atlas");
 		}
 
-		json json_data;
 		const char *texture_filename = nullptr;
 		int tile_size = 0;
 		int gutter = 0;
+
+		json json_data;
 
 		try {
 			std::ifstream input_file_stream(config_filename);			
@@ -37,7 +38,7 @@ namespace texture {
 			tile_size = json_data["tile_size"].get<int>();
 			gutter = json_data["gutter"].get<int>();
 		} catch (const std::exception &e) {
-			log_fatal("Could not parse json config file: %s", e.what());
+			log_fatal("Could not parse json config file %s: %s", config_filename, e.what());
 		}
 
 		SDL_Texture *texture = load(renderer, texture_filename);

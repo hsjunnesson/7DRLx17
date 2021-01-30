@@ -6,22 +6,25 @@
 namespace world {
     static const uint64_t Max_Tiles = Max_Width * Max_Height;
     
-    World::World(Allocator &allocator, SDL_Renderer *renderer)
+    World::World(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_config_filename)
     : allocator(allocator)
     , renderer(renderer)
     , tiles(Hash<Tile>(allocator))
-    , atlas(texture::create_atlas(allocator, renderer, "assets/colored_tilemap_atlas.json"))
+    , atlas(texture::create_atlas(allocator, renderer, atlas_config_filename))
     , x_offset(0)
     , y_offset(0)
     {
         hash::reserve(tiles, Max_Tiles);
-        hash::set(tiles, index(0, 0, Max_Width), {0, SDL_FLIP_NONE});
-        hash::set(tiles, index(1, 0, Max_Width), {1, SDL_FLIP_NONE});
-        hash::set(tiles, index(2, 0, Max_Width), {1, SDL_FLIP_NONE});
-        hash::set(tiles, index(3, 0, Max_Width), {3, SDL_FLIP_NONE});
-        hash::set(tiles, index(0, 1, Max_Width), {14, SDL_FLIP_NONE});
-        hash::set(tiles, index(1, 1, Max_Width), {15, SDL_FLIP_NONE});
-        hash::set(tiles, index(2, 1, Max_Width), {18, SDL_FLIP_NONE});
+        hash::set(tiles, index(0, 0, Max_Width), {39});
+        hash::set(tiles, index(1, 0, Max_Width), {40});
+        hash::set(tiles, index(2, 0, Max_Width), {40});
+        hash::set(tiles, index(3, 0, Max_Width), {39, SDL_FLIP_HORIZONTAL});
+        hash::set(tiles, index(0, 1, Max_Width), {40, SDL_FLIP_NONE, 90.0});
+        hash::set(tiles, index(3, 1, Max_Width), {40, SDL_FLIP_NONE, 90.0});
+        hash::set(tiles, index(0, 2, Max_Width), {39, SDL_FLIP_VERTICAL});
+        hash::set(tiles, index(1, 2, Max_Width), {40});
+        hash::set(tiles, index(2, 2, Max_Width), {40});
+        hash::set(tiles, index(3, 2, Max_Width), {39, SDL_FLIP_VERTICAL, -90});
     }
 
     World::~World() {
@@ -63,7 +66,7 @@ namespace world {
             destination.w = tile_size;
             destination.h = tile_size;
 
-            if (SDL_RenderCopyEx(world.renderer, world.atlas->texture, &source, &destination, 0.0, nullptr, tile.flip)) {
+            if (SDL_RenderCopyEx(world.renderer, world.atlas->texture, &source, &destination, tile.angle, nullptr, tile.flip)) {
                 log_error("Error in SDL_RenderCopy: %s", SDL_GetError());
             }
         }

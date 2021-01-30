@@ -21,12 +21,13 @@ namespace world {
      */
     struct Tile {
         int index;
-        SDL_RendererFlip flip;
+        SDL_RendererFlip flip = SDL_FLIP_NONE;
+        double angle = 0.0;
     };
 
     // The game world.
     struct World {
-        World(Allocator &allocator, SDL_Renderer *renderer);
+        World(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_config_filename);
         ~World();
 
         Allocator &allocator;

@@ -1,5 +1,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
+#include <fstream>
+
+#include <json.hpp>
 
 #include "engine.h"
 #include "memory.h"
@@ -13,6 +16,7 @@ static const int UPDATE_MULTIPLICITY = 1;
 
 namespace engine {
     using namespace foundation;
+	using json = nlohmann::json;
 
     void clear_window(Window &window, SDL_Color &clear_color) {
         if (SDL_SetRenderDrawColor(window.renderer, clear_color.r, clear_color.g, clear_color.b, clear_color.a)) {
@@ -100,13 +104,42 @@ namespace engine {
         foundation::memory_globals::init();
         Allocator &allocator = memory_globals::default_allocator();
 
-        SDL_Rect rect;
-        rect.x = 100;
-        rect.y = 100;
-        rect.w = 640;
-        rect.h = 480;
+        SDL_Rect window_rect;
+        window_rect.x = 100;
+        window_rect.y = 100;
 
-        SDL_Window *sdl_window = SDL_CreateWindow("Roguelike", rect.x, rect.y, rect.w, rect.h, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+        int render_scale = 1;
+
+        SDL_Color clear_color;
+        clear_color.a = 255;
+
+        const char *engine_config_filename = "assets/engine_params.json";
+        const char *atlas_config_filename = nullptr;
+
+        json json_data;
+
+		try {
+			std::ifstream input_file_stream(engine_config_filename);			
+			input_file_stream >> json_data;
+
+			json::string_t *atlas_config_filename_ptr = json_data["atlas"].get_ptr<json::string_t *>();
+			if (!atlas_config_filename_ptr) {
+				log_fatal("Could not read 'atlas' from %s", engine_config_filename);
+			}
+            
+			atlas_config_filename = atlas_config_filename_ptr->c_str();
+
+            window_rect.w = json_data["width"].get<int>();
+            window_rect.h = json_data["height"].get<int>();
+            render_scale = json_data["render_scale"].get<int>();
+            clear_color.r = json_data["clear_color"].at(0);
+            clear_color.g = json_data["clear_color"].at(1);
+            clear_color.b = json_data["clear_color"].at(2);
+		} catch (const std::exception &e) {
+			log_fatal("Could not parse json config file %s: %s", engine_config_filename, e.what());
+		}
+
+        SDL_Window *sdl_window = SDL_CreateWindow("Roguelike", window_rect.x, window_rect.y, window_rect.w, window_rect.h, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
         if (!sdl_window) {
             log_fatal("Couldn't create window: %s", SDL_GetError());
         }
@@ -116,11 +149,11 @@ namespace engine {
             log_fatal("Couldn't create renderer: %s", SDL_GetError());
         }
 
-        SDL_RenderSetScale(sdl_renderer, 4.0, 4.0);
+        SDL_RenderSetScale(sdl_renderer, render_scale, render_scale);
 
         Window window = Window(sdl_window, sdl_renderer);
 
-        world::World *world = MAKE_NEW(allocator, world::World, allocator, sdl_renderer);
+        world::World *world = MAKE_NEW(allocator, world::World, allocator, sdl_renderer, atlas_config_filename);
         if (!world) {
             log_fatal("Couldn't create world");
         }
@@ -129,6 +162,8 @@ namespace engine {
         if (!engine) {
             log_fatal("Couldn't create engine");
         }
+
+        engine->clear_color = clear_color;
 
         int exit_code = run(*engine);
 
