@@ -23,7 +23,7 @@ protected:
     }
 };
 
-void internal_log(LOGGING_SEVERITY severity, const char *format, ...) {
+void internal_log(LoggingSeverity severity, const char *format, ...) {
 	TempAllocator1024 ta;
 	Buffer ss(ta);
 
@@ -31,19 +31,19 @@ void internal_log(LOGGING_SEVERITY severity, const char *format, ...) {
 	FILE* stream = nullptr;
 
 	switch (severity) {
-	case LOGGING_SEVERITY::DEBUG:
+	case LoggingSeverity::Debug:
 		severity_prefix = " [DEBUG] ";
 		stream = stdout;
 		break;
-	case LOGGING_SEVERITY::INFO:
+	case LoggingSeverity::Info:
 		severity_prefix = " [INFO] ";
 		stream = stdout;
 		break;
-	case LOGGING_SEVERITY::ERR:
+	case LoggingSeverity::Error:
 		severity_prefix = " [ERROR] ";
 		stream = stderr;
 		break;
-	case LOGGING_SEVERITY::FATAL:
+	case LoggingSeverity::Fatal:
 		severity_prefix = " [FATAL] ";
 		stream = stderr;
 		break;
@@ -74,12 +74,12 @@ void internal_log(LOGGING_SEVERITY severity, const char *format, ...) {
 	fprintf(stream, c_str(ss));
 	fflush(stream);
 
-	if (severity == LOGGING_SEVERITY::FATAL || severity == LOGGING_SEVERITY::ERR) {
+	if (severity == LoggingSeverity::Fatal || severity == LoggingSeverity::Error) {
 		LoggingStackWalker sw;
 		sw.ShowCallstack();
 	}
 
-	if (severity == LOGGING_SEVERITY::FATAL) {
+	if (severity == LoggingSeverity::Fatal) {
 		exit(EXIT_FAILURE);
 	}
 }
