@@ -23,7 +23,7 @@ namespace world {
         Allocator       &allocator;
         SDL_Renderer    *renderer;
         Hash<int>       tiles;
-        texture::Atlas  atlas;
+        texture::Atlas  *atlas;
     };
 
     /**

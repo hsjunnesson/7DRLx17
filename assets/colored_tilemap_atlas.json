@@ -1,0 +1,5 @@
+{
+    "texture": "assets/colored_tilemap.png",
+    "tile_size": 8,
+    "gutter": 0
+}

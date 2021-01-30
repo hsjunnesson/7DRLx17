@@ -10,7 +10,7 @@ namespace world {
     : allocator(allocator)
     , renderer(renderer)
     , tiles(Hash<int>(allocator))
-    , atlas(texture::Atlas(renderer, "assets/colored_tilemap.png", 8, 1))
+    , atlas(texture::create_atlas(allocator, renderer, "assets/colored_tilemap_atlas.json"))
     {
         hash::reserve(tiles, Max_Tiles);
         hash::set(tiles, index(0, 0), 25);
@@ -21,28 +21,35 @@ namespace world {
     }
 
     World::~World() {
+        texture::destroy_atlas(allocator, atlas);
     }
 
     void update_world(World &world, uint32_t t, double dt) {
     }
 
     void render_world(World &world) {
+        if (!world.atlas) {
+            log_fatal("Missing world atlas");
+        }
+
         int w, h;
         SDL_GetRendererOutputSize(world.renderer, &w, &h);
+
+        int tile_size = world.atlas->tile_size;
 
         SDL_Rect source;
         source.x = 0;
         source.y = 0;
-        source.w = world.atlas.tile_size;
-        source.h = world.atlas.tile_size;
+        source.w = tile_size;
+        source.h = tile_size;
 
 		SDL_Rect destination;
 		destination.x = 0;
 		destination.y = 0;
-		destination.w = world.atlas.tile_size;
-		destination.h = world.atlas.tile_size;
+		destination.w = tile_size;
+		destination.h = tile_size;
 
-		if (SDL_RenderCopy(world.renderer, world.atlas.sdl_texture, &source, &destination)) {
+		if (SDL_RenderCopy(world.renderer, world.atlas->texture, &source, &destination)) {
 			log_error("Error in SDL_RenderCopy: %s", SDL_GetError());
 		}
     }
