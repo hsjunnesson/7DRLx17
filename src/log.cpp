@@ -13,6 +13,16 @@
 using namespace foundation;
 using namespace foundation::string_stream;
 
+class LoggingStackWalker: public StackWalker {
+public:
+    LoggingStackWalker(): StackWalker() {}
+protected:
+    virtual void OnOutput(LPCSTR szText) {
+		fprintf(stderr, szText);
+		StackWalker::OnOutput(szText);
+    }
+};
+
 void internal_log(LOGGING_SEVERITY severity, const char *format, ...) {
 	TempAllocator1024 ta;
 	Buffer ss(ta);
@@ -65,7 +75,7 @@ void internal_log(LOGGING_SEVERITY severity, const char *format, ...) {
 	fflush(stream);
 
 	if (severity == LOGGING_SEVERITY::FATAL || severity == LOGGING_SEVERITY::ERR) {
-		StackWalker sw;
+		LoggingStackWalker sw;
 		sw.ShowCallstack();
 	}
 
