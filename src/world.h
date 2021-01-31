@@ -10,10 +10,10 @@ namespace world {
     using namespace foundation;
 
     // Max width of the world.
-    static const uint64_t Max_Width = 256;
+    static const uint64_t Max_Width = 128;
 
     // Max height of the world.
-    static const uint64_t Max_Height = 256;
+    static const uint64_t Max_Height = 80;
 
     /**
      * @brief A tile struct.
@@ -23,6 +23,11 @@ namespace world {
         int index;
         SDL_RendererFlip flip = SDL_FLIP_NONE;
         double angle = 0.0;
+    };
+
+    enum class GameState {
+        DunGen,
+
     };
 
     // The game world.

@@ -45,6 +45,8 @@ namespace texture {
 		int w, h;
 		SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
 
+		SDL_SetTextureScaleMode(texture, SDL_ScaleModeNearest);
+		
 		atlas->w = w;
 		atlas->h = h;
 		atlas->tile_size = tile_size;

@@ -144,12 +144,14 @@ namespace engine {
             log_fatal("Couldn't create window: %s", SDL_GetError());
         }
 
-        SDL_Renderer *sdl_renderer = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        SDL_Renderer *sdl_renderer = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_ACCELERATED);
         if (!sdl_renderer) {
             log_fatal("Couldn't create renderer: %s", SDL_GetError());
         }
 
-        SDL_RenderSetScale(sdl_renderer, render_scale, render_scale);
+        if (SDL_RenderSetScale(sdl_renderer, render_scale, render_scale)) {
+            log_error("Error in SDL_RenderSetScale: %s", SDL_GetError());
+        }
 
         Window window = Window(sdl_window, sdl_renderer);
 

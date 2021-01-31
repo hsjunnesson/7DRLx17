@@ -1,3 +1,5 @@
+#include <cstdlib>
+
 #include "world.h"
 #include "texture.h"
 #include "log.h"
@@ -15,16 +17,23 @@ namespace world {
     , y_offset(0)
     {
         hash::reserve(tiles, Max_Tiles);
-        hash::set(tiles, index(0, 0, Max_Width), {39});
-        hash::set(tiles, index(1, 0, Max_Width), {40});
-        hash::set(tiles, index(2, 0, Max_Width), {40});
-        hash::set(tiles, index(3, 0, Max_Width), {39, SDL_FLIP_HORIZONTAL});
-        hash::set(tiles, index(0, 1, Max_Width), {40, SDL_FLIP_NONE, 90.0});
-        hash::set(tiles, index(3, 1, Max_Width), {40, SDL_FLIP_NONE, 90.0});
-        hash::set(tiles, index(0, 2, Max_Width), {39, SDL_FLIP_VERTICAL});
-        hash::set(tiles, index(1, 2, Max_Width), {40});
-        hash::set(tiles, index(2, 2, Max_Width), {40});
-        hash::set(tiles, index(3, 2, Max_Width), {39, SDL_FLIP_VERTICAL, -90});
+
+        for (int y = 0; y < Max_Height; ++y) {
+            for (int x = 0; x < Max_Width; ++x) {
+                hash::set(tiles, index(x, y, Max_Width), {rand() % 140});
+            }
+        }
+
+        // hash::set(tiles, index(0, 0, Max_Width), {39});
+        // hash::set(tiles, index(1, 0, Max_Width), {40});
+        // hash::set(tiles, index(2, 0, Max_Width), {40});
+        // hash::set(tiles, index(3, 0, Max_Width), {39, SDL_FLIP_HORIZONTAL});
+        // hash::set(tiles, index(0, 1, Max_Width), {40, SDL_FLIP_NONE, 90.0});
+        // hash::set(tiles, index(3, 1, Max_Width), {40, SDL_FLIP_NONE, 90.0});
+        // hash::set(tiles, index(0, 2, Max_Width), {39, SDL_FLIP_VERTICAL});
+        // hash::set(tiles, index(1, 2, Max_Width), {40});
+        // hash::set(tiles, index(2, 2, Max_Width), {40});
+        // hash::set(tiles, index(3, 2, Max_Width), {39, SDL_FLIP_VERTICAL, -90});
     }
 
     World::~World() {
