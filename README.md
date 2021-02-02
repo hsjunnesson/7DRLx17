@@ -1,5 +1,7 @@
 # 7DRLx17
 
+<img src="https://raw.githubusercontent.com/hsjunnesson/7DRLx17/main/logo.png" />
+
 This is my project for the [2021 Seven Day Roguelike Challenge](https://7drl.com/).
 
 This is a work in process - in fact, the challenge hasn't even started yet.
