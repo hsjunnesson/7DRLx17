@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(7drl VERSION 1.0.0)
+project(7DRLx17 VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -18,51 +18,49 @@ FetchContent_Declare(
     GIT_TAG        4161d093d57ad6c905599b85861601146c3ef1e9
 )
 
-#FetchContent_GetProperties(StackWalker)
 if (NOT stackwalker_POPULATED)
     FetchContent_Populate(StackWalker)
     add_subdirectory(${stackwalker_SOURCE_DIR} ${stackwalker_BINARY_DIR})
-#    FetchContent_MakeAvailable(StackWalker)
 endif()
 
-add_executable(Roguelike
-    src/engine.cpp
-    src/input.cpp
-    src/log.cpp
-    src/main.cpp
-    src/texture.cpp
-    src/world.cpp
-    src/engine.h
-    src/input.h
-    src/log.h
-    src/texture.h
-    src/world.h
-    src/json.hpp
-    bitsquid_foundation/array.h
-    bitsquid_foundation/collection_types.h
-    bitsquid_foundation/hash.h
-    bitsquid_foundation/math_types.h
-    bitsquid_foundation/memory.cpp
-    bitsquid_foundation/memory.h
-    bitsquid_foundation/memory_types.h
-    bitsquid_foundation/murmur_hash.cpp
-    bitsquid_foundation/murmur_hash.h
-    bitsquid_foundation/queue.h
-    bitsquid_foundation/snprintf_msvc.h
-    bitsquid_foundation/string_stream.cpp
-    bitsquid_foundation/string_stream.h
-    bitsquid_foundation/temp_allocator.h
-    bitsquid_foundation/types.h
+FetchContent_Declare(
+    BitSquidFoundation
+    GIT_REPOSITORY https://github.com/hsjunnesson/bitsquid-foundation.git
+    GIT_TAG        fa0066ff464f5e1022ddc0abcdddcf793b8946c9
 )
 
-include_directories(bitsquid_foundation)
+if (NOT bitsquidfoundation_POPULATED)
+    FetchContent_MakeAvailable(BitSquidFoundation)
+endif()
+
+file(GLOB_RECURSE SRC_Roguelike
+    "src/*.cpp"
+    "Src/*.h"
+)
+
+file(GLOB_RECURSE SRC_Foundation
+    "${bitsquidfoundation_SOURCE_DIR}/*.cpp"
+    "${bitsquidfoundation_SOURCE_DIR}/*.h"
+)
+
+list(FILTER SRC_Foundation EXCLUDE REGEX ".*/unit_test.cpp$")
+
+add_executable(${PROJECT_NAME}
+    ${SRC_Roguelike}
+    ${SRC_Foundation}
+)
+
+source_group("src" FILES ${SRC_Roguelike})
+source_group("foundation" FILES ${SRC_Foundation})
+
 include_directories(${stackwalker_SOURCE_DIR}/Main/StackWalker)
-include_directories(Roguelike PUBLIC ${SDL2_INCLUDE_DIR})
+include_directories(${PROJECT_NAME} PUBLIC ${SDL2_INCLUDE_DIR})
+include_directories(${bitsquidfoundation_SOURCE_DIR})
 
-target_link_libraries(Roguelike PRIVATE ${SDL2_LIBRARY} ${SDL2_MAIN})
-target_link_libraries(Roguelike PRIVATE SDL2::SDL2_image)
-target_link_libraries(Roguelike PRIVATE protobuf::libprotobuf-lite)
-target_link_libraries(Roguelike PRIVATE StackWalker)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARY} ${SDL2_MAIN})
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2_image)
+target_link_libraries(${PROJECT_NAME} PRIVATE protobuf::libprotobuf-lite)
+target_link_libraries(${PROJECT_NAME} PRIVATE StackWalker)
 
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Roguelike)
-set_property(TARGET Roguelike PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
+set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
