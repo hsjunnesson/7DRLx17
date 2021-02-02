@@ -5,13 +5,4 @@
 !.vscode/extensions.json
 *.code-workspace
 
-/7DRLx17.vcxproj.user
-
-/x64/
-/x86/
-
-.vs/
-
-/vendor/protobuf-3.14.0
-
-*.pdb
+/build
