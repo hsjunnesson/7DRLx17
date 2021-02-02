@@ -8,7 +8,7 @@
       "type": "cppvsdbg",
       "request": "launch",
       "name": "Debug",
-      "program": "${workspaceFolder}/x64/Debug/7DRLx17.exe",
+      "program": "${workspaceFolder}/build/Debug/7DRLx17.exe",
       "args": [],
       "cwd": "${workspaceFolder}",
       "internalConsoleOptions": "openOnSessionStart"
