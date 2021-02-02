@@ -3,6 +3,7 @@
 #include <SDL.h>
 
 #include "hash.h"
+#include "array.h"
 #include "memory.h"
 #include "texture.h"
 
@@ -10,10 +11,10 @@ namespace world {
     using namespace foundation;
 
     // Max width of the world.
-    static const uint64_t Max_Width = 128;
+    static const uint64_t Max_Width = 64;
 
     // Max height of the world.
-    static const uint64_t Max_Height = 80;
+    static const uint64_t Max_Height = 64;
 
     /**
      * @brief A tile struct.
@@ -25,10 +26,21 @@ namespace world {
         double angle = 0.0;
     };
 
-    enum class GameState {
-        DunGen,
-
+    /**
+     * @brief A cached operation for SDL_RenderCopyEx
+     * 
+     */
+    struct RenderOperation {
+        SDL_Rect source;
+        SDL_Rect destination;
+        SDL_RendererFlip flip = SDL_FLIP_NONE;
+        double angle = 0.0;
     };
+
+    // enum class GameState {
+    //     DunGen,
+
+    // };
 
     // The game world.
     struct World {
@@ -41,6 +53,9 @@ namespace world {
         texture::Atlas *atlas;
         int x_offset;
         int y_offset;
+
+        bool dirty;
+        Array<RenderOperation> render_operations;
     };
 
     /**
@@ -68,7 +83,7 @@ namespace world {
      * @return constexpr uint64_t The index.
      */
     constexpr uint64_t index(uint64_t const x, uint64_t const y, uint64_t max_width) {
-        return x + (max_width - 1) * y;
+        return x + max_width * y;
     }
 
     /**
@@ -80,7 +95,7 @@ namespace world {
      * @param max_width The maxium width.
      */
     constexpr void coord(uint64_t const index, uint64_t &x, uint64_t &y, uint64_t max_width) {
-        x = index % (max_width - 1);
-        y = index / (max_width - 1);
+        x = index % max_width;
+        y = index / max_width;
     }
 }
