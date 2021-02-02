@@ -169,10 +169,11 @@ namespace engine {
 
         int exit_code = run(*engine);
 
-        SDL_DestroyRenderer(sdl_renderer);
-        SDL_DestroyWindow(sdl_window);
         MAKE_DELETE(allocator, Engine, engine);
         MAKE_DELETE(allocator, World, world);
+
+        SDL_DestroyRenderer(sdl_renderer);
+        SDL_DestroyWindow(sdl_window);
         foundation::memory_globals::shutdown();
         SDL_Quit();
 
