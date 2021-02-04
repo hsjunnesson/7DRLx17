@@ -26,27 +26,6 @@ namespace world {
             }
         }
 
-        // hash::set(tiles, index(0, 0, Max_Width), {39});
-        // hash::set(tiles, index(1, 0, Max_Width), {40});
-        // hash::set(tiles, index(2, 0, Max_Width), {40});
-        // hash::set(tiles, index(3, 0, Max_Width), {39, SDL_FLIP_HORIZONTAL});
-        // hash::set(tiles, index(0, 1, Max_Width), {40, SDL_FLIP_NONE, 90.0});
-        // hash::set(tiles, index(3, 1, Max_Width), {40, SDL_FLIP_NONE, 90.0});
-        // hash::set(tiles, index(0, 2, Max_Width), {39, SDL_FLIP_VERTICAL});
-        // hash::set(tiles, index(1, 2, Max_Width), {40});
-        // hash::set(tiles, index(2, 2, Max_Width), {40});
-        // hash::set(tiles, index(3, 2, Max_Width), {39, SDL_FLIP_VERTICAL, -90});
-
-        // hash::set(tiles, index(0, 0, Max_Width), {4});
-        // hash::set(tiles, index(1, 0, Max_Width), {18});
-        // hash::set(tiles, index(2, 0, Max_Width), {20});
-        // hash::set(tiles, index(3, 0, Max_Width), {24});
-
-        // hash::set(tiles, index(0, 1, Max_Width), {62});
-        // hash::set(tiles, index(1, 1, Max_Width), {63});
-        // hash::set(tiles, index(2, 1, Max_Width), {64});
-        // hash::set(tiles, index(3, 1, Max_Width), {65});
-
         dirty = true;
     }
 

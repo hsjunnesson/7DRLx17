@@ -1,8 +1,8 @@
 {
     "atlas": "assets/colored_tilemap_atlas.json",
-    "width": 640,
-    "height": 480,
-    "render_scale": 4,
+    "width": 1024,
+    "height": 1024,
+    "render_scale": 1,
     "clear_color": {
         "r": 34,
         "g": 35,
