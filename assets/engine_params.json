@@ -3,5 +3,10 @@
     "width": 640,
     "height": 480,
     "render_scale": 4,
-    "clear_color": [34, 35, 35]
+    "clear_color": {
+        "r": 34,
+        "g": 35,
+        "b": 35,
+        "a": 255
+    }
 }

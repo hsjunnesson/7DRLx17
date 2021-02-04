@@ -26,10 +26,10 @@ namespace texture {
      * 
      * @param allocator The allocator.
      * @param sdl_renderer The SDL renderer.
-     * @param config_filename The path to the json config file/
+     * @param param_filename The path to the json params file.
      * @return Atlas* 
      */
-    Atlas *create_atlas(Allocator &allocator, SDL_Renderer *renderer, const char *config_filename);
+    Atlas *create_atlas(Allocator &allocator, SDL_Renderer *renderer, const char *param_filename);
 
     /**
      * @brief Destroys an atlas object.

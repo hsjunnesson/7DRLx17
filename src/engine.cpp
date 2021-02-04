@@ -2,7 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include <fstream>
 
-#include "json.hpp"
+#include "proto/engine.pb.h"
 
 #include "engine.h"
 #include "memory.h"
@@ -16,7 +16,6 @@ static const int UPDATE_MULTIPLICITY = 1;
 
 namespace engine {
     using namespace foundation;
-	using json = nlohmann::json;
 
     void clear_window(Window &window, SDL_Color &clear_color) {
         if (SDL_SetRenderDrawColor(window.renderer, clear_color.r, clear_color.g, clear_color.b, clear_color.a)) {
@@ -92,7 +91,7 @@ namespace engine {
         return exit_code;
     }
 
-    int init_engine(int argc, char *argv[]) {
+    int init_engine(EngineParams &params) {
         if (SDL_Init(SDL_INIT_VIDEO) != 0) {
             log_fatal("SDL_Init: %s", SDL_GetError());
         }
@@ -107,37 +106,8 @@ namespace engine {
         SDL_Rect window_rect;
         window_rect.x = 100;
         window_rect.y = 100;
-
-        int render_scale = 1;
-
-        SDL_Color clear_color;
-        clear_color.a = 255;
-
-        const char *engine_config_filename = "assets/engine_params.json";
-        const char *atlas_config_filename = nullptr;
-
-        json json_data;
-
-		try {
-			std::ifstream input_file_stream(engine_config_filename);			
-			input_file_stream >> json_data;
-
-			json::string_t *atlas_config_filename_ptr = json_data["atlas"].get_ptr<json::string_t *>();
-			if (!atlas_config_filename_ptr) {
-				log_fatal("Could not read 'atlas' from %s", engine_config_filename);
-			}
-            
-			atlas_config_filename = atlas_config_filename_ptr->c_str();
-
-            window_rect.w = json_data["width"].get<int>();
-            window_rect.h = json_data["height"].get<int>();
-            render_scale = json_data["render_scale"].get<int>();
-            clear_color.r = json_data["clear_color"].at(0);
-            clear_color.g = json_data["clear_color"].at(1);
-            clear_color.b = json_data["clear_color"].at(2);
-		} catch (const std::exception &e) {
-			log_fatal("Could not parse json config file %s: %s", engine_config_filename, e.what());
-		}
+        window_rect.w = params.width();
+        window_rect.h = params.height();
 
         SDL_Window *sdl_window = SDL_CreateWindow("Roguelike", window_rect.x, window_rect.y, window_rect.w, window_rect.h, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
         if (!sdl_window) {
@@ -149,13 +119,14 @@ namespace engine {
             log_fatal("Couldn't create renderer: %s", SDL_GetError());
         }
 
+        int render_scale = params.render_scale();
         if (SDL_RenderSetScale(sdl_renderer, render_scale, render_scale)) {
             log_error("Error in SDL_RenderSetScale: %s", SDL_GetError());
         }
 
         Window window = Window(sdl_window, sdl_renderer);
 
-        world::World *world = MAKE_NEW(allocator, world::World, allocator, sdl_renderer, atlas_config_filename);
+        world::World *world = MAKE_NEW(allocator, world::World, allocator, sdl_renderer, params.atlas().c_str());
         if (!world) {
             log_fatal("Couldn't create world");
         }
@@ -164,6 +135,12 @@ namespace engine {
         if (!engine) {
             log_fatal("Couldn't create engine");
         }
+
+        SDL_Color clear_color;
+        clear_color.r = params.clear_color().r();
+        clear_color.g = params.clear_color().g();
+        clear_color.b = params.clear_color().b();
+        clear_color.a = params.clear_color().a();
 
         engine->clear_color = clear_color;
 

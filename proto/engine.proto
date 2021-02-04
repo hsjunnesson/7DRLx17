@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package engine;
+
+message ColorParams {
+    int32 r = 1;
+    int32 g = 2;
+    int32 b = 3;
+    int32 a = 4;
+}
+
+message AtlasParams {
+    string texture  = 1;
+    int32 tile_size = 2;
+    int32 gutter    = 3;
+}
+
+message EngineParams {
+    string atlas                = 1;
+    int32 width                 = 2;
+    int32 height                = 3;
+    int32 render_scale          = 4;
+    ColorParams clear_color     = 5;
+}

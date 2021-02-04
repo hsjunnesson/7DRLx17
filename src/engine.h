@@ -6,6 +6,8 @@
 #include "world.h"
 
 namespace engine {
+    class EngineParams;
+    
     struct Window {
         Window(SDL_Window *window, SDL_Renderer *renderer)
         : window(window)
@@ -37,5 +39,5 @@ namespace engine {
     void render_window(Window &window);
 
     // Runs the engine, returns the exit code.
-    int init_engine(int argc, char *argv[]);
+    int init_engine(EngineParams &params);
 }

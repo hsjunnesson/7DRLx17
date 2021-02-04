@@ -45,21 +45,29 @@ file(GLOB_RECURSE SRC_Foundation
 
 list(FILTER SRC_Foundation EXCLUDE REGEX ".*/unit_test.cpp$")
 
+file(GLOB_RECURSE SRC_Generated
+    "generated_src/*.cc"
+    "generated_src/*.h"
+)
+
 add_executable(${PROJECT_NAME}
     ${SRC_Roguelike}
     ${SRC_Foundation}
+    ${SRC_Generated}
 )
 
 source_group("src" FILES ${SRC_Roguelike})
 source_group("foundation" FILES ${SRC_Foundation})
+source_group("generated" FILES ${SRC_Generated})
 
 include_directories(${stackwalker_SOURCE_DIR}/Main/StackWalker)
 include_directories(${PROJECT_NAME} PUBLIC ${SDL2_INCLUDE_DIR})
 include_directories(${bitsquidfoundation_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/generated_src)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARY} ${SDL2_MAIN})
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2_image)
-target_link_libraries(${PROJECT_NAME} PRIVATE protobuf::libprotobuf-lite)
+target_link_libraries(${PROJECT_NAME} PRIVATE protobuf::libprotobuf)
 target_link_libraries(${PROJECT_NAME} PRIVATE StackWalker)
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})

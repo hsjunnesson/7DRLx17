@@ -3,45 +3,26 @@
 #include <memory.h>
 #include <fstream>
 
-#include "json.hpp"
+#include "proto/engine.pb.h"
 
 #include "texture.h"
 #include "log.h"
+#include "config.h"
 
 namespace texture {
 	using namespace foundation;
-	using json = nlohmann::json;
 
-    Atlas *create_atlas(Allocator &allocator, SDL_Renderer *renderer, const char *config_filename) {
+    Atlas *create_atlas(Allocator &allocator, SDL_Renderer *renderer, const char *param_filename) {
 		Atlas *atlas = MAKE_NEW(allocator, Atlas);
 		if (!atlas) {
 			log_fatal("Could not allocate Atlas");
 		}
 
-		const char *texture_filename = nullptr;
-		int tile_size = 0;
-		int gutter = 0;
+		engine::AtlasParams params;
 
-		json json_data;
+		config::read(param_filename, &params);
 
-		try {
-			std::ifstream input_file_stream(config_filename);			
-			input_file_stream >> json_data;
-
-			json::string_t *texture_filename_ptr = json_data["texture"].get_ptr<json::string_t *>();
-			if (!texture_filename_ptr) {
-				log_fatal("Could not read 'texture' from %s", config_filename);
-			}
-
-			texture_filename = texture_filename_ptr->c_str();
-
-			tile_size = json_data["tile_size"].get<int>();
-			gutter = json_data["gutter"].get<int>();
-		} catch (const std::exception &e) {
-			log_fatal("Could not parse json config file %s: %s", config_filename, e.what());
-		}
-
-		SDL_Texture *texture = load(renderer, texture_filename);
+		SDL_Texture *texture = load(renderer, params.texture().c_str());
 		int w, h;
 		SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
 
@@ -49,10 +30,10 @@ namespace texture {
 		
 		atlas->w = w;
 		atlas->h = h;
-		atlas->tile_size = tile_size;
-		atlas->gutter = gutter;
-		atlas->w_tiles = w / tile_size;
-		atlas->h_tiles = h / tile_size;
+		atlas->tile_size = params.tile_size();
+		atlas->gutter = params.gutter();
+		atlas->w_tiles = w / params.tile_size();
+		atlas->h_tiles = h / params.tile_size();
 		atlas->texture = texture;
 
 		return atlas;
