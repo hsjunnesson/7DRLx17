@@ -6,6 +6,10 @@ namespace gui {
     {}
 
 
+    void update(Gui &gui, uint32_t t, double dt) {
+        
+    }
+
     void render(Gui &gui, SDL_Renderer *renderer) {
         
     }
