@@ -10,10 +10,10 @@ message ColorParams {
 }
 
 message AtlasParams {
-    string texture  = 1;
-    int32 tile_size = 2;
-    int32 gutter    = 3;
-    map<string, int32> tile_names = 4;
+    string texture                  = 1;
+    int32 tile_size                 = 2;
+    int32 gutter                    = 3;
+    map<string, int32> tile_names   = 4;
 }
 
 message EngineParams {
