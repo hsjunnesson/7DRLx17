@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_thread.h>
 
 #include "hash.h"
 #include "array.h"
@@ -52,6 +53,9 @@ namespace world {
 
         // The current game state.
         GameState game_state;
+
+        // The thread for generating a dungeon.
+        SDL_Thread *dungen_thread;
 
         // The texture atlas
         texture::Atlas *atlas;
