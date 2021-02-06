@@ -14,11 +14,13 @@ namespace world {
 
     static const uint64_t Max_Tiles = Max_Width * Max_Height;
 
+    static uint64_t Floor_Hash = world::hash("floor");
     static uint64_t Snake_Hash = world::hash("snake");
     static uint64_t Missing_Hash = world::hash("missing");
 
     World::World(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_config_filename)
     : allocator(allocator)
+    , game_state(GameState::Initializing)
     , atlas(MAKE_NEW(allocator, texture::Atlas, allocator, renderer, atlas_config_filename))
     , x_offset(0)
     , y_offset(0)
@@ -95,6 +97,10 @@ namespace world {
             Tile tile = it->value;
             int tile_index = tile.index;
 
+            if (tile_index == Floor_Hash) {
+                continue;
+            }
+            
             SDL_Rect source;
             uint64_t source_x, source_y;
             coord(tile_index, source_x, source_y, world.atlas->w_tiles - 1);
