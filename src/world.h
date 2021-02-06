@@ -28,34 +28,33 @@ namespace world {
     };
 
     /**
-     * @brief A cached operation for SDL_RenderCopyEx
+     * @brief An enum that describes the current game state.
      * 
      */
-    struct RenderOperation {
-        SDL_Rect source;
-        SDL_Rect destination;
-        SDL_RendererFlip flip = SDL_FLIP_NONE;
-        double angle = 0.0;
+    enum class GameState {
+        // Generating a dungeon level.
+        DunGen,
+
+        // Playing the game.
+        Playing,
     };
-
-    // enum class GameState {
-    //     DunGen,
-
-    // };
 
     // The game world.
     struct World {
         World(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_config_filename);
         ~World();
 
+        // The allocator
         Allocator &allocator;
-        Hash<Tile> tiles;
-        texture::Atlas *atlas;
-        int x_offset;
-        int y_offset;
 
-        bool dirty;
-        Array<RenderOperation> render_operations;
+        // The texture atlas
+        texture::Atlas *atlas;
+
+        // The camera x and y offset
+        int x_offset, y_offset;
+
+        // The The hash of tile states.
+        Hash<Tile> tiles;
     };
 
     /**

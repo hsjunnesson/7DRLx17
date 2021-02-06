@@ -19,12 +19,10 @@ namespace world {
 
     World::World(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_config_filename)
     : allocator(allocator)
-    , tiles(Hash<Tile>(allocator))
     , atlas(MAKE_NEW(allocator, texture::Atlas, allocator, renderer, atlas_config_filename))
     , x_offset(0)
     , y_offset(0)
-    , dirty(false)
-    , render_operations(Array<RenderOperation>(allocator))
+    , tiles(Hash<Tile>(allocator))
     {
         hash::reserve(tiles, Max_Tiles);
 
@@ -70,8 +68,6 @@ namespace world {
                hash::set(tiles, index(x, y, Max_Width), {rand() % 140});
            }
        }
-
-        dirty = true;
     }
 
     World::~World() {
@@ -88,44 +84,34 @@ namespace world {
             log_fatal("Missing world atlas");
         }
 
-        if (world.dirty) {
-            array::clear(world.render_operations);
+        int w, h;
+        SDL_GetRendererOutputSize(renderer, &w, &h);
 
-            int w, h;
-            SDL_GetRendererOutputSize(renderer, &w, &h);
+        int tile_size = world.atlas->tile_size;
+        int gutter = world.atlas->gutter;
 
-            int tile_size = world.atlas->tile_size;
-            int gutter = world.atlas->gutter;
+        for (const Hash<Tile>::Entry *it = hash::begin(world.tiles); it != hash::end(world.tiles); ++it) {
+            uint64_t pos_index = it->key;
+            Tile tile = it->value;
+            int tile_index = tile.index;
 
-            for (const Hash<Tile>::Entry *it = hash::begin(world.tiles); it != hash::end(world.tiles); ++it) {
-                uint64_t pos_index = it->key;
-                Tile tile = it->value;
-                int tile_index = tile.index;
+            SDL_Rect source;
+            uint64_t source_x, source_y;
+            coord(tile_index, source_x, source_y, world.atlas->w_tiles - 1);
+            source.x = (int)(source_x * tile_size + source_x * gutter);
+            source.y = (int)(source_y * tile_size + source_y * gutter);
+            source.w = tile_size;
+            source.h = tile_size;
 
-                SDL_Rect source;
-                uint64_t source_x, source_y;
-                coord(tile_index, source_x, source_y, world.atlas->w_tiles - 1);
-                source.x = (int)(source_x * tile_size + source_x * gutter);
-                source.y = (int)(source_y * tile_size + source_y * gutter);
-                source.w = tile_size;
-                source.h = tile_size;
+            SDL_Rect destination;
+            uint64_t destination_x, destination_y;
+            coord(pos_index, destination_x, destination_y, Max_Width);
+            destination.x = (int)(destination_x * tile_size);
+            destination.y = (int)(destination_y * tile_size);
+            destination.w = tile_size;
+            destination.h = tile_size;
 
-                SDL_Rect destination;
-                uint64_t destination_x, destination_y;
-                coord(pos_index, destination_x, destination_y, Max_Width);
-                destination.x = (int)(destination_x * tile_size);
-                destination.y = (int)(destination_y * tile_size);
-                destination.w = tile_size;
-                destination.h = tile_size;
-
-                array::push_back(world.render_operations, {source, destination, tile.flip, tile.angle});
-            }
-
-            world.dirty = false;
-        }
-
-        for (const RenderOperation *it = array::begin(world.render_operations); it != array::end(world.render_operations); ++it) {
-            SDL_RenderCopyEx(renderer, world.atlas->texture, &it->source, &it->destination, it->angle, nullptr, it->flip);
+            SDL_RenderCopyEx(renderer, world.atlas->texture, &source, &destination, tile.angle, nullptr, tile.flip);
         }
     }
 }
