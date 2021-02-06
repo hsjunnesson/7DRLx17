@@ -28,10 +28,13 @@ namespace world {
     };
 
     /**
-     * @brief An enum that describes the current game state.
+     * @brief An enum that describes a specific game state.
      * 
      */
     enum class GameState {
+        // Game state is creating, or loading from a save.
+        Initializing,
+
         // Generating a dungeon level.
         DunGen,
 
@@ -47,6 +50,9 @@ namespace world {
         // The allocator
         Allocator &allocator;
 
+        // The current game state.
+        GameState game_state;
+
         // The texture atlas
         texture::Atlas *atlas;
 
@@ -56,6 +62,7 @@ namespace world {
         // The The hash of tile states.
         Hash<Tile> tiles;
     };
+
 
     /**
      * @brief Updates the world
