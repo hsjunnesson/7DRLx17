@@ -48,7 +48,6 @@ namespace world {
         ~World();
 
         Allocator &allocator;
-        SDL_Renderer *renderer;
         Hash<Tile> tiles;
         texture::Atlas *atlas;
         int x_offset;
@@ -65,14 +64,15 @@ namespace world {
      * @param t The current time
      * @param dt The delta time since last update
      */
-    void update_world(World &world, uint32_t t, double dt);
+    void update(World &world, uint32_t t, double dt);
 
     /**
      * @brief Renders the world
      *
      * @param world The world to render
+     * @param renderer The SDL renderer.
      */
-    void render_world(World &world);
+    void render(World &world, SDL_Renderer *renderer);
 
     /**
      * @brief Returns the index of an x, y coordinate

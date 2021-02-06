@@ -17,7 +17,7 @@ static const int UPDATE_MULTIPLICITY = 1;
 namespace engine {
     using namespace foundation;
 
-    void clear_window(Window &window, SDL_Color &clear_color) {
+    void clear(Window &window, SDL_Color &clear_color) {
         if (SDL_SetRenderDrawColor(window.renderer, clear_color.r, clear_color.g, clear_color.b, clear_color.a)) {
 		    log_error("SDL_SetRenderDrawColor: %s", SDL_GetError());
         }
@@ -31,7 +31,7 @@ namespace engine {
         }
     }
 
-    void render_window(Window& window) {
+    void render(Window& window) {
 	    SDL_RenderPresent(window.renderer);
     }
 
@@ -75,15 +75,16 @@ namespace engine {
             while (frame_accumulator >= DESIRED_FRAMETIME * UPDATE_MULTIPLICITY) {
                 for (int i = 0; i < UPDATE_MULTIPLICITY; i++) {
                     // Update
-                    world::update_world(engine.world, current_frame_time, FIXED_DELTATIME);
+                    world::update(engine.world, current_frame_time, FIXED_DELTATIME);
                     frame_accumulator -= DESIRED_FRAMETIME;
                 }
             }
 
             // Render
-            clear_window(engine.window, engine.clear_color);
-            world::render_world(engine.world);
-            render_window(engine.window);
+            engine::clear(engine.window, engine.clear_color);
+            world::render(engine.world, engine.window.renderer);
+            gui::render(engine.gui, engine.window.renderer);
+            engine::render(engine.window);
 
             ++engine.frames;
         }
@@ -131,7 +132,12 @@ namespace engine {
             log_fatal("Couldn't create world");
         }
 
-        Engine *engine = MAKE_NEW(allocator, Engine, window, *world);
+        gui::Gui *gui = MAKE_NEW(allocator, gui::Gui, allocator, sdl_renderer);
+        if (!gui) {
+            log_fatal("Couldn't greate gui");
+        }
+        
+        Engine *engine = MAKE_NEW(allocator, Engine, window, *world, *gui);
         if (!engine) {
             log_fatal("Couldn't create engine");
         }
@@ -148,6 +154,7 @@ namespace engine {
 
         MAKE_DELETE(allocator, Engine, engine);
         MAKE_DELETE(allocator, World, world);
+        MAKE_DELETE(allocator, Gui, gui);
 
         SDL_DestroyRenderer(sdl_renderer);
         SDL_DestroyWindow(sdl_window);

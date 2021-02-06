@@ -10,7 +10,6 @@ namespace world {
     
     World::World(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_config_filename)
     : allocator(allocator)
-    , renderer(renderer)
     , tiles(Hash<Tile>(allocator))
     , atlas(texture::create_atlas(allocator, renderer, atlas_config_filename))
     , x_offset(0)
@@ -20,11 +19,42 @@ namespace world {
     {
         hash::reserve(tiles, Max_Tiles);
 
-        for (int y = 0; y < Max_Height; ++y) {
-            for (int x = 0; x < Max_Width; ++x) {
-                hash::set(tiles, index(x, y, Max_Width), {rand() % 140});
+        for (int room_i = 0; room_i < 30; ++room_i) {
+            int room_x = rand() % 100;
+            int room_y = rand() % 100;
+
+            for (int y = 0; y < 10; ++y) {
+                for (int x = 0; x < 10; ++x) {
+                    hash::set(tiles, index(room_x + x, room_y + y, Max_Width), {rand() % 140});
+                }
             }
         }
+        
+        for (int corridor_i = 0; corridor_i < 10; ++corridor_i) {
+            int start_x = rand() % 100;
+            int start_y = rand() % 100;
+
+            for (int x = 0; x < 30; ++x) {
+                if ((start_x + x) < Max_Width) {
+                    hash::set(tiles, index(start_x + x, start_y, Max_Width), {rand() % 140});
+                }
+            }
+
+            start_x = rand() % 100;
+            start_y = rand() % 100;
+
+            for (int y = 0; y < 30; ++y) {
+                if ((start_y + y) < Max_Height) {
+                    hash::set(tiles, index(start_x, start_y + y, Max_Width), {rand() % 140});
+                }
+            }
+        }
+
+//        for (int y = 0; y < Max_Height; ++y) {
+//            for (int x = 0; x < Max_Width; ++x) {
+//                hash::set(tiles, index(x, y, Max_Width), {rand() % 140});
+//            }
+//        }
 
         dirty = true;
     }
@@ -33,10 +63,10 @@ namespace world {
         texture::destroy_atlas(allocator, atlas);
     }
 
-    void update_world(World &world, uint32_t t, double dt) {
+    void update(World &world, uint32_t t, double dt) {
     }
 
-    void render_world(World &world) {
+    void render(World &world, SDL_Renderer *renderer) {
         if (!world.atlas) {
             log_fatal("Missing world atlas");
         }
@@ -45,7 +75,7 @@ namespace world {
             array::clear(world.render_operations);
 
             int w, h;
-            SDL_GetRendererOutputSize(world.renderer, &w, &h);
+            SDL_GetRendererOutputSize(renderer, &w, &h);
 
             int tile_size = world.atlas->tile_size;
             int gutter = world.atlas->gutter;
@@ -78,7 +108,7 @@ namespace world {
         }
 
         for (const RenderOperation *it = array::begin(world.render_operations); it != array::end(world.render_operations); ++it) {
-            SDL_RenderCopyEx(world.renderer, world.atlas->texture, &it->source, &it->destination, it->angle, nullptr, it->flip);
+            SDL_RenderCopyEx(renderer, world.atlas->texture, &it->source, &it->destination, it->angle, nullptr, it->flip);
         }
     }
 }
