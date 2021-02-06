@@ -11,7 +11,6 @@ namespace gui {
         Gui(Allocator &allocator, SDL_Renderer *renderer);
 
         Allocator &allocator;
-
     };
 
     /**
@@ -30,7 +29,4 @@ namespace gui {
      * @param renderer The SDL renderer.
      */
     void render(Gui &gui, SDL_Renderer *renderer);
-
-
-
 }
