@@ -9,13 +9,11 @@
 #include "log.h"
 #include "input.h"
 
-static const double UPDATE_RATE = 60;
-static const double FIXED_DELTATIME = 1.0 / UPDATE_RATE;
-static const uint32_t DESIRED_FRAMETIME = 1000 / (uint32_t)UPDATE_RATE;
-static const int UPDATE_MULTIPLICITY = 1;
-
 namespace engine {
     using namespace foundation;
+
+    static const double Update_Rate = 60;
+    static const uint32_t Desired_Frametime = 1000 / (uint32_t)Update_Rate;
 
     void clear(Window &window, SDL_Color &clear_color) {
         if (SDL_SetRenderDrawColor(window.renderer, clear_color.r, clear_color.g, clear_color.b, clear_color.a)) {
@@ -37,48 +35,17 @@ namespace engine {
 
     int run(Engine &engine) {
         uint32_t prev_frame_time = SDL_GetTicks();
-        uint32_t frame_accumulator = 0;
 
         bool running = true;
         int exit_code = 0;
 
+        uint32_t current_frame_time = SDL_GetTicks();
+        uint32_t delta_time = current_frame_time - prev_frame_time;
+
         while (running) {
-            uint32_t current_frame_time = SDL_GetTicks();
-            uint32_t delta_time = current_frame_time - prev_frame_time;
-            prev_frame_time = current_frame_time;
-
-            // Handle anomalies
-            
-            if (delta_time > DESIRED_FRAMETIME * 8) { // Ignore extra slow frames
-                delta_time = DESIRED_FRAMETIME;
-            }
-            
-            if (delta_time < 0) {
-                delta_time = 0;
-            }
-
-            frame_accumulator += delta_time;
-
-            // Spiral of death protection
-            if (frame_accumulator > DESIRED_FRAMETIME * 8) {
-                frame_accumulator = 0;
-                delta_time = DESIRED_FRAMETIME;
-            }
-
-            // Process events, signals quit?
-            // False for keep running
-            if (input::process_events()) {
-                running = false;
-                continue;
-            }
-
-            while (frame_accumulator >= DESIRED_FRAMETIME * UPDATE_MULTIPLICITY) {
-                for (int i = 0; i < UPDATE_MULTIPLICITY; i++) {
-                    // Update
-                    world::update(engine.world, current_frame_time, FIXED_DELTATIME);
-                    frame_accumulator -= DESIRED_FRAMETIME;
-                }
-            }
+            // Update
+            world::update(engine.world, current_frame_time, delta_time);
+            gui::update(engine.gui, current_frame_time, delta_time);
 
             // Render
             engine::clear(engine.window, engine.clear_color);
@@ -87,6 +54,29 @@ namespace engine {
             engine::render(engine.window);
 
             ++engine.frames;
+
+            // Process events, signals quit?
+            // False for keep running
+            if (input::process_events()) {
+                running = false;
+                continue;
+            }
+
+            // Calculate frame times
+            uint32_t current_frame_time = SDL_GetTicks();
+            uint32_t delta_time = current_frame_time - prev_frame_time;
+            prev_frame_time = current_frame_time;
+
+            // Handle anomalies
+            if (delta_time < 0) {
+                delta_time = 0;
+            }
+
+            if (delta_time < Desired_Frametime) {
+                uint32_t delay = Desired_Frametime - delta_time;
+                SDL_Delay(delay);
+                delta_time += delay;
+            }
         }
 
         return exit_code;
