@@ -1,10 +1,9 @@
-#include <SDL2/SDL.h>
-
 #pragma once
 
-namespace foundation {
-    class Allocator;
-}
+#include <SDL2/SDL.h>
+
+#include "memory.h"
+#include "hash.h"
 
 namespace texture {
     using namespace foundation;
@@ -14,30 +13,17 @@ namespace texture {
      * 
      */
     struct Atlas {
+        Atlas(Allocator &allocator, SDL_Renderer *renderer, const char *param_filename);
+        ~Atlas();
+
+        Allocator &allocator;
         int w, h;
         int tile_size;
         int gutter;
         int w_tiles, h_tiles;
+        Hash<int32_t> tiles_by_name;
         SDL_Texture *texture;
     };
-
-    /**
-     * @brief Create an atlas object.
-     * 
-     * @param allocator The allocator.
-     * @param sdl_renderer The SDL renderer.
-     * @param param_filename The path to the json params file.
-     * @return Atlas* 
-     */
-    Atlas *create_atlas(Allocator &allocator, SDL_Renderer *renderer, const char *param_filename);
-
-    /**
-     * @brief Destroys an atlas object.
-     * 
-     * @param allocator The allocator.
-     * @param atlas The atlas to destroy.
-     */
-    void destroy_atlas(Allocator &allocator, Atlas *atlas);
 
     /**
      * @brief Loads a texture from a filename.

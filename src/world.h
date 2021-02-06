@@ -7,6 +7,7 @@
 #include "memory.h"
 #include "texture.h"
 
+// The namespace for all of the game world specific gameplay code.
 namespace world {
     using namespace foundation;
 

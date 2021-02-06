@@ -1,17 +1,26 @@
 #include <cstdlib>
 
+#include "murmur_hash.h"
+
 #include "world.h"
 #include "texture.h"
 #include "log.h"
 
 
 namespace world {
+    uint64_t hash(const char *s) {
+        return murmur_hash_64(s, strlen(s), 0);
+    };
+
     static const uint64_t Max_Tiles = Max_Width * Max_Height;
-    
+
+    static uint64_t Snake_Hash = world::hash("snake");
+    static uint64_t Missing_Hash = world::hash("missing");
+
     World::World(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_config_filename)
     : allocator(allocator)
     , tiles(Hash<Tile>(allocator))
-    , atlas(texture::create_atlas(allocator, renderer, atlas_config_filename))
+    , atlas(MAKE_NEW(allocator, texture::Atlas, allocator, renderer, atlas_config_filename))
     , x_offset(0)
     , y_offset(0)
     , dirty(false)
@@ -19,13 +28,19 @@ namespace world {
     {
         hash::reserve(tiles, Max_Tiles);
 
+        if (!hash::has(atlas->tiles_by_name, Missing_Hash)) {
+            log_fatal("Atlas does not have the 'missing' named tile.");
+        }
+
+        int32_t missing_tile = hash::get(atlas->tiles_by_name, Missing_Hash, 0);
+
         for (int room_i = 0; room_i < 30; ++room_i) {
             int room_x = rand() % 100;
             int room_y = rand() % 100;
 
             for (int y = 0; y < 10; ++y) {
                 for (int x = 0; x < 10; ++x) {
-                    hash::set(tiles, index(room_x + x, room_y + y, Max_Width), {rand() % 140});
+                    hash::set(tiles, index(room_x + x, room_y + y, Max_Width), {missing_tile});
                 }
             }
         }
@@ -50,17 +65,19 @@ namespace world {
             }
         }
 
-//        for (int y = 0; y < Max_Height; ++y) {
-//            for (int x = 0; x < Max_Width; ++x) {
-//                hash::set(tiles, index(x, y, Max_Width), {rand() % 140});
-//            }
-//        }
+       for (int y = 0; y < Max_Height; ++y) {
+           for (int x = 0; x < Max_Width; ++x) {
+               hash::set(tiles, index(x, y, Max_Width), {rand() % 140});
+           }
+       }
 
         dirty = true;
     }
 
     World::~World() {
-        texture::destroy_atlas(allocator, atlas);
+        if (atlas) {
+            MAKE_DELETE(allocator, Atlas, atlas);
+        }
     }
 
     void update(World &world, uint32_t t, double dt) {

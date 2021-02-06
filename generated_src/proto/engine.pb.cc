@@ -14,12 +14,17 @@
 #include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
+extern PROTOBUF_INTERNAL_EXPORT_proto_2fengine_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_AtlasParams_TileNamesEntry_DoNotUse_proto_2fengine_2eproto;
 extern PROTOBUF_INTERNAL_EXPORT_proto_2fengine_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ColorParams_proto_2fengine_2eproto;
 namespace engine {
 class ColorParamsDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ColorParams> _instance;
 } _ColorParams_default_instance_;
+class AtlasParams_TileNamesEntry_DoNotUseDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<AtlasParams_TileNamesEntry_DoNotUse> _instance;
+} _AtlasParams_TileNamesEntry_DoNotUse_default_instance_;
 class AtlasParamsDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<AtlasParams> _instance;
@@ -39,8 +44,21 @@ static void InitDefaultsscc_info_AtlasParams_proto_2fengine_2eproto() {
   }
 }
 
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_AtlasParams_proto_2fengine_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_AtlasParams_proto_2fengine_2eproto}, {}};
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_AtlasParams_proto_2fengine_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_AtlasParams_proto_2fengine_2eproto}, {
+      &scc_info_AtlasParams_TileNamesEntry_DoNotUse_proto_2fengine_2eproto.base,}};
+
+static void InitDefaultsscc_info_AtlasParams_TileNamesEntry_DoNotUse_proto_2fengine_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::engine::_AtlasParams_TileNamesEntry_DoNotUse_default_instance_;
+    new (ptr) ::engine::AtlasParams_TileNamesEntry_DoNotUse();
+  }
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_AtlasParams_TileNamesEntry_DoNotUse_proto_2fengine_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_AtlasParams_TileNamesEntry_DoNotUse_proto_2fengine_2eproto}, {}};
 
 static void InitDefaultsscc_info_ColorParams_proto_2fengine_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -69,7 +87,7 @@ static void InitDefaultsscc_info_EngineParams_proto_2fengine_2eproto() {
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_EngineParams_proto_2fengine_2eproto}, {
       &scc_info_ColorParams_proto_2fengine_2eproto.base,}};
 
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_proto_2fengine_2eproto[3];
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_proto_2fengine_2eproto[4];
 static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_proto_2fengine_2eproto = nullptr;
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_proto_2fengine_2eproto = nullptr;
 
@@ -83,6 +101,15 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fengine_2eproto::offset
   PROTOBUF_FIELD_OFFSET(::engine::ColorParams, g_),
   PROTOBUF_FIELD_OFFSET(::engine::ColorParams, b_),
   PROTOBUF_FIELD_OFFSET(::engine::ColorParams, a_),
+  PROTOBUF_FIELD_OFFSET(::engine::AtlasParams_TileNamesEntry_DoNotUse, _has_bits_),
+  PROTOBUF_FIELD_OFFSET(::engine::AtlasParams_TileNamesEntry_DoNotUse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::engine::AtlasParams_TileNamesEntry_DoNotUse, key_),
+  PROTOBUF_FIELD_OFFSET(::engine::AtlasParams_TileNamesEntry_DoNotUse, value_),
+  0,
+  1,
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::engine::AtlasParams, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -91,6 +118,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fengine_2eproto::offset
   PROTOBUF_FIELD_OFFSET(::engine::AtlasParams, texture_),
   PROTOBUF_FIELD_OFFSET(::engine::AtlasParams, tile_size_),
   PROTOBUF_FIELD_OFFSET(::engine::AtlasParams, gutter_),
+  PROTOBUF_FIELD_OFFSET(::engine::AtlasParams, tile_names_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::engine::EngineParams, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -104,12 +132,14 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fengine_2eproto::offset
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::engine::ColorParams)},
-  { 9, -1, sizeof(::engine::AtlasParams)},
-  { 17, -1, sizeof(::engine::EngineParams)},
+  { 9, 16, sizeof(::engine::AtlasParams_TileNamesEntry_DoNotUse)},
+  { 18, -1, sizeof(::engine::AtlasParams)},
+  { 27, -1, sizeof(::engine::EngineParams)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::engine::_ColorParams_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::engine::_AtlasParams_TileNamesEntry_DoNotUse_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::engine::_AtlasParams_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::engine::_EngineParams_default_instance_),
 };
@@ -117,26 +147,29 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 const char descriptor_table_protodef_proto_2fengine_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\022proto/engine.proto\022\006engine\"9\n\013ColorPar"
   "ams\022\t\n\001r\030\001 \001(\005\022\t\n\001g\030\002 \001(\005\022\t\n\001b\030\003 \001(\005\022\t\n\001"
-  "a\030\004 \001(\005\"A\n\013AtlasParams\022\017\n\007texture\030\001 \001(\t\022"
-  "\021\n\ttile_size\030\002 \001(\005\022\016\n\006gutter\030\003 \001(\005\"|\n\014En"
-  "gineParams\022\r\n\005atlas\030\001 \001(\t\022\r\n\005width\030\002 \001(\005"
-  "\022\016\n\006height\030\003 \001(\005\022\024\n\014render_scale\030\004 \001(\005\022("
-  "\n\013clear_color\030\005 \001(\0132\023.engine.ColorParams"
-  "b\006proto3"
+  "a\030\004 \001(\005\"\253\001\n\013AtlasParams\022\017\n\007texture\030\001 \001(\t"
+  "\022\021\n\ttile_size\030\002 \001(\005\022\016\n\006gutter\030\003 \001(\005\0226\n\nt"
+  "ile_names\030\004 \003(\0132\".engine.AtlasParams.Til"
+  "eNamesEntry\0320\n\016TileNamesEntry\022\013\n\003key\030\001 \001"
+  "(\t\022\r\n\005value\030\002 \001(\005:\0028\001\"|\n\014EngineParams\022\r\n"
+  "\005atlas\030\001 \001(\t\022\r\n\005width\030\002 \001(\005\022\016\n\006height\030\003 "
+  "\001(\005\022\024\n\014render_scale\030\004 \001(\005\022(\n\013clear_color"
+  "\030\005 \001(\0132\023.engine.ColorParamsb\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_proto_2fengine_2eproto_deps[1] = {
 };
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_proto_2fengine_2eproto_sccs[3] = {
+static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_proto_2fengine_2eproto_sccs[4] = {
   &scc_info_AtlasParams_proto_2fengine_2eproto.base,
+  &scc_info_AtlasParams_TileNamesEntry_DoNotUse_proto_2fengine_2eproto.base,
   &scc_info_ColorParams_proto_2fengine_2eproto.base,
   &scc_info_EngineParams_proto_2fengine_2eproto.base,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_proto_2fengine_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_proto_2fengine_2eproto = {
-  false, false, descriptor_table_protodef_proto_2fengine_2eproto, "proto/engine.proto", 288,
-  &descriptor_table_proto_2fengine_2eproto_once, descriptor_table_proto_2fengine_2eproto_sccs, descriptor_table_proto_2fengine_2eproto_deps, 3, 0,
+  false, false, descriptor_table_protodef_proto_2fengine_2eproto, "proto/engine.proto", 395,
+  &descriptor_table_proto_2fengine_2eproto_once, descriptor_table_proto_2fengine_2eproto_sccs, descriptor_table_proto_2fengine_2eproto_deps, 4, 0,
   schemas, file_default_instances, TableStruct_proto_2fengine_2eproto::offsets,
-  file_level_metadata_proto_2fengine_2eproto, 3, file_level_enum_descriptors_proto_2fengine_2eproto, file_level_service_descriptors_proto_2fengine_2eproto,
+  file_level_metadata_proto_2fengine_2eproto, 4, file_level_enum_descriptors_proto_2fengine_2eproto, file_level_service_descriptors_proto_2fengine_2eproto,
 };
 
 // Force running AddDescriptors() at dynamic initialization time.
@@ -420,12 +453,30 @@ void ColorParams::InternalSwap(ColorParams* other) {
 
 // ===================================================================
 
+AtlasParams_TileNamesEntry_DoNotUse::AtlasParams_TileNamesEntry_DoNotUse() {}
+AtlasParams_TileNamesEntry_DoNotUse::AtlasParams_TileNamesEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+    : SuperType(arena) {}
+void AtlasParams_TileNamesEntry_DoNotUse::MergeFrom(const AtlasParams_TileNamesEntry_DoNotUse& other) {
+  MergeFromInternal(other);
+}
+::PROTOBUF_NAMESPACE_ID::Metadata AtlasParams_TileNamesEntry_DoNotUse::GetMetadata() const {
+  return GetMetadataStatic();
+}
+void AtlasParams_TileNamesEntry_DoNotUse::MergeFrom(
+    const ::PROTOBUF_NAMESPACE_ID::Message& other) {
+  ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom(other);
+}
+
+
+// ===================================================================
+
 class AtlasParams::_Internal {
  public:
 };
 
 AtlasParams::AtlasParams(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
+  tile_names_(arena) {
   SharedCtor();
   RegisterArenaDtor(arena);
   // @@protoc_insertion_point(arena_constructor:engine.AtlasParams)
@@ -433,6 +484,7 @@ AtlasParams::AtlasParams(::PROTOBUF_NAMESPACE_ID::Arena* arena)
 AtlasParams::AtlasParams(const AtlasParams& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  tile_names_.MergeFrom(from.tile_names_);
   texture_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_texture().empty()) {
     texture_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_texture(), 
@@ -485,6 +537,7 @@ void AtlasParams::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  tile_names_.Clear();
   texture_.ClearToEmpty();
   ::memset(&tile_size_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&gutter_) -
@@ -520,6 +573,18 @@ const char* AtlasParams::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
           gutter_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // map<string, int32> tile_names = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(&tile_names_, ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
         } else goto handle_unusual;
         continue;
       default: {
@@ -572,6 +637,47 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(3, this->_internal_gutter(), target);
   }
 
+  // map<string, int32> tile_names = 4;
+  if (!this->_internal_tile_names().empty()) {
+    typedef ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::int32 >::const_pointer
+        ConstPtr;
+    typedef ConstPtr SortItem;
+    typedef ::PROTOBUF_NAMESPACE_ID::internal::CompareByDerefFirst<SortItem> Less;
+    struct Utf8Check {
+      static void Check(ConstPtr p) {
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+          p->first.data(), static_cast<int>(p->first.length()),
+          ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+          "engine.AtlasParams.TileNamesEntry.key");
+      }
+    };
+
+    if (stream->IsSerializationDeterministic() &&
+        this->_internal_tile_names().size() > 1) {
+      ::std::unique_ptr<SortItem[]> items(
+          new SortItem[this->_internal_tile_names().size()]);
+      typedef ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::int32 >::size_type size_type;
+      size_type n = 0;
+      for (::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::int32 >::const_iterator
+          it = this->_internal_tile_names().begin();
+          it != this->_internal_tile_names().end(); ++it, ++n) {
+        items[static_cast<ptrdiff_t>(n)] = SortItem(&*it);
+      }
+      ::std::sort(&items[0], &items[static_cast<ptrdiff_t>(n)], Less());
+      for (size_type i = 0; i < n; i++) {
+        target = AtlasParams_TileNamesEntry_DoNotUse::Funcs::InternalSerialize(4, items[static_cast<ptrdiff_t>(i)]->first, items[static_cast<ptrdiff_t>(i)]->second, target, stream);
+        Utf8Check::Check(&(*items[static_cast<ptrdiff_t>(i)]));
+      }
+    } else {
+      for (::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::int32 >::const_iterator
+          it = this->_internal_tile_names().begin();
+          it != this->_internal_tile_names().end(); ++it) {
+        target = AtlasParams_TileNamesEntry_DoNotUse::Funcs::InternalSerialize(4, it->first, it->second, target, stream);
+        Utf8Check::Check(&(*it));
+      }
+    }
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -587,6 +693,15 @@ size_t AtlasParams::ByteSizeLong() const {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
+
+  // map<string, int32> tile_names = 4;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(this->_internal_tile_names_size());
+  for (::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::int32 >::const_iterator
+      it = this->_internal_tile_names().begin();
+      it != this->_internal_tile_names().end(); ++it) {
+    total_size += AtlasParams_TileNamesEntry_DoNotUse::Funcs::ByteSizeLong(it->first, it->second);
+  }
 
   // string texture = 1;
   if (this->texture().size() > 0) {
@@ -640,6 +755,7 @@ void AtlasParams::MergeFrom(const AtlasParams& from) {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
+  tile_names_.MergeFrom(from.tile_names_);
   if (from.texture().size() > 0) {
     _internal_set_texture(from._internal_texture());
   }
@@ -672,6 +788,7 @@ bool AtlasParams::IsInitialized() const {
 void AtlasParams::InternalSwap(AtlasParams* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  tile_names_.Swap(&other->tile_names_);
   texture_.Swap(&other->texture_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(AtlasParams, gutter_)
@@ -1022,6 +1139,9 @@ void EngineParams::InternalSwap(EngineParams* other) {
 PROTOBUF_NAMESPACE_OPEN
 template<> PROTOBUF_NOINLINE ::engine::ColorParams* Arena::CreateMaybeMessage< ::engine::ColorParams >(Arena* arena) {
   return Arena::CreateMessageInternal< ::engine::ColorParams >(arena);
+}
+template<> PROTOBUF_NOINLINE ::engine::AtlasParams_TileNamesEntry_DoNotUse* Arena::CreateMaybeMessage< ::engine::AtlasParams_TileNamesEntry_DoNotUse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::engine::AtlasParams_TileNamesEntry_DoNotUse >(arena);
 }
 template<> PROTOBUF_NOINLINE ::engine::AtlasParams* Arena::CreateMaybeMessage< ::engine::AtlasParams >(Arena* arena) {
   return Arena::CreateMessageInternal< ::engine::AtlasParams >(arena);

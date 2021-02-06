@@ -30,6 +30,9 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
+#include <google/protobuf/map.h>  // IWYU pragma: export
+#include <google/protobuf/map_entry.h>
+#include <google/protobuf/map_field_inl.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
@@ -46,7 +49,7 @@ struct TableStruct_proto_2fengine_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[3]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[4]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -57,6 +60,9 @@ namespace engine {
 class AtlasParams;
 class AtlasParamsDefaultTypeInternal;
 extern AtlasParamsDefaultTypeInternal _AtlasParams_default_instance_;
+class AtlasParams_TileNamesEntry_DoNotUse;
+class AtlasParams_TileNamesEntry_DoNotUseDefaultTypeInternal;
+extern AtlasParams_TileNamesEntry_DoNotUseDefaultTypeInternal _AtlasParams_TileNamesEntry_DoNotUse_default_instance_;
 class ColorParams;
 class ColorParamsDefaultTypeInternal;
 extern ColorParamsDefaultTypeInternal _ColorParams_default_instance_;
@@ -66,6 +72,7 @@ extern EngineParamsDefaultTypeInternal _EngineParams_default_instance_;
 }  // namespace engine
 PROTOBUF_NAMESPACE_OPEN
 template<> ::engine::AtlasParams* Arena::CreateMaybeMessage<::engine::AtlasParams>(Arena*);
+template<> ::engine::AtlasParams_TileNamesEntry_DoNotUse* Arena::CreateMaybeMessage<::engine::AtlasParams_TileNamesEntry_DoNotUse>(Arena*);
 template<> ::engine::ColorParams* Arena::CreateMaybeMessage<::engine::ColorParams>(Arena*);
 template<> ::engine::EngineParams* Arena::CreateMaybeMessage<::engine::EngineParams>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
@@ -242,6 +249,36 @@ class ColorParams PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
+class AtlasParams_TileNamesEntry_DoNotUse : public ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<AtlasParams_TileNamesEntry_DoNotUse, 
+    std::string, ::PROTOBUF_NAMESPACE_ID::int32,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32> {
+public:
+  typedef ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<AtlasParams_TileNamesEntry_DoNotUse, 
+    std::string, ::PROTOBUF_NAMESPACE_ID::int32,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32> SuperType;
+  AtlasParams_TileNamesEntry_DoNotUse();
+  explicit AtlasParams_TileNamesEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void MergeFrom(const AtlasParams_TileNamesEntry_DoNotUse& other);
+  static const AtlasParams_TileNamesEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const AtlasParams_TileNamesEntry_DoNotUse*>(&_AtlasParams_TileNamesEntry_DoNotUse_default_instance_); }
+  static bool ValidateKey(std::string* s) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "engine.AtlasParams.TileNamesEntry.key");
+ }
+  static bool ValidateValue(void*) { return true; }
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& other) final;
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_proto_2fengine_2eproto);
+    return ::descriptor_table_proto_2fengine_2eproto.file_level_metadata[1];
+  }
+
+  public:
+};
+
+// -------------------------------------------------------------------
+
 class AtlasParams PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:engine.AtlasParams) */ {
  public:
@@ -283,7 +320,7 @@ class AtlasParams PROTOBUF_FINAL :
                &_AtlasParams_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    2;
 
   friend void swap(AtlasParams& a, AtlasParams& b) {
     a.Swap(&b);
@@ -351,13 +388,32 @@ class AtlasParams PROTOBUF_FINAL :
 
   // nested types ----------------------------------------------------
 
+
   // accessors -------------------------------------------------------
 
   enum : int {
+    kTileNamesFieldNumber = 4,
     kTextureFieldNumber = 1,
     kTileSizeFieldNumber = 2,
     kGutterFieldNumber = 3,
   };
+  // map<string, int32> tile_names = 4;
+  int tile_names_size() const;
+  private:
+  int _internal_tile_names_size() const;
+  public:
+  void clear_tile_names();
+  private:
+  const ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::int32 >&
+      _internal_tile_names() const;
+  ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::int32 >*
+      _internal_mutable_tile_names();
+  public:
+  const ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::int32 >&
+      tile_names() const;
+  ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::int32 >*
+      mutable_tile_names();
+
   // string texture = 1;
   void clear_texture();
   const std::string& texture() const;
@@ -399,6 +455,11 @@ class AtlasParams PROTOBUF_FINAL :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::MapField<
+      AtlasParams_TileNamesEntry_DoNotUse,
+      std::string, ::PROTOBUF_NAMESPACE_ID::int32,
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32> tile_names_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr texture_;
   ::PROTOBUF_NAMESPACE_ID::int32 tile_size_;
   ::PROTOBUF_NAMESPACE_ID::int32 gutter_;
@@ -448,7 +509,7 @@ class EngineParams PROTOBUF_FINAL :
                &_EngineParams_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    3;
 
   friend void swap(EngineParams& a, EngineParams& b) {
     a.Swap(&b);
@@ -694,6 +755,8 @@ inline void ColorParams::set_a(::PROTOBUF_NAMESPACE_ID::int32 value) {
 
 // -------------------------------------------------------------------
 
+// -------------------------------------------------------------------
+
 // AtlasParams
 
 // string texture = 1;
@@ -795,6 +858,35 @@ inline void AtlasParams::_internal_set_gutter(::PROTOBUF_NAMESPACE_ID::int32 val
 inline void AtlasParams::set_gutter(::PROTOBUF_NAMESPACE_ID::int32 value) {
   _internal_set_gutter(value);
   // @@protoc_insertion_point(field_set:engine.AtlasParams.gutter)
+}
+
+// map<string, int32> tile_names = 4;
+inline int AtlasParams::_internal_tile_names_size() const {
+  return tile_names_.size();
+}
+inline int AtlasParams::tile_names_size() const {
+  return _internal_tile_names_size();
+}
+inline void AtlasParams::clear_tile_names() {
+  tile_names_.Clear();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::int32 >&
+AtlasParams::_internal_tile_names() const {
+  return tile_names_.GetMap();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::int32 >&
+AtlasParams::tile_names() const {
+  // @@protoc_insertion_point(field_map:engine.AtlasParams.tile_names)
+  return _internal_tile_names();
+}
+inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::int32 >*
+AtlasParams::_internal_mutable_tile_names() {
+  return tile_names_.MutableMap();
+}
+inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::int32 >*
+AtlasParams::mutable_tile_names() {
+  // @@protoc_insertion_point(field_mutable_map:engine.AtlasParams.tile_names)
+  return _internal_mutable_tile_names();
 }
 
 // -------------------------------------------------------------------
@@ -1008,6 +1100,8 @@ inline void EngineParams::set_allocated_clear_color(::engine::ColorParams* clear
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

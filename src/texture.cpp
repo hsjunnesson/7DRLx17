@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "proto/engine.pb.h"
+#include "murmur_hash.h"
 
 #include "texture.h"
 #include "log.h"
@@ -11,13 +12,19 @@
 
 namespace texture {
 	using namespace foundation;
+	using namespace google;
 
-    Atlas *create_atlas(Allocator &allocator, SDL_Renderer *renderer, const char *param_filename) {
-		Atlas *atlas = MAKE_NEW(allocator, Atlas);
-		if (!atlas) {
-			log_fatal("Could not allocate Atlas");
-		}
-
+	Atlas::Atlas(Allocator &allocator, SDL_Renderer *renderer, const char *param_filename)
+	: allocator(allocator)
+	, w(0)
+	, h(0)
+	, tile_size(0)
+	, gutter(0)
+	, w_tiles(0)
+	, h_tiles(0)
+	, tiles_by_name(Hash<int32_t>(allocator))
+	, texture(nullptr)
+	{
 		engine::AtlasParams params;
 
 		config::read(param_filename, &params);
@@ -28,24 +35,26 @@ namespace texture {
 
 		SDL_SetTextureScaleMode(texture, SDL_ScaleModeNearest);
 		
-		atlas->w = w;
-		atlas->h = h;
-		atlas->tile_size = params.tile_size();
-		atlas->gutter = params.gutter();
-		atlas->w_tiles = w / params.tile_size();
-		atlas->h_tiles = h / params.tile_size();
-		atlas->texture = texture;
+		this->w = w;
+		this->h = h;
+		this->tile_size = params.tile_size();
+		this->gutter = params.gutter();
+		this->w_tiles = w / params.tile_size();
+		this->h_tiles = h / params.tile_size();
+		this->texture = texture;
 
-		return atlas;
+		for (protobuf::Map<std::string, protobuf::int32>::const_iterator i = params.tile_names().begin(); i != params.tile_names().end(); ++i) {
+			std::string key = i->first;
+			protobuf::int32 value = i->second;
+			const char *s = key.c_str();
+			uint64_t hash = murmur_hash_64(s, strlen(s), 0);
+			hash::set(tiles_by_name, hash, value);
+		}
 	}
 
-	void destroy_atlas(Allocator &allocator, Atlas *atlas) {
-		if (atlas) {
-			if (atlas->texture) {
-				SDL_DestroyTexture(atlas->texture);
-			}
-
-			allocator.deallocate(atlas);
+	Atlas::~Atlas() {
+		if (texture) {
+			SDL_DestroyTexture(texture);
 		}
 	}
 
