@@ -49,7 +49,7 @@ struct TableStruct_proto_2fengine_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[4]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[5]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -66,6 +66,9 @@ extern AtlasParams_TileNamesEntry_DoNotUseDefaultTypeInternal _AtlasParams_TileN
 class ColorParams;
 class ColorParamsDefaultTypeInternal;
 extern ColorParamsDefaultTypeInternal _ColorParams_default_instance_;
+class DunGenParams;
+class DunGenParamsDefaultTypeInternal;
+extern DunGenParamsDefaultTypeInternal _DunGenParams_default_instance_;
 class EngineParams;
 class EngineParamsDefaultTypeInternal;
 extern EngineParamsDefaultTypeInternal _EngineParams_default_instance_;
@@ -74,6 +77,7 @@ PROTOBUF_NAMESPACE_OPEN
 template<> ::engine::AtlasParams* Arena::CreateMaybeMessage<::engine::AtlasParams>(Arena*);
 template<> ::engine::AtlasParams_TileNamesEntry_DoNotUse* Arena::CreateMaybeMessage<::engine::AtlasParams_TileNamesEntry_DoNotUse>(Arena*);
 template<> ::engine::ColorParams* Arena::CreateMaybeMessage<::engine::ColorParams>(Arena*);
+template<> ::engine::DunGenParams* Arena::CreateMaybeMessage<::engine::DunGenParams>(Arena*);
 template<> ::engine::EngineParams* Arena::CreateMaybeMessage<::engine::EngineParams>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace engine {
@@ -662,6 +666,186 @@ class EngineParams PROTOBUF_FINAL :
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_proto_2fengine_2eproto;
 };
+// -------------------------------------------------------------------
+
+class DunGenParams PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:engine.DunGenParams) */ {
+ public:
+  inline DunGenParams() : DunGenParams(nullptr) {}
+  virtual ~DunGenParams();
+
+  DunGenParams(const DunGenParams& from);
+  DunGenParams(DunGenParams&& from) noexcept
+    : DunGenParams() {
+    *this = ::std::move(from);
+  }
+
+  inline DunGenParams& operator=(const DunGenParams& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline DunGenParams& operator=(DunGenParams&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const DunGenParams& default_instance();
+
+  static inline const DunGenParams* internal_default_instance() {
+    return reinterpret_cast<const DunGenParams*>(
+               &_DunGenParams_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(DunGenParams& a, DunGenParams& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(DunGenParams* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(DunGenParams* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline DunGenParams* New() const final {
+    return CreateMaybeMessage<DunGenParams>(nullptr);
+  }
+
+  DunGenParams* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<DunGenParams>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const DunGenParams& from);
+  void MergeFrom(const DunGenParams& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(DunGenParams* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "engine.DunGenParams";
+  }
+  protected:
+  explicit DunGenParams(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_proto_2fengine_2eproto);
+    return ::descriptor_table_proto_2fengine_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kRoomCountFieldNumber = 1,
+    kMinRoomSizeFieldNumber = 2,
+    kMaxRoomSizeFieldNumber = 3,
+    kMapWidthFieldNumber = 4,
+    kMapHeightFieldNumber = 5,
+  };
+  // int32 room_count = 1;
+  void clear_room_count();
+  ::PROTOBUF_NAMESPACE_ID::int32 room_count() const;
+  void set_room_count(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_room_count() const;
+  void _internal_set_room_count(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 min_room_size = 2;
+  void clear_min_room_size();
+  ::PROTOBUF_NAMESPACE_ID::int32 min_room_size() const;
+  void set_min_room_size(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_min_room_size() const;
+  void _internal_set_min_room_size(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 max_room_size = 3;
+  void clear_max_room_size();
+  ::PROTOBUF_NAMESPACE_ID::int32 max_room_size() const;
+  void set_max_room_size(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_max_room_size() const;
+  void _internal_set_max_room_size(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 map_width = 4;
+  void clear_map_width();
+  ::PROTOBUF_NAMESPACE_ID::int32 map_width() const;
+  void set_map_width(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_map_width() const;
+  void _internal_set_map_width(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 map_height = 5;
+  void clear_map_height();
+  ::PROTOBUF_NAMESPACE_ID::int32 map_height() const;
+  void set_map_height(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_map_height() const;
+  void _internal_set_map_height(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:engine.DunGenParams)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::int32 room_count_;
+  ::PROTOBUF_NAMESPACE_ID::int32 min_room_size_;
+  ::PROTOBUF_NAMESPACE_ID::int32 max_room_size_;
+  ::PROTOBUF_NAMESPACE_ID::int32 map_width_;
+  ::PROTOBUF_NAMESPACE_ID::int32 map_height_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_proto_2fengine_2eproto;
+};
 // ===================================================================
 
 
@@ -1097,9 +1281,115 @@ inline void EngineParams::set_allocated_clear_color(::engine::ColorParams* clear
   // @@protoc_insertion_point(field_set_allocated:engine.EngineParams.clear_color)
 }
 
+// -------------------------------------------------------------------
+
+// DunGenParams
+
+// int32 room_count = 1;
+inline void DunGenParams::clear_room_count() {
+  room_count_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::_internal_room_count() const {
+  return room_count_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::room_count() const {
+  // @@protoc_insertion_point(field_get:engine.DunGenParams.room_count)
+  return _internal_room_count();
+}
+inline void DunGenParams::_internal_set_room_count(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  room_count_ = value;
+}
+inline void DunGenParams::set_room_count(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_room_count(value);
+  // @@protoc_insertion_point(field_set:engine.DunGenParams.room_count)
+}
+
+// int32 min_room_size = 2;
+inline void DunGenParams::clear_min_room_size() {
+  min_room_size_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::_internal_min_room_size() const {
+  return min_room_size_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::min_room_size() const {
+  // @@protoc_insertion_point(field_get:engine.DunGenParams.min_room_size)
+  return _internal_min_room_size();
+}
+inline void DunGenParams::_internal_set_min_room_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  min_room_size_ = value;
+}
+inline void DunGenParams::set_min_room_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_min_room_size(value);
+  // @@protoc_insertion_point(field_set:engine.DunGenParams.min_room_size)
+}
+
+// int32 max_room_size = 3;
+inline void DunGenParams::clear_max_room_size() {
+  max_room_size_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::_internal_max_room_size() const {
+  return max_room_size_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::max_room_size() const {
+  // @@protoc_insertion_point(field_get:engine.DunGenParams.max_room_size)
+  return _internal_max_room_size();
+}
+inline void DunGenParams::_internal_set_max_room_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  max_room_size_ = value;
+}
+inline void DunGenParams::set_max_room_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_max_room_size(value);
+  // @@protoc_insertion_point(field_set:engine.DunGenParams.max_room_size)
+}
+
+// int32 map_width = 4;
+inline void DunGenParams::clear_map_width() {
+  map_width_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::_internal_map_width() const {
+  return map_width_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::map_width() const {
+  // @@protoc_insertion_point(field_get:engine.DunGenParams.map_width)
+  return _internal_map_width();
+}
+inline void DunGenParams::_internal_set_map_width(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  map_width_ = value;
+}
+inline void DunGenParams::set_map_width(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_map_width(value);
+  // @@protoc_insertion_point(field_set:engine.DunGenParams.map_width)
+}
+
+// int32 map_height = 5;
+inline void DunGenParams::clear_map_height() {
+  map_height_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::_internal_map_height() const {
+  return map_height_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::map_height() const {
+  // @@protoc_insertion_point(field_get:engine.DunGenParams.map_height)
+  return _internal_map_height();
+}
+inline void DunGenParams::_internal_set_map_height(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  map_height_ = value;
+}
+inline void DunGenParams::set_map_height(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_map_height(value);
+  // @@protoc_insertion_point(field_set:engine.DunGenParams.map_height)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
