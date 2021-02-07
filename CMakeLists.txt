@@ -18,6 +18,8 @@ FetchContent_Declare(
     GIT_TAG        4161d093d57ad6c905599b85861601146c3ef1e9
 )
 
+set(StackWalker_DISABLE_TESTS ON)
+
 if (NOT stackwalker_POPULATED)
     FetchContent_Populate(StackWalker)
     add_subdirectory(${stackwalker_SOURCE_DIR} ${stackwalker_BINARY_DIR})
