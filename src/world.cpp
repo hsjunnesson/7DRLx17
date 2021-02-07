@@ -3,9 +3,9 @@
 #include "murmur_hash.h"
 
 #include "world.h"
+#include "dungen.h"
 #include "texture.h"
 #include "log.h"
-
 
 namespace world {
     uint64_t hash(const char *s) {
@@ -20,7 +20,8 @@ namespace world {
 
     World::World(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_config_filename)
     : allocator(allocator)
-    , game_state(GameState::Initializing)
+    , game_state(GameState::None)
+    , mutex(SDL_CreateMutex())
     , dungen_thread(nullptr)
     , atlas(MAKE_NEW(allocator, texture::Atlas, allocator, renderer, atlas_config_filename))
     , x_offset(0)
@@ -42,34 +43,20 @@ namespace world {
         if (dungen_thread) {
             SDL_WaitThread(dungen_thread, nullptr);
         }
-    }
 
-    int dungen_thread(void *data) {
-        World *world = (World *)data;
-
-        for (int y = 0; y < Max_Height; ++y) {
-            for (int x = 0; x < Max_Width; ++x) {
-                hash::set(world->tiles, index(x, y, Max_Width), {rand() % 140});
-            }
+        if (mutex) {
+            SDL_DestroyMutex(mutex);
         }
-
-        world->game_state = GameState::Playing;
-        world->dungen_thread = nullptr;
-
-        return 0;
     }
 
     void update(World &world, uint32_t t, double dt) {
         switch (world.game_state) {
-            case GameState::Initializing: {
-                world.game_state = GameState::DunGen;
-                SDL_Thread *threadID = SDL_CreateThread(dungen_thread, "dungen", &world);
-                world.dungen_thread = threadID;
-                break;
-            }
-            case GameState::DunGen:
+            case GameState::None:
+                transition(world, GameState::Initializing);
                 break;
             case GameState::Playing:
+                break;
+            default:
                 break;
         }
     }
@@ -81,6 +68,10 @@ namespace world {
 
         if (!world.atlas) {
             log_fatal("Missing world atlas");
+        }
+
+        if (SDL_TryLockMutex(world.mutex) != 0) {
+            return;
         }
 
         int w, h;
@@ -116,5 +107,45 @@ namespace world {
 
             SDL_RenderCopyEx(renderer, world.atlas->texture, &source, &destination, tile.angle, nullptr, tile.flip);
         }
+
+        SDL_UnlockMutex(world.mutex);
+    }
+
+    void transition(World &world, GameState game_state) {
+        if (SDL_LockMutex(world.mutex) != 0) {
+            log_fatal("Could not lock mutex %s", SDL_GetError());
+        }
+
+        // When leaving a game state
+        switch (world.game_state) {
+            case GameState::DunGen:
+                world.dungen_thread = nullptr;
+                break;
+            default:
+                break;
+        }
+
+        world.game_state = game_state;
+
+        // When entering a new game state
+        switch (game_state) {
+            case GameState::None:
+                break;
+            case GameState::Initializing: {
+                log_info("Initializing");
+                transition(world, GameState::DunGen);
+                break;
+            }
+            case GameState::DunGen: {
+                log_info("DunGen started");
+                SDL_Thread *threadID = SDL_CreateThread(dungen_thread, "dungen", &world);
+                world.dungen_thread = threadID;
+                break;
+            }
+            case GameState::Playing:
+                break;
+        }
+
+        SDL_UnlockMutex(world.mutex);
     }
 }

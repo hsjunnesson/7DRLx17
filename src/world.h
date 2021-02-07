@@ -33,6 +33,9 @@ namespace world {
      * 
      */
     enum class GameState {
+        // No game state.
+        None,
+
         // Game state is creating, or loading from a save.
         Initializing,
 
@@ -54,6 +57,9 @@ namespace world {
         // The current game state.
         GameState game_state;
 
+        // The World mutex;
+        SDL_mutex *mutex;
+
         // The thread for generating a dungeon.
         SDL_Thread *dungen_thread;
 
@@ -66,7 +72,6 @@ namespace world {
         // The The hash of tile states.
         Hash<Tile> tiles;
     };
-
 
     /**
      * @brief Updates the world
@@ -84,6 +89,14 @@ namespace world {
      * @param renderer The SDL renderer.
      */
     void render(World &world, SDL_Renderer *renderer);
+
+    /**
+     * @brief Transition a World from one game state to another
+     * 
+     * @param world The world to transition
+     * @param game_state The GameState to transition to.
+     */
+    void transition(World &world, GameState game_state);
 
     /**
      * @brief Returns the index of an x, y coordinate
