@@ -12,12 +12,6 @@
 namespace world {
     using namespace foundation;
 
-    // Max width of the world.
-    static const uint64_t Max_Width = 128;
-
-    // Max height of the world.
-    static const uint64_t Max_Height = 128;
-
     /**
      * @brief A tile struct.
      * 
@@ -71,6 +65,9 @@ namespace world {
 
         // The The hash of tile states.
         Hash<Tile> tiles;
+
+        // The maximum width in tiles. Needed for index to coord translation
+        uint64_t max_width;
     };
 
     /**

@@ -12,8 +12,6 @@ namespace world {
         return murmur_hash_64(s, strlen(s), 0);
     };
 
-    static const uint64_t Max_Tiles = Max_Width * Max_Height;
-
     static uint64_t Floor_Hash = world::hash("floor");
     static uint64_t Snake_Hash = world::hash("snake");
     static uint64_t Missing_Hash = world::hash("missing");
@@ -28,8 +26,6 @@ namespace world {
     , y_offset(0)
     , tiles(Hash<Tile>(allocator))
     {
-        hash::reserve(tiles, Max_Tiles);
-
         if (!hash::has(atlas->tiles_by_name, Missing_Hash)) {
             log_fatal("Atlas does not have the 'missing' named tile.");
         }
@@ -99,7 +95,7 @@ namespace world {
 
             SDL_Rect destination;
             uint64_t destination_x, destination_y;
-            coord(pos_index, destination_x, destination_y, Max_Width);
+            coord(pos_index, destination_x, destination_y, world.max_width);
             destination.x = (int)(destination_x * tile_size);
             destination.y = (int)(destination_y * tile_size);
             destination.w = tile_size;
