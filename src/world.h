@@ -3,21 +3,33 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_thread.h>
 
+#include "murmur_hash.h"
 #include "hash.h"
 #include "array.h"
 #include "memory.h"
+
 #include "texture.h"
 
 // The namespace for all of the game world specific gameplay code.
 namespace world {
     using namespace foundation;
 
+    // A namespace of named, known tiles.
+    namespace tile {
+        // Murmur hashes a string.
+        uint64_t hash(const char *s);
+
+        static uint64_t Floor   = hash("floor");
+        static uint64_t Snake   = hash("snake");
+        static uint64_t Missing = hash("missing");
+    }
+
     /**
      * @brief A tile struct.
      * 
      */
     struct Tile {
-        int index = 0;
+        int32_t index = 0;
         SDL_RendererFlip flip = SDL_FLIP_NONE;
         double angle = 0.0;
     };
@@ -103,7 +115,7 @@ namespace world {
      * @param max_width The maxium width.
      * @return constexpr uint64_t The index.
      */
-    constexpr uint64_t index(uint64_t const x, uint64_t const y, uint64_t max_width) {
+    constexpr uint64_t index(uint64_t const x, uint64_t const y, uint64_t const max_width) {
         return x + max_width * y;
     }
 
@@ -115,7 +127,7 @@ namespace world {
      * @param y The pass-by-reference y coord to calculate.
      * @param max_width The maxium width.
      */
-    constexpr void coord(uint64_t const index, uint64_t &x, uint64_t &y, uint64_t max_width) {
+    constexpr void coord(uint64_t const index, uint64_t &x, uint64_t &y, uint64_t const max_width) {
         x = index % max_width;
         y = index / max_width;
     }

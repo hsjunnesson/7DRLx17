@@ -1,7 +1,7 @@
 {
-    "room_count": 9,
+    "room_count": 25,
     "min_room_size": 5,
-    "max_room_size": 10,
+    "max_room_size": 20,
     "map_width": 128,
     "map_height": 128
 }

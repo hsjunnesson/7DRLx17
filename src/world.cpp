@@ -1,20 +1,16 @@
 #include <cstdlib>
 
-#include "murmur_hash.h"
-
 #include "world.h"
 #include "dungen.h"
 #include "texture.h"
 #include "log.h"
 
 namespace world {
-    uint64_t hash(const char *s) {
-        return murmur_hash_64(s, strlen(s), 0);
-    };
-
-    static uint64_t Floor_Hash = world::hash("floor");
-    static uint64_t Snake_Hash = world::hash("snake");
-    static uint64_t Missing_Hash = world::hash("missing");
+    namespace tile {
+        uint64_t hash(const char *s) {
+            return murmur_hash_64(s, strlen(s), 0);
+        };
+    }
 
     World::World(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_config_filename)
     : allocator(allocator)
@@ -25,8 +21,9 @@ namespace world {
     , x_offset(0)
     , y_offset(0)
     , tiles(Hash<Tile>(allocator))
+    , max_width(0)
     {
-        if (!hash::has(atlas->tiles_by_name, Missing_Hash)) {
+        if (!hash::has(atlas->tiles_by_name, tile::Missing)) {
             log_fatal("Atlas does not have the 'missing' named tile.");
         }
     }
@@ -37,7 +34,7 @@ namespace world {
         }
 
         if (dungen_thread) {
-            SDL_WaitThread(dungen_thread, nullptr);
+            SDL_DetachThread(dungen_thread);
         }
 
         if (mutex) {
@@ -81,7 +78,7 @@ namespace world {
             Tile tile = it->value;
             int tile_index = tile.index;
 
-            if (tile_index == Floor_Hash) {
+            if (tile_index == tile::Floor) {
                 continue;
             }
 
@@ -115,7 +112,10 @@ namespace world {
         // When leaving a game state
         switch (world.game_state) {
             case GameState::DunGen:
-                world.dungen_thread = nullptr;
+                if (world.dungen_thread) {
+                    SDL_DetachThread(world.dungen_thread);
+                    world.dungen_thread = nullptr;
+                }
                 break;
             default:
                 break;
@@ -139,6 +139,7 @@ namespace world {
                 break;
             }
             case GameState::Playing:
+                log_info("Playing");
                 break;
         }
 
