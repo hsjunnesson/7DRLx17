@@ -1,5 +1,5 @@
 #pragma once
 
 namespace input {
-    bool process_events();
+bool process_events();
 }
