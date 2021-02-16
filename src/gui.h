@@ -30,4 +30,5 @@ void update(Gui &gui, uint32_t t, double dt);
      * @param renderer The SDL renderer.
      */
 void render(Gui &gui, SDL_Renderer *renderer);
+
 } // namespace gui

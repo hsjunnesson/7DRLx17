@@ -9,6 +9,7 @@
 #pragma warning(pop)
 
 namespace config {
+
 using namespace google::protobuf;
 
 inline void read(const char *filename, Message *message) {
@@ -17,4 +18,5 @@ inline void read(const char *filename, Message *message) {
                         (std::istreambuf_iterator<char>()));
     util::JsonStringToMessage(content, message);
 }
+
 } // namespace config

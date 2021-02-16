@@ -62,4 +62,5 @@ SDL_Texture *load(SDL_Renderer *renderer, const char *filename) {
     }
     return texture;
 }
+
 } // namespace texture

@@ -6,10 +6,13 @@
 #include "world.h"
 
 namespace world {
+
 namespace tile {
+
 uint64_t hash(const char *s) {
     return murmur_hash_64(s, (uint32_t)strlen(s), 0);
 };
+
 } // namespace tile
 
 World::World(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_config_filename)
@@ -147,4 +150,5 @@ void transition(World &world, GameState game_state) {
 
     SDL_UnlockMutex(world.mutex);
 }
+
 } // namespace world

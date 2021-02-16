@@ -17,18 +17,20 @@ using namespace foundation;
 
 // A namespace of named, known tiles.
 namespace tile {
+
 // Murmur hashes a string.
 uint64_t hash(const char *s);
 
 static uint64_t Floor = hash("floor");
 static uint64_t Snake = hash("snake");
 static uint64_t Missing = hash("missing");
+
 } // namespace tile
 
 /**
-     * @brief A tile struct.
-     * 
-     */
+ * @brief A tile struct.
+ * 
+ */
 struct Tile {
     int32_t index = 0;
     SDL_RendererFlip flip = SDL_FLIP_NONE;
@@ -36,9 +38,9 @@ struct Tile {
 };
 
 /**
-     * @brief An enum that describes a specific game state.
-     * 
-     */
+ * @brief An enum that describes a specific game state.
+ * 
+ */
 enum class GameState {
     // No game state.
     None,
@@ -84,52 +86,53 @@ struct World {
 };
 
 /**
-     * @brief Updates the world
-     *
-     * @param world The world to update
-     * @param t The current time
-     * @param dt The delta time since last update
-     */
+ * @brief Updates the world
+ *
+ * @param world The world to update
+ * @param t The current time
+ * @param dt The delta time since last update
+ */
 void update(World &world, uint32_t t, double dt);
 
 /**
-     * @brief Renders the world
-     *
-     * @param world The world to render
-     * @param renderer The SDL renderer.
-     */
+ * @brief Renders the world
+ *
+ * @param world The world to render
+ * @param renderer The SDL renderer.
+ */
 void render(World &world, SDL_Renderer *renderer);
 
 /**
-     * @brief Transition a World from one game state to another
-     * 
-     * @param world The world to transition
-     * @param game_state The GameState to transition to.
-     */
+ * @brief Transition a World from one game state to another
+ * 
+ * @param world The world to transition
+ * @param game_state The GameState to transition to.
+ */
 void transition(World &world, GameState game_state);
 
 /**
-     * @brief Returns the index of an x, y coordinate
-     * 
-     * @param x The x coord
-     * @param y The y coord
-     * @param max_width The maxium width.
-     * @return constexpr uint64_t The index.
-     */
+ * @brief Returns the index of an x, y coordinate
+ * 
+ * @param x The x coord
+ * @param y The y coord
+ * @param max_width The maxium width.
+ * @return constexpr uint64_t The index.
+ */
 constexpr uint64_t index(uint64_t const x, uint64_t const y, uint64_t const max_width) {
     return x + max_width * y;
 }
 
 /**
-     * @brief Calculates the x, y coordinates based on an index.
-     * 
-     * @param index The index.
-     * @param x The pass-by-reference x coord to calculate.
-     * @param y The pass-by-reference y coord to calculate.
-     * @param max_width The maxium width.
-     */
+ * @brief Calculates the x, y coordinates based on an index.
+ * 
+ * @param index The index.
+ * @param x The pass-by-reference x coord to calculate.
+ * @param y The pass-by-reference y coord to calculate.
+ * @param max_width The maxium width.
+ */
 constexpr void coord(uint64_t const index, uint64_t &x, uint64_t &y, uint64_t const max_width) {
     x = index % max_width;
     y = index / max_width;
 }
+
 } // namespace world

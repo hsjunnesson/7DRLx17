@@ -1,6 +1,7 @@
 #pragma once
 
 namespace world {
+
 /**
  * @brief Dungeon generation thread function
  * 
@@ -8,4 +9,5 @@ namespace world {
  * @return int Status
  */
 int dungen_thread(void *data);
+
 } // namespace world

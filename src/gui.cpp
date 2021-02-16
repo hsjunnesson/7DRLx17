@@ -1,6 +1,7 @@
 #include "gui.h"
 
 namespace gui {
+
 Gui::Gui(Allocator &allocator)
 : allocator(allocator) {}
 

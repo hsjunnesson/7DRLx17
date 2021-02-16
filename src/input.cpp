@@ -5,6 +5,7 @@
 #include "input.h"
 
 namespace input {
+
 bool process_events() {
     SDL_Event event;
     bool signal_quit = false;
@@ -25,4 +26,5 @@ bool process_events() {
 
     return signal_quit;
 }
+
 } // namespace input

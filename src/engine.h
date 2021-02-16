@@ -10,6 +10,7 @@
 #include "world.h"
 
 namespace engine {
+
 class EngineParams;
 
 struct Window {
@@ -44,4 +45,5 @@ void render(Window &window);
 
 // Runs the engine, returns the exit code.
 int init_engine(EngineParams &params);
+
 } // namespace engine
