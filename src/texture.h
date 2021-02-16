@@ -1,9 +1,10 @@
 #pragma once
 
+#pragma warning(push, 0)
 #include <SDL2/SDL.h>
-
 #include "memory.h"
 #include "hash.h"
+#pragma warning(pop)
 
 namespace texture {
     using namespace foundation;

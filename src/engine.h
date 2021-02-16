@@ -1,7 +1,10 @@
 #pragma once
 
 #include <stdint.h>
+
+#pragma warning(push, 0)
 #include <SDL2/SDL.h>
+#pragma warning(pop)
 
 #include "world.h"
 #include "gui.h"

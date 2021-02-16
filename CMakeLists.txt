@@ -18,8 +18,6 @@ FetchContent_Declare(
     GIT_TAG        4161d093d57ad6c905599b85861601146c3ef1e9
 )
 
-set(StackWalker_DISABLE_TESTS ON)
-
 if (NOT stackwalker_POPULATED)
     FetchContent_Populate(StackWalker)
     add_subdirectory(${stackwalker_SOURCE_DIR} ${stackwalker_BINARY_DIR})
@@ -39,6 +37,11 @@ file(GLOB_RECURSE SRC_Roguelike
     "src/*.cpp"
     "Src/*.h"
 )
+
+if (MSVC)
+    set_source_files_properties(${SRC_Roguelike} PROPERTIES COMPILE_FLAGS "/W4 /WX")
+endif()
+
 
 file(GLOB_RECURSE SRC_Foundation
     "${bitsquidfoundation_SOURCE_DIR}/*.cpp"
@@ -71,6 +74,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARY} ${SDL2_MAIN})
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2_image)
 target_link_libraries(${PROJECT_NAME} PRIVATE protobuf::libprotobuf)
 target_link_libraries(${PROJECT_NAME} PRIVATE StackWalker)
+
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")

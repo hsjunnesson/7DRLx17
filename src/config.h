@@ -3,8 +3,10 @@
 #include <fstream>
 #include <string>
 
+#pragma warning(push, 0)
 #include <google/protobuf/message.h>
 #include <google/protobuf/util/json_util.h>
+#pragma warning(pop)
 
 namespace config {
     using namespace google::protobuf;

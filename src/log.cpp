@@ -3,12 +3,15 @@
 #include <time.h>
 #include <iomanip>
 
-#include <StackWalker.h>
-
 #include "log.h"
+
+#pragma warning(push, 0)
+#include <StackWalker.h>
 #include "memory.h"
 #include "string_stream.h"
 #include "temp_allocator.h"
+#pragma warning(pop)
+
 
 using namespace foundation;
 using namespace foundation::string_stream;

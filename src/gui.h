@@ -1,14 +1,15 @@
 #pragma once
 
+#pragma warning(push, 0)
 #include <SDL2/SDL.h>
-
 #include "memory.h"
+#pragma warning(pop)
 
 namespace gui {
     using namespace foundation;
 
     struct Gui {
-        Gui(Allocator &allocator, SDL_Renderer *renderer);
+        Gui(Allocator &allocator);
 
         Allocator &allocator;
     };

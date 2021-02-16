@@ -1,10 +1,12 @@
+#include <fstream>
+
+#pragma warning(push, 0)
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <memory.h>
-#include <fstream>
-
 #include "proto/engine.pb.h"
 #include "murmur_hash.h"
+#pragma warning(pop)
 
 #include "texture.h"
 #include "log.h"
@@ -29,25 +31,20 @@ namespace texture {
 
 		config::read(param_filename, &params);
 
-		SDL_Texture *texture = load(renderer, params.texture().c_str());
-		int w, h;
+		texture = load(renderer, params.texture().c_str());
 		SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
-
 		SDL_SetTextureScaleMode(texture, SDL_ScaleModeNearest);
 		
-		this->w = w;
-		this->h = h;
 		this->tile_size = params.tile_size();
 		this->gutter = params.gutter();
 		this->w_tiles = w / params.tile_size();
 		this->h_tiles = h / params.tile_size();
-		this->texture = texture;
 
 		for (protobuf::Map<std::string, protobuf::int32>::const_iterator i = params.tile_names().begin(); i != params.tile_names().end(); ++i) {
 			std::string key = i->first;
 			protobuf::int32 value = i->second;
 			const char *s = key.c_str();
-			uint64_t hash = murmur_hash_64(s, strlen(s), 0);
+			uint64_t hash = murmur_hash_64(s, (uint32_t)strlen(s), 0);
 			hash::set(tiles_by_name, hash, value);
 		}
 	}

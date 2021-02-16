@@ -1,14 +1,15 @@
 #pragma once
 
+#include "texture.h"
+
+#pragma warning(push, 0)
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_thread.h>
-
 #include "murmur_hash.h"
 #include "hash.h"
 #include "array.h"
 #include "memory.h"
-
-#include "texture.h"
+#pragma warning(pop)
 
 // The namespace for all of the game world specific gameplay code.
 namespace world {

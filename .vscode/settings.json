@@ -67,5 +67,9 @@
     "thread": "cpp",
     "unordered_set": "cpp"
   },
-  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "cmake.configureArgs" : [
+    "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake",
+    "-DStackWalker_DISABLE_TESTS=on"
+  ]
 }

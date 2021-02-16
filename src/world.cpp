@@ -8,7 +8,7 @@
 namespace world {
     namespace tile {
         uint64_t hash(const char *s) {
-            return murmur_hash_64(s, strlen(s), 0);
+            return murmur_hash_64(s, (uint32_t)strlen(s), 0);
         };
     }
 
@@ -43,6 +43,9 @@ namespace world {
     }
 
     void update(World &world, uint32_t t, double dt) {
+        (void)t;
+        (void)dt;
+
         switch (world.game_state) {
             case GameState::None:
                 transition(world, GameState::Initializing);

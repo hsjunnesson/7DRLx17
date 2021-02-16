@@ -1,11 +1,13 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 #include <fstream>
 
+#pragma warning(push, 0)
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include "proto/engine.pb.h"
-
 #include "engine.h"
 #include "memory.h"
+#pragma warning(pop)
+
 #include "log.h"
 #include "input.h"
 
@@ -63,14 +65,15 @@ namespace engine {
             }
 
             // Calculate frame times
-            uint32_t current_frame_time = SDL_GetTicks();
-            uint32_t delta_time = current_frame_time - prev_frame_time;
+            current_frame_time = SDL_GetTicks();
+            delta_time = current_frame_time - prev_frame_time;
             prev_frame_time = current_frame_time;
 
             // Handle anomalies
             if (delta_time < 0) {
                 delta_time = 0;
             }
+
 
             if (delta_time < Desired_Frametime) {
                 uint32_t delay = Desired_Frametime - delta_time;
@@ -111,7 +114,7 @@ namespace engine {
         }
 
         int render_scale = params.render_scale();
-        if (SDL_RenderSetScale(sdl_renderer, render_scale, render_scale)) {
+        if (SDL_RenderSetScale(sdl_renderer, (float)render_scale, (float)render_scale)) {
             log_error("Error in SDL_RenderSetScale: %s", SDL_GetError());
         }
 
@@ -122,7 +125,7 @@ namespace engine {
             log_fatal("Couldn't create world");
         }
 
-        gui::Gui *gui = MAKE_NEW(allocator, gui::Gui, allocator, sdl_renderer);
+        gui::Gui *gui = MAKE_NEW(allocator, gui::Gui, allocator);
         if (!gui) {
             log_fatal("Couldn't greate gui");
         }
@@ -133,10 +136,10 @@ namespace engine {
         }
 
         SDL_Color clear_color;
-        clear_color.r = params.clear_color().r();
-        clear_color.g = params.clear_color().g();
-        clear_color.b = params.clear_color().b();
-        clear_color.a = params.clear_color().a();
+        clear_color.r = (Uint8)params.clear_color().r();
+        clear_color.g = (Uint8)params.clear_color().g();
+        clear_color.b = (Uint8)params.clear_color().b();
+        clear_color.a = (Uint8)params.clear_color().a();
 
         engine->clear_color = clear_color;
 
