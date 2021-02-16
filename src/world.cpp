@@ -98,8 +98,8 @@ void render(World &world, SDL_Renderer *renderer) {
         SDL_Rect destination;
         uint64_t destination_x, destination_y;
         coord(pos_index, destination_x, destination_y, world.max_width);
-        destination.x = (int)(destination_x * tile_size);
-        destination.y = (int)(destination_y * tile_size);
+        destination.x = (int)(destination_x * tile_size) + world.x_offset;
+        destination.y = (int)(destination_y * tile_size) + world.y_offset;
         destination.w = tile_size;
         destination.h = tile_size;
 
