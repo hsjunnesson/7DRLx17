@@ -73,7 +73,7 @@ struct World {
     SDL_Thread *dungen_thread;
 
     // The texture atlas
-    texture::Atlas *atlas;
+    texture::Atlas atlas;
 
     // The camera x and y offset
     int x_offset, y_offset;

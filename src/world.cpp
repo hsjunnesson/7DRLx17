@@ -20,21 +20,17 @@ World::World(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_con
 , game_state(GameState::None)
 , mutex(SDL_CreateMutex())
 , dungen_thread(nullptr)
-, atlas(MAKE_NEW(allocator, texture::Atlas, allocator, renderer, atlas_config_filename))
+, atlas(texture::Atlas(allocator, renderer, atlas_config_filename))
 , x_offset(0)
 , y_offset(0)
 , tiles(Hash<Tile>(allocator))
 , max_width(0) {
-    if (!hash::has(atlas->tiles_by_name, tile::Missing)) {
+    if (!hash::has(atlas.tiles_by_name, tile::Missing)) {
         log_fatal("Atlas does not have the 'missing' named tile.");
     }
 }
 
 World::~World() {
-    if (atlas) {
-        MAKE_DELETE(allocator, Atlas, atlas);
-    }
-
     if (dungen_thread) {
         SDL_DetachThread(dungen_thread);
     }
@@ -64,10 +60,6 @@ void render(World &world, SDL_Renderer *renderer) {
         return;
     }
 
-    if (!world.atlas) {
-        log_fatal("Missing world atlas");
-    }
-
     if (SDL_TryLockMutex(world.mutex) != 0) {
         return;
     }
@@ -75,8 +67,8 @@ void render(World &world, SDL_Renderer *renderer) {
     int w, h;
     SDL_GetRendererOutputSize(renderer, &w, &h);
 
-    int tile_size = world.atlas->tile_size;
-    int gutter = world.atlas->gutter;
+    int tile_size = world.atlas.tile_size;
+    int gutter = world.atlas.gutter;
 
     for (const Hash<Tile>::Entry *it = hash::begin(world.tiles); it != hash::end(world.tiles); ++it) {
         uint64_t pos_index = it->key;
@@ -89,7 +81,7 @@ void render(World &world, SDL_Renderer *renderer) {
 
         SDL_Rect source;
         uint64_t source_x, source_y;
-        coord(tile_index, source_x, source_y, world.atlas->w_tiles - 1);
+        coord(tile_index, source_x, source_y, (uint64_t)world.atlas.w_tiles - 1);
         source.x = (int)(source_x * tile_size + source_x * gutter);
         source.y = (int)(source_y * tile_size + source_y * gutter);
         source.w = tile_size;
@@ -103,7 +95,7 @@ void render(World &world, SDL_Renderer *renderer) {
         destination.w = tile_size;
         destination.h = tile_size;
 
-        SDL_RenderCopyEx(renderer, world.atlas->texture, &source, &destination, tile.angle, nullptr, tile.flip);
+        SDL_RenderCopyEx(renderer, world.atlas.texture, &source, &destination, tile.angle, nullptr, tile.flip);
     }
 
     SDL_UnlockMutex(world.mutex);
