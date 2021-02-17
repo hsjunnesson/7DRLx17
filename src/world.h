@@ -21,8 +21,18 @@ namespace tile {
 // Murmur hashes a string.
 uint64_t hash(const char *s);
 
+static uint64_t WallCornerTopLeft = hash("wall_corner_top_left");
+static uint64_t WallHorizontal = hash("wall_horizontal");
+static uint64_t WallCornerTopRight = hash("wall_corner_top_right");
+static uint64_t WallLeft = hash("wall_left");
+static uint64_t WallRight = hash("wall_right");
+static uint64_t WallCornerBottomLeft = hash("wall_corner_bottom_left");
+static uint64_t WallCornerBottomRight = hash("wall_corner_bottom_right");
 static uint64_t Floor = hash("floor");
+
+static uint64_t Ghost = hash("ghost");
 static uint64_t Snake = hash("snake");
+
 static uint64_t Missing = hash("missing");
 
 } // namespace tile
