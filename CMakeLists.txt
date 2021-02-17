@@ -78,3 +78,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE StackWalker)
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+
+
+enable_testing()
+add_subdirectory(tests)
