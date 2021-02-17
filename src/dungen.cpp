@@ -68,7 +68,7 @@ int dungen_thread(void *data) {
 
         for (int y = 0; y < room.h; ++y) {
             for (int x = 0; x < room.w; ++x) {
-                int32_t tile_index = hash::get(world->atlas->tiles_by_name, tile::Snake, 0);
+                int32_t tile_index = hash::get(world->atlas.tiles_by_name, tile::Snake, 0);
                 hash::set(tiles, index(room.x + x, room.y + y, map_width), {tile_index});
             }
         }
