@@ -80,16 +80,16 @@ void render(World &world, SDL_Renderer *renderer) {
         }
 
         SDL_Rect source;
-        uint64_t source_x, source_y;
-        coord(tile_index, source_x, source_y, (uint64_t)world.atlas.w_tiles - 1);
+        uint32_t source_x, source_y;
+        coord(tile_index, source_x, source_y, (uint32_t)world.atlas.w_tiles - 1);
         source.x = (int)(source_x * tile_size + source_x * gutter);
         source.y = (int)(source_y * tile_size + source_y * gutter);
         source.w = tile_size;
         source.h = tile_size;
 
         SDL_Rect destination;
-        uint64_t destination_x, destination_y;
-        coord(pos_index, destination_x, destination_y, world.max_width);
+        uint32_t destination_x, destination_y;
+        coord((int32_t)pos_index, destination_x, destination_y, world.max_width);
         destination.x = (int)(destination_x * tile_size) + world.x_offset;
         destination.y = (int)(destination_y * tile_size) + world.y_offset;
         destination.w = tile_size;

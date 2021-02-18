@@ -15,7 +15,7 @@ using namespace foundation;
 
 // An integer coordinate.
 struct Coordinate {
-    int64_t x, y;
+    int32_t x, y;
 };
 
 /**
@@ -43,7 +43,7 @@ enum class LineMode {
 };
 
 // Line of sight blocking callback function pointer
-typedef std::function<bool(int64_t x, int64_t y)> is_clear;
+typedef std::function<bool(int32_t x, int32_t y)> is_clear;
 
 /**
  * @brief Line of sight checking between two coordinates.
@@ -55,11 +55,11 @@ typedef std::function<bool(int64_t x, int64_t y)> is_clear;
  * @return true If there exists line of sight between the two coordinates.
  */
 bool los(const Coordinate a, const Coordinate b, is_clear clear, LineMode line_mode = LineMode::AllowDiagonal) {
-    int64_t sx, sy, dx, dy;
-    int64_t x0 = a.x;
-    int64_t y0 = a.y;
-    int64_t x1 = b.x;
-    int64_t y1 = b.y;
+    int32_t sx, sy, dx, dy;
+    int32_t x0 = a.x;
+    int32_t y0 = a.y;
+    int32_t x1 = b.x;
+    int32_t y1 = b.y;
 
     if (x0 < x1) {
         sx = 1;
@@ -77,8 +77,8 @@ bool los(const Coordinate a, const Coordinate b, is_clear clear, LineMode line_m
         dy = y0 - y1;
     }
 
-    int64_t err = dx - dy;
-    int64_t e2 = 0;
+    int32_t err = dx - dy;
+    int32_t e2 = 0;
 
     if (!clear(x0, y0)) {
         return false;
@@ -131,7 +131,7 @@ bool los(const Coordinate a, const Coordinate b, is_clear clear, LineMode line_m
 Array<Coordinate> line(Allocator &allocator, Coordinate a, Coordinate b, is_clear clear = nullptr, bool *blocked = nullptr, LineMode line_mode = LineMode::AllowDiagonal) {
     Array<Coordinate> coordinates(allocator);
     bool clear_line = los(
-        a, b, [clear, &coordinates](int64_t x, int64_t y) {
+        a, b, [clear, &coordinates](int32_t x, int32_t y) {
             if (clear && !clear(x, y)) {
                 return false;
             }
@@ -165,13 +165,13 @@ Array<Coordinate> line(Allocator &allocator, Coordinate a, Coordinate b, is_clea
 Array<Coordinate> zig_zag(Allocator &allocator, Coordinate a, Coordinate b) {
     Array<Coordinate> coordinates(allocator);
 
-    int64_t x0 = a.x;
-    int64_t y0 = a.y;
-    int64_t x1 = b.x;
-    int64_t y1 = b.y;
+    int32_t x0 = a.x;
+    int32_t y0 = a.y;
+    int32_t x1 = b.x;
+    int32_t y1 = b.y;
 
-    int64_t xoffset = 0;
-    int64_t yoffset = 0;
+    int32_t xoffset = 0;
+    int32_t yoffset = 0;
 
     if (x0 < x1) {
         xoffset = 1;
@@ -189,18 +189,18 @@ Array<Coordinate> zig_zag(Allocator &allocator, Coordinate a, Coordinate b) {
         return coordinates;
     }
 
-    int64_t half_x = x0 + round((x1 - x0) / 2);
-    int64_t half_y = y0 + round((y1 - y0) / 2);
+    int32_t half_x = x0 + (int32_t)round((x1 - x0) / 2);
+    int32_t half_y = y0 + (int32_t)round((y1 - y0) / 2);
 
-    int64_t x = x0;
-    int64_t y = y0;
+    int32_t x = x0;
+    int32_t y = y0;
 
     bool horizontal = abs(x1 - x0) > abs(y1 - y0);
 
     array::push_back(coordinates, Coordinate{x, y});
 
     while (!(x == x1 && y == y1)) {
-        int64_t sx, sy;
+        int32_t sx, sy;
 
         if (horizontal) {
             sx = xoffset;

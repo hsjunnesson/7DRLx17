@@ -7,7 +7,7 @@
 using namespace foundation;
 
 void test_los() {
-    auto clear = [](int64_t x, int64_t y) {
+    auto clear = [](int32_t x, int32_t y) {
         if (x == 2 && y == 2) {
             return false;
         }
@@ -36,7 +36,7 @@ void test_line() {
     assert(coordinates[3].x == 3);
     assert(coordinates[3].y == 0);
 
-    auto clear = [](int64_t x, int64_t y) {
+    auto clear = [](int32_t x, int32_t y) {
         if (x == 1 && y == 0) {
             return false;
         }

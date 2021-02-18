@@ -92,7 +92,7 @@ struct World {
     Hash<Tile> tiles;
 
     // The maximum width in tiles. Needed for index to coord translation
-    uint64_t max_width;
+    uint32_t max_width;
 };
 
 /**
@@ -126,9 +126,9 @@ void transition(World &world, GameState game_state);
  * @param x The x coord
  * @param y The y coord
  * @param max_width The maxium width.
- * @return constexpr uint64_t The index.
+ * @return constexpr uint32_t The index.
  */
-constexpr uint64_t index(uint64_t const x, uint64_t const y, uint64_t const max_width) {
+constexpr uint32_t index(uint32_t const x, uint32_t const y, uint32_t const max_width) {
     return x + max_width * y;
 }
 
@@ -140,7 +140,7 @@ constexpr uint64_t index(uint64_t const x, uint64_t const y, uint64_t const max_
  * @param y The pass-by-reference y coord to calculate.
  * @param max_width The maxium width.
  */
-constexpr void coord(uint64_t const index, uint64_t &x, uint64_t &y, uint64_t const max_width) {
+constexpr void coord(uint32_t const index, uint32_t &x, uint32_t &y, uint32_t const max_width) {
     x = index % max_width;
     y = index / max_width;
 }
