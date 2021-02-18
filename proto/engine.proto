@@ -30,4 +30,5 @@ message DunGenParams {
     int32 max_room_size = 3;
     int32 map_width     = 4;
     int32 map_height    = 5;
+    int32 expand_chance = 6; // Expressed as a percentage 0-100
 }

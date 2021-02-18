@@ -156,6 +156,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fengine_2eproto::offset
   PROTOBUF_FIELD_OFFSET(::engine::DunGenParams, max_room_size_),
   PROTOBUF_FIELD_OFFSET(::engine::DunGenParams, map_width_),
   PROTOBUF_FIELD_OFFSET(::engine::DunGenParams, map_height_),
+  PROTOBUF_FIELD_OFFSET(::engine::DunGenParams, expand_chance_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::engine::ColorParams)},
@@ -183,10 +184,11 @@ const char descriptor_table_protodef_proto_2fengine_2eproto[] PROTOBUF_SECTION_V
   "(\t\022\r\n\005value\030\002 \001(\005:\0028\001\"|\n\014EngineParams\022\r\n"
   "\005atlas\030\001 \001(\t\022\r\n\005width\030\002 \001(\005\022\016\n\006height\030\003 "
   "\001(\005\022\024\n\014render_scale\030\004 \001(\005\022(\n\013clear_color"
-  "\030\005 \001(\0132\023.engine.ColorParams\"w\n\014DunGenPar"
-  "ams\022\022\n\nroom_count\030\001 \001(\005\022\025\n\rmin_room_size"
-  "\030\002 \001(\005\022\025\n\rmax_room_size\030\003 \001(\005\022\021\n\tmap_wid"
-  "th\030\004 \001(\005\022\022\n\nmap_height\030\005 \001(\005b\006proto3"
+  "\030\005 \001(\0132\023.engine.ColorParams\"\216\001\n\014DunGenPa"
+  "rams\022\022\n\nroom_count\030\001 \001(\005\022\025\n\rmin_room_siz"
+  "e\030\002 \001(\005\022\025\n\rmax_room_size\030\003 \001(\005\022\021\n\tmap_wi"
+  "dth\030\004 \001(\005\022\022\n\nmap_height\030\005 \001(\005\022\025\n\rexpand_"
+  "chance\030\006 \001(\005b\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_proto_2fengine_2eproto_deps[1] = {
 };
@@ -199,7 +201,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_pro
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_proto_2fengine_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_proto_2fengine_2eproto = {
-  false, false, descriptor_table_protodef_proto_2fengine_2eproto, "proto/engine.proto", 516,
+  false, false, descriptor_table_protodef_proto_2fengine_2eproto, "proto/engine.proto", 540,
   &descriptor_table_proto_2fengine_2eproto_once, descriptor_table_proto_2fengine_2eproto_sccs, descriptor_table_proto_2fengine_2eproto_deps, 5, 0,
   schemas, file_default_instances, TableStruct_proto_2fengine_2eproto::offsets,
   file_level_metadata_proto_2fengine_2eproto, 5, file_level_enum_descriptors_proto_2fengine_2eproto, file_level_service_descriptors_proto_2fengine_2eproto,
@@ -1183,16 +1185,16 @@ DunGenParams::DunGenParams(const DunGenParams& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&room_count_, &from.room_count_,
-    static_cast<size_t>(reinterpret_cast<char*>(&map_height_) -
-    reinterpret_cast<char*>(&room_count_)) + sizeof(map_height_));
+    static_cast<size_t>(reinterpret_cast<char*>(&expand_chance_) -
+    reinterpret_cast<char*>(&room_count_)) + sizeof(expand_chance_));
   // @@protoc_insertion_point(copy_constructor:engine.DunGenParams)
 }
 
 void DunGenParams::SharedCtor() {
   ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
       reinterpret_cast<char*>(&room_count_) - reinterpret_cast<char*>(this)),
-      0, static_cast<size_t>(reinterpret_cast<char*>(&map_height_) -
-      reinterpret_cast<char*>(&room_count_)) + sizeof(map_height_));
+      0, static_cast<size_t>(reinterpret_cast<char*>(&expand_chance_) -
+      reinterpret_cast<char*>(&room_count_)) + sizeof(expand_chance_));
 }
 
 DunGenParams::~DunGenParams() {
@@ -1227,8 +1229,8 @@ void DunGenParams::Clear() {
   (void) cached_has_bits;
 
   ::memset(&room_count_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&map_height_) -
-      reinterpret_cast<char*>(&room_count_)) + sizeof(map_height_));
+      reinterpret_cast<char*>(&expand_chance_) -
+      reinterpret_cast<char*>(&room_count_)) + sizeof(expand_chance_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1271,6 +1273,13 @@ const char* DunGenParams::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
       case 5:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
           map_height_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 expand_chance = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
+          expand_chance_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -1332,6 +1341,12 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(5, this->_internal_map_height(), target);
   }
 
+  // int32 expand_chance = 6;
+  if (this->expand_chance() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(6, this->_internal_expand_chance(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -1383,6 +1398,13 @@ size_t DunGenParams::ByteSizeLong() const {
         this->_internal_map_height());
   }
 
+  // int32 expand_chance = 6;
+  if (this->expand_chance() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_expand_chance());
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
         _internal_metadata_, total_size, &_cached_size_);
@@ -1429,6 +1451,9 @@ void DunGenParams::MergeFrom(const DunGenParams& from) {
   if (from.map_height() != 0) {
     _internal_set_map_height(from._internal_map_height());
   }
+  if (from.expand_chance() != 0) {
+    _internal_set_expand_chance(from._internal_expand_chance());
+  }
 }
 
 void DunGenParams::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -1453,8 +1478,8 @@ void DunGenParams::InternalSwap(DunGenParams* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(DunGenParams, map_height_)
-      + sizeof(DunGenParams::map_height_)
+      PROTOBUF_FIELD_OFFSET(DunGenParams, expand_chance_)
+      + sizeof(DunGenParams::expand_chance_)
       - PROTOBUF_FIELD_OFFSET(DunGenParams, room_count_)>(
           reinterpret_cast<char*>(&room_count_),
           reinterpret_cast<char*>(&other->room_count_));

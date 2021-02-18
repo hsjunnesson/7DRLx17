@@ -785,6 +785,7 @@ class DunGenParams PROTOBUF_FINAL :
     kMaxRoomSizeFieldNumber = 3,
     kMapWidthFieldNumber = 4,
     kMapHeightFieldNumber = 5,
+    kExpandChanceFieldNumber = 6,
   };
   // int32 room_count = 1;
   void clear_room_count();
@@ -831,6 +832,15 @@ class DunGenParams PROTOBUF_FINAL :
   void _internal_set_map_height(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
+  // int32 expand_chance = 6;
+  void clear_expand_chance();
+  ::PROTOBUF_NAMESPACE_ID::int32 expand_chance() const;
+  void set_expand_chance(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_expand_chance() const;
+  void _internal_set_expand_chance(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
   // @@protoc_insertion_point(class_scope:engine.DunGenParams)
  private:
   class _Internal;
@@ -843,6 +853,7 @@ class DunGenParams PROTOBUF_FINAL :
   ::PROTOBUF_NAMESPACE_ID::int32 max_room_size_;
   ::PROTOBUF_NAMESPACE_ID::int32 map_width_;
   ::PROTOBUF_NAMESPACE_ID::int32 map_height_;
+  ::PROTOBUF_NAMESPACE_ID::int32 expand_chance_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_proto_2fengine_2eproto;
 };
@@ -1383,6 +1394,26 @@ inline void DunGenParams::_internal_set_map_height(::PROTOBUF_NAMESPACE_ID::int3
 inline void DunGenParams::set_map_height(::PROTOBUF_NAMESPACE_ID::int32 value) {
   _internal_set_map_height(value);
   // @@protoc_insertion_point(field_set:engine.DunGenParams.map_height)
+}
+
+// int32 expand_chance = 6;
+inline void DunGenParams::clear_expand_chance() {
+  expand_chance_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::_internal_expand_chance() const {
+  return expand_chance_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::expand_chance() const {
+  // @@protoc_insertion_point(field_get:engine.DunGenParams.expand_chance)
+  return _internal_expand_chance();
+}
+inline void DunGenParams::_internal_set_expand_chance(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  expand_chance_ = value;
+}
+inline void DunGenParams::set_expand_chance(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_expand_chance(value);
+  // @@protoc_insertion_point(field_set:engine.DunGenParams.expand_chance)
 }
 
 #ifdef __GNUC__
