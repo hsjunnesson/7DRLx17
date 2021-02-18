@@ -328,6 +328,50 @@ int dungen_thread(void *data) {
 
     // Draw corridors as tiles
     {
+        int32_t floor_tile = hash::get(world->atlas.tiles_by_name, tile::Floor, 0);
+        // int32_t corner_top_left_tile = hash::get(world->atlas.tiles_by_name, tile::WallCornerTopLeft, 0);
+        int32_t horizontal_tile = hash::get(world->atlas.tiles_by_name, tile::WallHorizontal, 0);
+        // int32_t corner_top_right_tile = hash::get(world->atlas.tiles_by_name, tile::WallCornerTopRight, 0);
+        int32_t left_tile = hash::get(world->atlas.tiles_by_name, tile::WallLeft, 0);
+        int32_t right_tile = hash::get(world->atlas.tiles_by_name, tile::WallRight, 0);
+        // int32_t corner_bottom_left_tile = hash::get(world->atlas.tiles_by_name, tile::WallCornerBottomLeft, 0);
+        // int32_t corner_bottom_right_tile = hash::get(world->atlas.tiles_by_name, tile::WallCornerBottomRight, 0);
+
+        auto place_floor = [&](line::Coordinate prev, line::Coordinate coord, line::Coordinate next) {
+            hash::set(tiles, index(coord.x, coord.y, map_width), {floor_tile});
+
+            // Valid next and prev
+            if (prev.x >= 0 && next.x >= 0) {
+                if (prev.x != next.x && prev.y == next.y) { // Horizontal line
+                    int32_t above = index(coord.x, coord.y - 1, map_width);
+                    int32_t below = index(coord.x, coord.y + 1, map_width);
+
+                    if (!hash::has(tiles, above)) {
+                        hash::set(tiles, above, {horizontal_tile});
+                    }
+
+                    if (!hash::has(tiles, below)) {
+                        hash::set(tiles, below, {horizontal_tile});
+                    }
+
+                    // TODO Change into a corner wall
+                } else if (prev.x == next.x && prev.y != next.y) { // Vertical line
+                    int32_t left = index(coord.x - 1, coord.y, map_width);
+                    int32_t right = index(coord.x + 1, coord.y, map_width);
+
+                    if (!hash::has(tiles, left)) {
+                        hash::set(tiles, left, {left_tile});
+                    }
+
+                    if (!hash::has(tiles, right)) {
+                        hash::set(tiles, right, {right_tile});
+                    }
+                }
+
+                // TODO corners
+            }
+        };
+
         for (auto iter = array::begin(corridors); iter != array::end(corridors); ++iter) {
             Corridor corridor = *iter;
 
@@ -339,11 +383,26 @@ int dungen_thread(void *data) {
 
             Array<line::Coordinate> coordinates = line::zig_zag(allocator, a, b);
 
-            for (auto inner_iter = array::begin(coordinates); inner_iter != array::end(coordinates); ++inner_iter) {
-                line::Coordinate coordinate = *inner_iter;
+            for (int32_t line_i = 0; line_i < (int32_t)array::size(coordinates); ++line_i) {
+                line::Coordinate prev;
+                if (line_i > 0) {
+                    prev = coordinates[line_i - 1];
+                } else {
+                    prev.x = -1;
+                    prev.y = -1;
+                }
 
-                int32_t floor_tile = hash::get(world->atlas.tiles_by_name, tile::Ghost, 0);
-                hash::set(tiles, index(coordinate.x, coordinate.y, map_width), {floor_tile});
+                line::Coordinate coord = coordinates[line_i];
+
+                line::Coordinate next;
+                if (line_i < (int32_t)array::size(coordinates) - 1) {
+                    next = coordinates[line_i + 1];
+                } else {
+                    next.x = -1;
+                    next.y = -1;
+                }
+
+                place_floor(prev, coord, next);
             }
         }
     }
