@@ -258,7 +258,7 @@ int dungen_thread(void *data) {
     // Prune disconnected rooms
     {
         Queue<int32_t> disconnected_room_indices = Queue<int32_t>(allocator);
-        for (size_t i = 0; i < params.room_count(); ++i) {
+        for (int32_t  i = 0; i < params.room_count(); ++i) {
             bool found = false;
 
             for (auto iter = array::begin(corridors); iter != array::end(corridors); ++iter) {
