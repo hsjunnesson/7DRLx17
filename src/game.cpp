@@ -61,21 +61,28 @@ void update(Game &game, uint32_t t, double dt) {
 
 void on_input(Game &game, input::InputCommand input_command) {
     switch (input_command.action) {
-    case input::InputCommand::Action::Quit: {
+    case input::Action::Quit: {
         if (game.game_state == GameState::Playing) {
             transition(game, GameState::Quitting);
         }
         break;
     }
-    case input::InputCommand::Action::ZoomIn: {
+    case input::Action::ZoomIn: {
         if (game.zoom_level < 4) {
             ++game.zoom_level;
         }
         break;
     }
-    case input::InputCommand::Action::ZoomOut: {
+    case input::Action::ZoomOut: {
         if (game.zoom_level > 1) {
             --game.zoom_level;
+        }
+        break;
+    }
+    case input::Action::Mouse: {
+        if (input_command.mouse_state.mouse_left_state == input::MouseButtonState::Repeated) {
+            game.x_offset += input_command.mouse_state.mouse_relative_motion.x;
+            game.y_offset += input_command.mouse_state.mouse_relative_motion.y;
         }
         break;
     }
