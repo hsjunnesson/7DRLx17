@@ -52,23 +52,23 @@ int run(Engine &engine) {
         input::process_events(input_commands);
         if (array::size(input_commands) > 0) {
             for (uint32_t i = 0; i < array::size(input_commands); ++i) {
-                world::on_input(engine.world, input_commands[i]);
+                game::on_input(engine.game, input_commands[i]);
             }
         }
 
         // Update
-        world::update(engine.world, current_frame_time, delta_time);
+        game::update(engine.game, current_frame_time, delta_time);
         gui::update(engine.gui, current_frame_time, delta_time);
 
         // Check terminate
-        if (engine.world.game_state == world::GameState::Terminate) {
+        if (engine.game.game_state == game::GameState::Terminate) {
             running = false;
             break;
         }
 
         // Render
         engine::clear(engine.window, engine.clear_color);
-        world::render(engine.world, engine.window.renderer);
+        game::render(engine.game, engine.window.renderer);
         gui::render(engine.gui, engine.window.renderer);
         engine::render(engine.window);
 
@@ -129,9 +129,9 @@ int init_engine(EngineParams &params) {
 
     Window window = Window(sdl_window, sdl_renderer);
 
-    world::World *world = MAKE_NEW(allocator, world::World, allocator, sdl_renderer, params.atlas().c_str());
-    if (!world) {
-        log_fatal("Couldn't create world");
+    game::Game *game = MAKE_NEW(allocator, game::Game, allocator, sdl_renderer, params.atlas().c_str());
+    if (!game) {
+        log_fatal("Couldn't create game");
     }
 
     gui::Gui *gui = MAKE_NEW(allocator, gui::Gui, allocator);
@@ -139,7 +139,7 @@ int init_engine(EngineParams &params) {
         log_fatal("Couldn't greate gui");
     }
 
-    Engine *engine = MAKE_NEW(allocator, Engine, allocator, window, *world, *gui);
+    Engine *engine = MAKE_NEW(allocator, Engine, allocator, window, *game, *gui);
     if (!engine) {
         log_fatal("Couldn't create engine");
     }
@@ -155,7 +155,7 @@ int init_engine(EngineParams &params) {
     int exit_code = run(*engine);
 
     MAKE_DELETE(allocator, Engine, engine);
-    MAKE_DELETE(allocator, World, world);
+    MAKE_DELETE(allocator, Game, game);
     MAKE_DELETE(allocator, Gui, gui);
 
     SDL_DestroyRenderer(sdl_renderer);

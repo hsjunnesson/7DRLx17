@@ -8,7 +8,7 @@
 #pragma warning(pop)
 
 #include "gui.h"
-#include "world.h"
+#include "game.h"
 
 namespace engine {
 using namespace foundation;
@@ -25,18 +25,18 @@ struct Window {
 };
 
 struct Engine {
-    Engine(Allocator &allocator, Window &window, world::World &world, gui::Gui &gui)
+    Engine(Allocator &allocator, Window &window, game::Game &game, gui::Gui &gui)
     : allocator(allocator)
     , frames(0)
     , window(window)
-    , world(world)
+    , game(game)
     , gui(gui)
     , clear_color(SDL_Color{0, 0, 0, 255}) {}
 
     Allocator &allocator;
     uint64_t frames;
     Window &window;
-    world::World &world;
+    game::Game &game;
     gui::Gui &gui;
     SDL_Color clear_color;
 };

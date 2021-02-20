@@ -12,8 +12,8 @@
 #include <SDL2/SDL_thread.h>
 #pragma warning(pop)
 
-// The namespace for all of the game world specific gameplay code.
-namespace world {
+// The namespace for all of the game specific gameplay code.
+namespace game {
 using namespace foundation;
 
 // A namespace of named, known tiles.
@@ -72,10 +72,10 @@ enum class GameState {
     Terminate,
 };
 
-// The game world.
-struct World {
-    World(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_config_filename);
-    ~World();
+// The game state.
+struct Game {
+    Game(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_config_filename);
+    ~Game();
 
     // The allocator
     Allocator &allocator;
@@ -83,7 +83,7 @@ struct World {
     // The current game state.
     GameState game_state;
 
-    // The World mutex;
+    // The Game mutex;
     SDL_mutex *mutex;
 
     // The thread for generating a dungeon.
@@ -106,37 +106,37 @@ struct World {
 };
 
 /**
- * @brief Updates the world
+ * @brief Updates the game
  *
- * @param world The world to update
+ * @param game The game to update
  * @param t The current time
  * @param dt The delta time since last update
  */
-void update(World &world, uint32_t t, double dt);
+void update(Game &game, uint32_t t, double dt);
 
 /**
- * @brief Callback to the world that an input has ocurred.
+ * @brief Callback to the game that an input has ocurred.
  * 
- * @param world The world to signal.
+ * @param game The game to signal.
  * @param input_command The input command.
  */
-void on_input(World &world, input::InputCommand input_command);
+void on_input(Game &game, input::InputCommand input_command);
 
 /**
- * @brief Renders the world
+ * @brief Renders the game
  *
- * @param world The world to render
+ * @param game The game to render
  * @param renderer The SDL renderer.
  */
-void render(World &world, SDL_Renderer *renderer);
+void render(Game &game, SDL_Renderer *renderer);
 
 /**
- * @brief Transition a World from one game state to another
+ * @brief Transition a Game from one game state to another
  * 
- * @param world The world to transition
+ * @param game The game to transition
  * @param game_state The GameState to transition to.
  */
-void transition(World &world, GameState game_state);
+void transition(Game &game, GameState game_state);
 
 /**
  * @brief Returns the index of an x, y coordinate
@@ -163,4 +163,4 @@ constexpr void coord(int32_t const index, int32_t &x, int32_t &y, int32_t const 
     y = index / max_width;
 }
 
-} // namespace world
+} // namespace game

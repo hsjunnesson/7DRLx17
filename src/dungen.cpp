@@ -13,9 +13,9 @@
 #include "config.h"
 #include "line.hpp"
 #include "log.h"
-#include "world.h"
+#include "game.h"
 
-namespace world {
+namespace game {
 using namespace foundation;
 
 struct GenRoom {
@@ -31,9 +31,9 @@ struct Corridor {
 };
 
 int dungen_thread(void *data) {
-    World *world = (World *)data;
-    if (!world) {
-        log_fatal("No World in dungen_thread");
+    Game *game = (Game *)data;
+    if (!game) {
+        log_fatal("No Game in dungen_thread");
     }
 
     engine::DunGenParams params;
@@ -288,34 +288,34 @@ int dungen_thread(void *data) {
             for (int y = 0; y < room.h; ++y) {
                 for (int x = 0; x < room.w; ++x) {
                     int32_t tile_index = 0;
-                    int32_t floor_tile = hash::get(world->atlas.tiles_by_name, tile::Floor, 0);
+                    int32_t floor_tile = hash::get(game->atlas.tiles_by_name, tile::Floor, 0);
 
                     if (room.start_room) {
-                        floor_tile = hash::get(world->atlas.tiles_by_name, tile::Snake, 0);
+                        floor_tile = hash::get(game->atlas.tiles_by_name, tile::Snake, 0);
                     } else if (room.boss_room) {
-                        floor_tile = hash::get(world->atlas.tiles_by_name, tile::Ghost, 0);
+                        floor_tile = hash::get(game->atlas.tiles_by_name, tile::Ghost, 0);
                     }
 
                     if (y == 0) {
                         if (x == 0) {
-                            tile_index = hash::get(world->atlas.tiles_by_name, tile::WallCornerTopLeft, 0);
+                            tile_index = hash::get(game->atlas.tiles_by_name, tile::WallCornerTopLeft, 0);
                         } else if (x == room.w - 1) {
-                            tile_index = hash::get(world->atlas.tiles_by_name, tile::WallCornerTopRight, 0);
+                            tile_index = hash::get(game->atlas.tiles_by_name, tile::WallCornerTopRight, 0);
                         } else {
-                            tile_index = hash::get(world->atlas.tiles_by_name, tile::WallHorizontal, 0);
+                            tile_index = hash::get(game->atlas.tiles_by_name, tile::WallHorizontal, 0);
                         }
                     } else if (y == room.h - 1) {
                         if (x == 0) {
-                            tile_index = hash::get(world->atlas.tiles_by_name, tile::WallCornerBottomLeft, 0);
+                            tile_index = hash::get(game->atlas.tiles_by_name, tile::WallCornerBottomLeft, 0);
                         } else if (x == room.w - 1) {
-                            tile_index = hash::get(world->atlas.tiles_by_name, tile::WallCornerBottomRight, 0);
+                            tile_index = hash::get(game->atlas.tiles_by_name, tile::WallCornerBottomRight, 0);
                         } else {
-                            tile_index = hash::get(world->atlas.tiles_by_name, tile::WallHorizontal, 0);
+                            tile_index = hash::get(game->atlas.tiles_by_name, tile::WallHorizontal, 0);
                         }
                     } else if (x == 0) {
-                        tile_index = hash::get(world->atlas.tiles_by_name, tile::WallLeft, 0);
+                        tile_index = hash::get(game->atlas.tiles_by_name, tile::WallLeft, 0);
                     } else if (x == room.w - 1) {
-                        tile_index = hash::get(world->atlas.tiles_by_name, tile::WallRight, 0);
+                        tile_index = hash::get(game->atlas.tiles_by_name, tile::WallRight, 0);
                     } else {
                         tile_index = floor_tile;
                     }
@@ -328,12 +328,12 @@ int dungen_thread(void *data) {
 
     // Draw corridors as tiles
     {
-        int32_t floor_tile = hash::get(world->atlas.tiles_by_name, tile::Floor, 0);
+        int32_t floor_tile = hash::get(game->atlas.tiles_by_name, tile::Floor, 0);
         // int32_t corner_top_left_tile = hash::get(world->atlas.tiles_by_name, tile::WallCornerTopLeft, 0);
-        int32_t horizontal_tile = hash::get(world->atlas.tiles_by_name, tile::WallHorizontal, 0);
+        int32_t horizontal_tile = hash::get(game->atlas.tiles_by_name, tile::WallHorizontal, 0);
         // int32_t corner_top_right_tile = hash::get(world->atlas.tiles_by_name, tile::WallCornerTopRight, 0);
-        int32_t left_tile = hash::get(world->atlas.tiles_by_name, tile::WallLeft, 0);
-        int32_t right_tile = hash::get(world->atlas.tiles_by_name, tile::WallRight, 0);
+        int32_t left_tile = hash::get(game->atlas.tiles_by_name, tile::WallLeft, 0);
+        int32_t right_tile = hash::get(game->atlas.tiles_by_name, tile::WallRight, 0);
         // int32_t corner_bottom_left_tile = hash::get(world->atlas.tiles_by_name, tile::WallCornerBottomLeft, 0);
         // int32_t corner_bottom_right_tile = hash::get(world->atlas.tiles_by_name, tile::WallCornerBottomRight, 0);
 
@@ -407,20 +407,20 @@ int dungen_thread(void *data) {
         }
     }
 
-    // Update world's tiles.
-    if (SDL_LockMutex(world->mutex) == 0) {
-        world->tiles = tiles;
-        world->max_width = map_width;
-        SDL_UnlockMutex(world->mutex);
+    // Update game's tiles.
+    if (SDL_LockMutex(game->mutex) == 0) {
+        game->tiles = tiles;
+        game->max_width = map_width;
+        SDL_UnlockMutex(game->mutex);
     } else {
         log_fatal("Could not lock mutex %s", SDL_GetError());
     }
 
     log_info("DunGen completed");
 
-    transition(*world, GameState::Playing);
+    transition(*game, GameState::Playing);
 
     return 0;
 }
 
-} // namespace world
+} // namespace game
