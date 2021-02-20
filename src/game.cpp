@@ -117,8 +117,8 @@ void render(Game &game, SDL_Renderer *renderer) {
         SDL_Rect destination;
         int32_t destination_x, destination_y;
         coord((int32_t)pos_index, destination_x, destination_y, game.max_width);
-        destination.x = (int)(destination_x * tile_size) + game.x_offset * game.zoom_level;
-        destination.y = (int)(destination_y * tile_size) + game.y_offset * game.zoom_level;
+        destination.x = (int)(destination_x * tile_size * game.zoom_level) + game.x_offset;
+        destination.y = (int)(destination_y * tile_size * game.zoom_level) + game.y_offset;
         destination.w = tile_size * game.zoom_level;
         destination.h = tile_size * game.zoom_level;
 
