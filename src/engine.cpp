@@ -44,10 +44,27 @@ int run(Engine &engine) {
     uint32_t current_frame_time = SDL_GetTicks();
     uint32_t delta_time = current_frame_time - prev_frame_time;
 
+    Array<input::InputCommand> input_commands = Array<input::InputCommand>(engine.allocator);
+
     while (running) {
+        // Process events
+        array::clear(input_commands);
+        input::process_events(input_commands);
+        if (array::size(input_commands) > 0) {
+            for (uint32_t i = 0; i < array::size(input_commands); ++i) {
+                world::on_input(engine.world, input_commands[i]);
+            }
+        }
+
         // Update
         world::update(engine.world, current_frame_time, delta_time);
         gui::update(engine.gui, current_frame_time, delta_time);
+
+        // Check terminate
+        if (engine.world.game_state == world::GameState::Terminate) {
+            running = false;
+            break;
+        }
 
         // Render
         engine::clear(engine.window, engine.clear_color);
@@ -56,13 +73,6 @@ int run(Engine &engine) {
         engine::render(engine.window);
 
         ++engine.frames;
-
-        // Process events, signals quit?
-        // False for keep running
-        if (input::process_events()) {
-            running = false;
-            continue;
-        }
 
         // Calculate frame times
         current_frame_time = SDL_GetTicks();
@@ -129,7 +139,7 @@ int init_engine(EngineParams &params) {
         log_fatal("Couldn't greate gui");
     }
 
-    Engine *engine = MAKE_NEW(allocator, Engine, window, *world, *gui);
+    Engine *engine = MAKE_NEW(allocator, Engine, allocator, window, *world, *gui);
     if (!engine) {
         log_fatal("Couldn't create engine");
     }

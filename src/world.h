@@ -1,6 +1,7 @@
 #pragma once
 
 #include "texture.h"
+#include "input.h"
 
 #pragma warning(push, 0)
 #include "array.h"
@@ -63,6 +64,12 @@ enum class GameState {
 
     // Playing the game.
     Playing,
+
+    // Shutting down, saving and closing the game.
+    Quitting,
+
+    // Final state that signals the engine to terminate the application.
+    Terminate,
 };
 
 // The game world.
@@ -103,6 +110,14 @@ struct World {
  * @param dt The delta time since last update
  */
 void update(World &world, uint32_t t, double dt);
+
+/**
+ * @brief Callback to the world that an input has ocurred.
+ * 
+ * @param world The world to signal.
+ * @param input_command The input command.
+ */
+void on_input(World &world, input::InputCommand input_command);
 
 /**
  * @brief Renders the world

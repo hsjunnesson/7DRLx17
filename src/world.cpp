@@ -50,8 +50,19 @@ void update(World &world, uint32_t t, double dt) {
         break;
     case GameState::Playing:
         break;
+    case GameState::Quitting:
+        transition(world, GameState::Terminate);
+        break;
     default:
         break;
+    }
+}
+
+void on_input(World &world, input::InputCommand input_command) {
+    if (input_command.action == input::InputCommand::Action::Quit) {
+        if (world.game_state == GameState::Playing) {
+            transition(world, GameState::Quitting);
+        }
     }
 }
 
@@ -137,6 +148,12 @@ void transition(World &world, GameState game_state) {
     }
     case GameState::Playing:
         log_info("Playing");
+        break;
+    case GameState::Quitting:
+        log_info("Quitting");
+        break;
+    case GameState::Terminate:
+        log_info("Terminating");
         break;
     }
 

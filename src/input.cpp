@@ -6,25 +6,27 @@
 
 namespace input {
 
-bool process_events() {
+void process_events(Array<InputCommand> &input_commands) {
     SDL_Event event;
-    bool signal_quit = false;
 
     while (SDL_PollEvent(&event) != 0) {
         if (event.type == SDL_QUIT) {
-            signal_quit = true;
+            InputCommand input_command;
+            input_command.action = InputCommand::Action::Quit;
+            array::push_back(input_commands, input_command);
         } else if (event.type == SDL_KEYDOWN) {
             switch (event.key.keysym.sym) {
-            case SDLK_ESCAPE:
-                signal_quit = true;
+            case SDLK_ESCAPE: {
+                InputCommand input_command;
+                input_command.action = InputCommand::Action::Quit;
+                array::push_back(input_commands, input_command);
                 break;
+            }
             default:
                 break;
             }
         }
     }
-
-    return signal_quit;
 }
 
 } // namespace input
