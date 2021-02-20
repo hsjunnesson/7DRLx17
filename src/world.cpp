@@ -23,6 +23,7 @@ World::World(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_con
 , atlas(texture::Atlas(allocator, renderer, atlas_config_filename))
 , x_offset(0)
 , y_offset(0)
+, zoom_level(1)
 , tiles(Hash<Tile>(allocator))
 , max_width(0) {
     if (!hash::has(atlas.tiles_by_name, tile::Missing)) {
@@ -59,10 +60,25 @@ void update(World &world, uint32_t t, double dt) {
 }
 
 void on_input(World &world, input::InputCommand input_command) {
-    if (input_command.action == input::InputCommand::Action::Quit) {
+    switch (input_command.action) {
+    case input::InputCommand::Action::Quit: {
         if (world.game_state == GameState::Playing) {
             transition(world, GameState::Quitting);
         }
+        break;
+    }
+    case input::InputCommand::Action::ZoomIn: {
+        if (world.zoom_level < 4) {
+            ++world.zoom_level;
+        }
+        break;
+    }
+    case input::InputCommand::Action::ZoomOut: {
+        if (world.zoom_level > 1) {
+            --world.zoom_level;
+        }
+        break;
+    }
     }
 }
 
@@ -101,10 +117,10 @@ void render(World &world, SDL_Renderer *renderer) {
         SDL_Rect destination;
         int32_t destination_x, destination_y;
         coord((int32_t)pos_index, destination_x, destination_y, world.max_width);
-        destination.x = (int)(destination_x * tile_size) + world.x_offset;
-        destination.y = (int)(destination_y * tile_size) + world.y_offset;
-        destination.w = tile_size;
-        destination.h = tile_size;
+        destination.x = (int)(destination_x * tile_size) + world.x_offset * world.zoom_level;
+        destination.y = (int)(destination_y * tile_size) + world.y_offset * world.zoom_level;
+        destination.w = tile_size * world.zoom_level;
+        destination.h = tile_size * world.zoom_level;
 
         SDL_RenderCopyEx(renderer, world.atlas.texture, &source, &destination, tile.angle, nullptr, tile.flip);
     }

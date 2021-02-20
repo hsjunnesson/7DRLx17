@@ -25,6 +25,19 @@ void process_events(Array<InputCommand> &input_commands) {
             default:
                 break;
             }
+        } else if (event.type == SDL_MOUSEWHEEL) {
+            if (event.wheel.y != 0) {
+                InputCommand input_command;
+                input_command.action = InputCommand::Action::Scroll;
+
+                if (event.wheel.y > 0) {
+                    input_command.action = InputCommand::Action::ZoomIn;
+                } else if (event.wheel.y < 0) {
+                    input_command.action = InputCommand::Action::ZoomOut;
+                }
+
+                array::push_back(input_commands, input_command);
+            }
         }
     }
 }

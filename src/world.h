@@ -95,6 +95,9 @@ struct World {
     // The camera x and y offset
     int x_offset, y_offset;
 
+    // The camera zoom
+    int zoom_level;
+
     // The The hash of tile states.
     Hash<Tile> tiles;
 
