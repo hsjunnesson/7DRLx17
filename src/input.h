@@ -2,8 +2,8 @@
 
 #pragma warning(push, 0)
 #include "array.h"
-#include "memory.h"
 #include "math_types.h"
+#include "memory.h"
 #pragma warning(pop)
 
 namespace input {
@@ -27,4 +27,4 @@ struct InputCommand {
 
 void process_events(Array<InputCommand> &input_commands);
 
-}
+} // namespace input

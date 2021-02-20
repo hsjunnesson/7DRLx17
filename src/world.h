@@ -1,7 +1,7 @@
 #pragma once
 
-#include "texture.h"
 #include "input.h"
+#include "texture.h"
 
 #pragma warning(push, 0)
 #include "array.h"
