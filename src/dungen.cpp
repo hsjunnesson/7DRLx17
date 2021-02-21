@@ -58,7 +58,8 @@ int dungen_thread(void *data) {
     std::random_device random_device;
     std::mt19937 random_engine(random_device());
     unsigned int seed = (unsigned int)time(nullptr);
-    seed = 1613854773;
+    //    seed = 1613938286;
+    //    seed = 1613939362;
     random_engine.seed(seed);
 
     log_debug("Dungen seeded with %u", seed);
@@ -137,8 +138,8 @@ int dungen_thread(void *data) {
             const int32_t room_width = room_size_distribution(random_engine);
             const int32_t room_height = room_size_distribution(random_engine);
 
-            std::uniform_int_distribution<int32_t> x_offset(section_min_x + 1, section_max_x - 1 - room_width);
-            std::uniform_int_distribution<int32_t> y_offset(section_min_y + 1, section_max_y - 1 - room_height);
+            std::uniform_int_distribution<int32_t> x_offset(section_min_x + 2, section_max_x - 2 - room_width);
+            std::uniform_int_distribution<int32_t> y_offset(section_min_y + 2, section_max_y - 2 - room_height);
 
             const int32_t room_x = x_offset(random_engine);
             const int32_t room_y = y_offset(random_engine);
@@ -465,14 +466,6 @@ int dungen_thread(void *data) {
             }
         });
 
-        auto is_horizontal_wall_tile = [&](int32_t tile) {
-            return (tile == wall_horizontal_tile || tile == wall_corner_top_left_tile || tile == wall_corner_top_right_tile || tile == wall_corner_bottom_left_tile || tile == wall_corner_bottom_right_tile);
-        };
-
-        auto is_vertical_wall_tile = [&](int32_t tile) {
-            return (tile == wall_left_tile || tile == wall_right_tile);
-        };
-
         // Function to update the correct wall tile on a coordinate. Depends on surrounding walls and placeholder walls.
         auto place_wall = [&](int32_t index_wall) {
             int32_t coord_x, coord_y;
@@ -503,39 +496,68 @@ int dungen_thread(void *data) {
             const bool floor_e = hash::has(tiles, index_e) && hash::get(tiles, index_e, {}).index == floor_tile;
             const bool floor_sw = hash::has(tiles, index_sw) && hash::get(tiles, index_sw, {}).index == floor_tile;
             const bool floor_s = hash::has(tiles, index_s) && hash::get(tiles, index_s, {}).index == floor_tile;
-            const bool floor_se = hash::has(tiles, index_sw) && hash::get(tiles, index_se, {}).index == floor_tile;
+            const bool floor_se = hash::has(tiles, index_se) && hash::get(tiles, index_se, {}).index == floor_tile;
 
-            // This is a bit tricky. The only way to know whether a corner goes out a horizontal or vertical wall is to look at orientat the original room's tiles.
-            // Therefore, we must first see that we don't have any placeholder walls, because tiles might already have been filled out with walls once we get here.
-            const bool wall_w_horizontal = !hash::has(placeholder_walls, index_w) && wall_w && is_horizontal_wall_tile(hash::get(tiles, index_w, {}).index);
-            const bool wall_e_horizontal = !hash::has(placeholder_walls, index_e) && wall_e && is_horizontal_wall_tile(hash::get(tiles, index_e, {}).index);
-            const bool wall_n_vertical = !hash::has(placeholder_walls, index_n) && wall_n && is_vertical_wall_tile(hash::get(tiles, index_n, {}).index);
-            const bool wall_s_vertical = !hash::has(placeholder_walls, index_s) && wall_s && is_vertical_wall_tile(hash::get(tiles, index_s, {}).index);
+            // These signify that the walls around the coordinate are room walls, not placeholder corridor walls.
+            const bool wall_w_room = !hash::has(placeholder_walls, index_w) && wall_w;
+            const bool wall_e_room = !hash::has(placeholder_walls, index_e) && wall_e;
+            const bool wall_n_room = !hash::has(placeholder_walls, index_n) && wall_n;
+            const bool wall_s_room = !hash::has(placeholder_walls, index_s) && wall_s;
 
-            if (wall_n && wall_s && !wall_w && floor_e) { // Vertical wall left of corridor
+            // TODO: Handle tri-wall corners
+
+            if (floor_e && floor_w && wall_n && wall_s) { // Vertical wall between two floor tiles
+                // Do nothing
+            } else if (floor_e && floor_w && floor_n && wall_s) { // Vertical wall cap north between two floor tiles
+                // Do nothing
+            } else if (floor_e && floor_w && floor_s && wall_n) { // Vertical wall cap south between two floor tiles
+                // Do nothing
+            } else if (floor_n && floor_s && wall_w && wall_e) { // Horizontal wall between two floor tiles
+                // Do nothing
+            } else if (floor_n && floor_s && wall_w && floor_e) { // Horizontal wall cap east between two floor tiles
+                // Do nothing
+            } else if (floor_n && floor_s && floor_w && wall_e) { // Horizontal wall cap west between two floor tiles
+                // Do nothing
+            } else if (wall_n && wall_s && floor_e) { // Vertical wall left of corridor
                 hash::set(tiles, index_wall, {wall_right_tile});
-            } else if (wall_n && wall_s && floor_w && !floor_e) { // Vertical wall right of corridor
+            } else if (wall_n && wall_s && floor_w) { // Vertical wall right of corridor
                 hash::set(tiles, index_wall, {wall_left_tile});
-            } else if (wall_w && wall_e && floor_s && !wall_n) { // Horizontal wall, above corridor
+            } else if (wall_w && wall_e && floor_s) { // Horizontal wall, above corridor
                 hash::set(tiles, index_wall, {wall_horizontal_tile});
-            } else if (wall_w && wall_e && floor_n && !wall_s) { // Horizontal wall, below corridor
+            } else if (wall_w && wall_e && floor_n) { // Horizontal wall, below corridor
                 hash::set(tiles, index_wall, {wall_horizontal_tile});
-            } else if (wall_w && wall_w_horizontal && wall_n && floor_s && floor_e) { // Corner left and up, floor right and down for corridors going upward
+            } else if (wall_w_room && wall_n && floor_s && floor_e) { // Corner left and up, floor right and down for corridors going upward
                 hash::set(tiles, index_wall, {wall_corner_bottom_right_tile});
-            } else if (wall_e && wall_e_horizontal && wall_n && floor_s && floor_w) { // Corner right and up, floor left and down for corridors going upward
+            } else if (wall_e_room && wall_n && floor_s && floor_w) { // Corner right and up, floor left and down for corridors going upward
                 hash::set(tiles, index_wall, {wall_corner_bottom_left_tile});
-            } else if (wall_w && wall_w_horizontal && floor_n && wall_s && floor_e) { // Corner left and down, floor right and up for corridors going downward
+            } else if (wall_w_room && floor_n && wall_s && floor_e) { // Corner left and down, floor right and up for corridors going downward
                 hash::set(tiles, index_wall, {wall_corner_top_right_tile});
-            } else if (wall_e && wall_e_horizontal && floor_n && wall_s && floor_w) { // Corner right and down, floor left and up for corridors going downward
+            } else if (wall_e_room && floor_n && wall_s && floor_w) { // Corner right and down, floor left and up for corridors going downward
                 hash::set(tiles, index_wall, {wall_corner_top_left_tile});
-            } else if (wall_e && wall_n && wall_n_vertical && floor_s && floor_w) { // Corner right and up, floor left and down for corridors going right
+            } else if (wall_e && wall_n_room && floor_s && floor_w) { // Corner right and up, floor left and down for corridors going right
                 hash::set(tiles, index_wall, {corridor_corner_up_right_tile});
-            } else if (wall_e && wall_s && wall_s_vertical && floor_n && floor_w) { // Corner right and down, floor left and up for corridors going right
+            } else if (wall_e && wall_s_room && floor_n && floor_w) { // Corner right and down, floor left and up for corridors going right
                 hash::set(tiles, index_wall, {corridor_corner_down_right_tile});
-            } else if (wall_w && wall_n && wall_n_vertical && floor_s && floor_e) { // Corner left and up, floor right and down for corridors going left
+            } else if (wall_w && wall_n_room && floor_s && floor_e) { // Corner left and up, floor right and down for corridors going left
                 hash::set(tiles, index_wall, {corridor_corner_up_left_tile});
-            } else if (wall_w && wall_s && wall_s_vertical && floor_n && floor_e) { // Corner left and down, floor right and up for corridors going left
+            } else if (wall_w && wall_s_room && floor_n && floor_e) { // Corner left and down, floor right and up for corridors going left
                 hash::set(tiles, index_wall, {corridor_corner_down_left_tile});
+            } else if (wall_n && wall_e && floor_w && floor_s) { // Corner right and up above a corridor
+                hash::set(tiles, index_wall, {wall_corner_bottom_left_tile});
+            } else if (wall_n && wall_e && floor_ne) { // Corner right and up below a corridor
+                hash::set(tiles, index_wall, {corridor_corner_up_right_tile});
+            } else if (wall_w && wall_s && floor_n && floor_e) { // Corner left and down below a corridor
+                hash::set(tiles, index_wall, {wall_corner_top_right_tile});
+            } else if (wall_w && wall_s && floor_sw) { // Corner left and down above a corridor
+                hash::set(tiles, index_wall, {corridor_corner_down_left_tile});
+            } else if (wall_e && wall_s && floor_se) { // Corner right and down above a corridor
+                hash::set(tiles, index_wall, {corridor_corner_down_right_tile});
+            } else if (wall_e && wall_s && floor_nw) { // Corner right and down below a corridor
+                hash::set(tiles, index_wall, {wall_corner_top_left_tile});
+            } else if (wall_w && wall_n && floor_se) { // Corner left and up above a corridor
+                hash::set(tiles, index_wall, {wall_corner_bottom_right_tile});
+            } else if (wall_w && wall_n && floor_nw) { // Corner left and up below a corridor
+                hash::set(tiles, index_wall, {corridor_corner_up_left_tile});
             } else {
                 hash::set(tiles, index_wall, {debug_tile});
             }
