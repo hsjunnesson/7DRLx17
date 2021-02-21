@@ -57,7 +57,7 @@ void process_events(Array<InputCommand> &input_commands) {
             }
 
             array::push_back(input_commands, input_command);
-        } else if (event.type == SDL_MOUSEBUTTONDOWN  || event.type == SDL_MOUSEBUTTONUP) {
+        } else if (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP) {
             InputCommand input_command;
             input_command.action = Action::Mouse;
             input_command.mouse_state.mouse_position.x = event.button.x;

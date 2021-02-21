@@ -11,9 +11,9 @@
 #pragma warning(pop)
 
 #include "config.h"
+#include "game.h"
 #include "line.hpp"
 #include "log.h"
-#include "game.h"
 
 namespace game {
 using namespace foundation;
@@ -58,6 +58,7 @@ int dungen_thread(void *data) {
     std::random_device random_device;
     std::mt19937 random_engine(random_device());
     unsigned int seed = (unsigned int)time(nullptr);
+    seed = 1613854773;
     random_engine.seed(seed);
 
     log_debug("Dungen seeded with %u", seed);
@@ -69,55 +70,58 @@ int dungen_thread(void *data) {
     int32_t start_room_index = 0;
     int32_t boss_room_index = 0;
 
-    bool start_room_vertical_side = fifty_fifty(random_engine) == 0;
-    bool start_room_first_side = fifty_fifty(random_engine) == 0;
-
-    if (start_room_vertical_side) {
-        std::uniform_int_distribution<int32_t> tall_side_distribution(0, rooms_count_tall - 1);
-        int32_t y = tall_side_distribution(random_engine);
-        start_room_index = y * rooms_count_wide;
-
-        if (!start_room_first_side) {
-            start_room_index += (rooms_count_wide - 1);
-        }
-
-        y = tall_side_distribution(random_engine);
-        boss_room_index = y * rooms_count_wide;
-
-        if (start_room_first_side) {
-            boss_room_index += (rooms_count_wide - 1);
-        }
-    } else {
-        std::uniform_int_distribution<int32_t> wide_side_distribution(0, rooms_count_wide - 1);
-        int32_t x = wide_side_distribution(random_engine);
-        start_room_index = x;
-
-        if (!start_room_first_side) {
-            start_room_index += rooms_count_wide * (rooms_count_tall - 1);
-        }
-
-        x = wide_side_distribution(random_engine);
-        boss_room_index = x;
-
-        if (start_room_first_side) {
-            start_room_index += rooms_count_wide * (rooms_count_tall - 1);
-        }
-    }
-
-    if (start_room_index > params.room_count()) {
-        start_room_index = params.room_count() - 1;
-    }
-
-    if (boss_room_index > params.room_count()) {
-        boss_room_index = params.room_count() - 1;
-    }
-
-    log_debug("Dungen start room index %d", start_room_index);
-    log_debug("Dungen boss room index %d", boss_room_index);
-
     // Rooms and corridors collections
     Hash<GenRoom> rooms = Hash<GenRoom>(allocator);
     Array<Corridor> corridors = Array<Corridor>(allocator);
+
+    // Decide whether main orientation is vertical or horizontal
+    {
+        bool start_room_vertical_side = fifty_fifty(random_engine) == 0;
+        bool start_room_first_side = fifty_fifty(random_engine) == 0;
+
+        if (start_room_vertical_side) {
+            std::uniform_int_distribution<int32_t> tall_side_distribution(0, rooms_count_tall - 1);
+            int32_t y = tall_side_distribution(random_engine);
+            start_room_index = y * rooms_count_wide;
+
+            if (!start_room_first_side) {
+                start_room_index += (rooms_count_wide - 1);
+            }
+
+            y = tall_side_distribution(random_engine);
+            boss_room_index = y * rooms_count_wide;
+
+            if (start_room_first_side) {
+                boss_room_index += (rooms_count_wide - 1);
+            }
+        } else {
+            std::uniform_int_distribution<int32_t> wide_side_distribution(0, rooms_count_wide - 1);
+            int32_t x = wide_side_distribution(random_engine);
+            start_room_index = x;
+
+            if (!start_room_first_side) {
+                start_room_index += rooms_count_wide * (rooms_count_tall - 1);
+            }
+
+            x = wide_side_distribution(random_engine);
+            boss_room_index = x;
+
+            if (start_room_first_side) {
+                start_room_index += rooms_count_wide * (rooms_count_tall - 1);
+            }
+        }
+
+        if (start_room_index > params.room_count()) {
+            start_room_index = params.room_count() - 1;
+        }
+
+        if (boss_room_index > params.room_count()) {
+            boss_room_index = params.room_count() - 1;
+        }
+
+        log_debug("Dungen start room index %d", start_room_index);
+        log_debug("Dungen boss room index %d", boss_room_index);
+    }
 
     // Place rooms in grids sections, referenced by their index.
     {
@@ -291,9 +295,13 @@ int dungen_thread(void *data) {
                     int32_t floor_tile = hash::get(game->atlas.tiles_by_name, tile::Floor, 0);
 
                     if (room.start_room) {
-                        floor_tile = hash::get(game->atlas.tiles_by_name, tile::Snake, 0);
+                        if (x == room.w / 2 && y == room.h / 2) {
+                            floor_tile = hash::get(game->atlas.tiles_by_name, tile::Snake, 0);
+                        }
                     } else if (room.boss_room) {
-                        floor_tile = hash::get(game->atlas.tiles_by_name, tile::Ghost, 0);
+                        if (x == room.w / 2 && y == room.h / 2) {
+                            floor_tile = hash::get(game->atlas.tiles_by_name, tile::Ghost, 0);
+                        }
                     }
 
                     if (y == 0) {
@@ -329,81 +337,214 @@ int dungen_thread(void *data) {
     // Draw corridors as tiles
     {
         int32_t floor_tile = hash::get(game->atlas.tiles_by_name, tile::Floor, 0);
-        // int32_t corner_top_left_tile = hash::get(world->atlas.tiles_by_name, tile::WallCornerTopLeft, 0);
-        int32_t horizontal_tile = hash::get(game->atlas.tiles_by_name, tile::WallHorizontal, 0);
-        // int32_t corner_top_right_tile = hash::get(world->atlas.tiles_by_name, tile::WallCornerTopRight, 0);
-        int32_t left_tile = hash::get(game->atlas.tiles_by_name, tile::WallLeft, 0);
-        int32_t right_tile = hash::get(game->atlas.tiles_by_name, tile::WallRight, 0);
-        // int32_t corner_bottom_left_tile = hash::get(world->atlas.tiles_by_name, tile::WallCornerBottomLeft, 0);
-        // int32_t corner_bottom_right_tile = hash::get(world->atlas.tiles_by_name, tile::WallCornerBottomRight, 0);
+        int32_t wall_corner_top_left_tile = hash::get(game->atlas.tiles_by_name, tile::WallCornerTopLeft, 0);
+        int32_t wall_horizontal_tile = hash::get(game->atlas.tiles_by_name, tile::WallHorizontal, 0);
+        int32_t wall_corner_top_right_tile = hash::get(game->atlas.tiles_by_name, tile::WallCornerTopRight, 0);
+        int32_t wall_left_tile = hash::get(game->atlas.tiles_by_name, tile::WallLeft, 0);
+        int32_t wall_right_tile = hash::get(game->atlas.tiles_by_name, tile::WallRight, 0);
+        int32_t wall_corner_bottom_left_tile = hash::get(game->atlas.tiles_by_name, tile::WallCornerBottomLeft, 0);
+        int32_t wall_corner_bottom_right_tile = hash::get(game->atlas.tiles_by_name, tile::WallCornerBottomRight, 0);
+        int32_t corridor_corner_up_right_tile = hash::get(game->atlas.tiles_by_name, tile::CorridorCornerUpRight, 0);
+        int32_t corridor_corner_up_left_tile = hash::get(game->atlas.tiles_by_name, tile::CorridorCornerUpLeft, 0);
+        int32_t corridor_corner_down_right_tile = hash::get(game->atlas.tiles_by_name, tile::CorridorCornerDownRight, 0);
+        int32_t corridor_corner_down_left_tile = hash::get(game->atlas.tiles_by_name, tile::CorridorCornerDownLeft, 0);
 
-        auto place_floor = [&](line::Coordinate prev, line::Coordinate coord, line::Coordinate next) {
+        int32_t debug_tile = hash::get(game->atlas.tiles_by_name, tile::Missing, 0);
+
+        // Added walls which needs to be properly placed.
+        Hash<bool> placeholder_walls = Hash<bool>(allocator);
+
+        // Function to iterate through corridors, applying a function on each coordinate.
+        auto iterate_corridor = [&](std::function<void(line::Coordinate prev, line::Coordinate coord, line::Coordinate next)> apply) {
+            for (auto iter = array::begin(corridors); iter != array::end(corridors); ++iter) {
+                Corridor corridor = *iter;
+
+                GenRoom start_room = hash::get(rooms, corridor.from_room_index, {});
+                GenRoom to_room = hash::get(rooms, corridor.to_room_index, {});
+
+                line::Coordinate a = {start_room.x + start_room.w / 2, start_room.y + start_room.h / 2};
+                line::Coordinate b = {to_room.x + to_room.w / 2, to_room.y + to_room.h / 2};
+
+                Array<line::Coordinate> coordinates = line::zig_zag(allocator, a, b);
+
+                for (int32_t line_i = 0; line_i < (int32_t)array::size(coordinates); ++line_i) {
+                    line::Coordinate prev;
+                    if (line_i > 0) {
+                        prev = coordinates[line_i - 1];
+                    } else {
+                        prev.x = -1;
+                        prev.y = -1;
+                    }
+
+                    line::Coordinate coord = coordinates[line_i];
+
+                    // Don't place corridors if we're inside the start or to room.
+                    // But place corridor in the wall of the rooms.
+                    bool inside_start_room =
+                        coord.x > start_room.x &&
+                        coord.y > start_room.y &&
+                        coord.x < start_room.x + start_room.w - 1 &&
+                        coord.y < start_room.y + start_room.h - 1;
+
+                    bool inside_to_room =
+                        coord.x > to_room.x &&
+                        coord.y > to_room.y &&
+                        coord.x < to_room.x + to_room.w - 1 &&
+                        coord.y < to_room.y + to_room.h - 1;
+
+                    if (inside_start_room || inside_to_room) {
+                        continue;
+                    }
+
+                    line::Coordinate next;
+                    if (line_i < (int32_t)array::size(coordinates) - 1) {
+                        next = coordinates[line_i + 1];
+                    } else {
+                        next.x = -1;
+                        next.y = -1;
+                    }
+
+                    apply(prev, coord, next);
+                }
+            }
+        };
+
+        // Dig out corridors
+        iterate_corridor([&](line::Coordinate prev, line::Coordinate coord, line::Coordinate next) {
+            (void)prev;
+            (void)next;
             hash::set(tiles, index(coord.x, coord.y, map_width), {floor_tile});
+        });
 
+        // Place placeholder walls
+        iterate_corridor([&](line::Coordinate prev, line::Coordinate coord, line::Coordinate next) {
             // Valid next and prev
             if (prev.x >= 0 && next.x >= 0) {
                 if (prev.x != next.x && prev.y == next.y) { // Horizontal line
                     int32_t above = index(coord.x, coord.y - 1, map_width);
                     int32_t below = index(coord.x, coord.y + 1, map_width);
 
-                    if (!hash::has(tiles, above)) {
-                        hash::set(tiles, above, {horizontal_tile});
+                    if (!hash::has(tiles, above) || hash::get(tiles, above, {}).index != floor_tile) {
+                        hash::set(placeholder_walls, above, true);
                     }
 
-                    if (!hash::has(tiles, below)) {
-                        hash::set(tiles, below, {horizontal_tile});
+                    if (!hash::has(tiles, below) || hash::get(tiles, below, {}).index != floor_tile) {
+                        hash::set(placeholder_walls, below, true);
                     }
-
-                    // TODO Change into a corner wall
                 } else if (prev.x == next.x && prev.y != next.y) { // Vertical line
                     int32_t left = index(coord.x - 1, coord.y, map_width);
                     int32_t right = index(coord.x + 1, coord.y, map_width);
 
-                    if (!hash::has(tiles, left)) {
-                        hash::set(tiles, left, {left_tile});
+                    if (!hash::has(tiles, left) || hash::get(tiles, left, {}).index != floor_tile) {
+                        hash::set(placeholder_walls, left, true);
                     }
 
-                    if (!hash::has(tiles, right)) {
-                        hash::set(tiles, right, {right_tile});
+                    if (!hash::has(tiles, right) || hash::get(tiles, right, {}).index != floor_tile) {
+                        hash::set(placeholder_walls, right, true);
+                    }
+                } else { // Corner
+                    for (int y = -1; y <= 1; ++y) {
+                        for (int x = -1; x <= 1; ++x) {
+                            if (x == 0 && y == 0) {
+                                continue;
+                            }
+
+                            if (coord.x - x == next.x && coord.y - y == next.y ||
+                                coord.x - x == prev.x && coord.y - y == prev.y) {
+                                continue;
+                            }
+
+                            int32_t adjacent_index = index(coord.x - x, coord.y - y, map_width);
+
+                            if (!hash::has(tiles, adjacent_index) || hash::get(tiles, adjacent_index, {}).index != floor_tile) {
+                                hash::set(placeholder_walls, adjacent_index, true);
+                            }
+                        }
                     }
                 }
+            }
+        });
 
-                // TODO corners
+        auto is_horizontal_wall_tile = [&](int32_t tile) {
+            return (tile == wall_horizontal_tile || tile == wall_corner_top_left_tile || tile == wall_corner_top_right_tile || tile == wall_corner_bottom_left_tile || tile == wall_corner_bottom_right_tile);
+        };
+
+        auto is_vertical_wall_tile = [&](int32_t tile) {
+            return (tile == wall_left_tile || tile == wall_right_tile);
+        };
+
+        // Function to update the correct wall tile on a coordinate. Depends on surrounding walls and placeholder walls.
+        auto place_wall = [&](int32_t index_wall) {
+            int32_t coord_x, coord_y;
+            coord(index_wall, coord_x, coord_y, map_width);
+
+            const int32_t index_nw = index(coord_x - 1, coord_y - 1, map_width);
+            const int32_t index_n = index(coord_x, coord_y - 1, map_width);
+            const int32_t index_ne = index(coord_x + 1, coord_y - 1, map_width);
+            const int32_t index_w = index(coord_x - 1, coord_y, map_width);
+            const int32_t index_e = index(coord_x + 1, coord_y, map_width);
+            const int32_t index_sw = index(coord_x - 1, coord_y + 1, map_width);
+            const int32_t index_s = index(coord_x, coord_y + 1, map_width);
+            const int32_t index_se = index(coord_x + 1, coord_y + 1, map_width);
+
+            const bool wall_nw = (hash::has(tiles, index_nw) && hash::get(tiles, index_nw, {}).index != floor_tile) || hash::has(placeholder_walls, index_nw);
+            const bool wall_n = (hash::has(tiles, index_n) && hash::get(tiles, index_n, {}).index != floor_tile) || hash::has(placeholder_walls, index_n);
+            const bool wall_ne = (hash::has(tiles, index_ne) && hash::get(tiles, index_ne, {}).index != floor_tile) || hash::has(placeholder_walls, index_ne);
+            const bool wall_w = (hash::has(tiles, index_w) && hash::get(tiles, index_w, {}).index != floor_tile) || hash::has(placeholder_walls, index_w);
+            const bool wall_e = (hash::has(tiles, index_e) && hash::get(tiles, index_e, {}).index != floor_tile) || hash::has(placeholder_walls, index_e);
+            const bool wall_sw = (hash::has(tiles, index_sw) && hash::get(tiles, index_sw, {}).index != floor_tile) || hash::has(placeholder_walls, index_sw);
+            const bool wall_s = (hash::has(tiles, index_s) && hash::get(tiles, index_s, {}).index != floor_tile) || hash::has(placeholder_walls, index_s);
+            const bool wall_se = (hash::has(tiles, index_sw) && hash::get(tiles, index_se, {}).index != floor_tile) || hash::has(placeholder_walls, index_se);
+
+            const bool floor_nw = hash::has(tiles, index_nw) && hash::get(tiles, index_nw, {}).index == floor_tile;
+            const bool floor_n = hash::has(tiles, index_n) && hash::get(tiles, index_n, {}).index == floor_tile;
+            const bool floor_ne = hash::has(tiles, index_ne) && hash::get(tiles, index_ne, {}).index == floor_tile;
+            const bool floor_w = hash::has(tiles, index_w) && hash::get(tiles, index_w, {}).index == floor_tile;
+            const bool floor_e = hash::has(tiles, index_e) && hash::get(tiles, index_e, {}).index == floor_tile;
+            const bool floor_sw = hash::has(tiles, index_sw) && hash::get(tiles, index_sw, {}).index == floor_tile;
+            const bool floor_s = hash::has(tiles, index_s) && hash::get(tiles, index_s, {}).index == floor_tile;
+            const bool floor_se = hash::has(tiles, index_sw) && hash::get(tiles, index_se, {}).index == floor_tile;
+
+            // This is a bit tricky. The only way to know whether a corner goes out a horizontal or vertical wall is to look at orientat the original room's tiles.
+            // Therefore, we must first see that we don't have any placeholder walls, because tiles might already have been filled out with walls once we get here.
+            const bool wall_w_horizontal = !hash::has(placeholder_walls, index_w) && wall_w && is_horizontal_wall_tile(hash::get(tiles, index_w, {}).index);
+            const bool wall_e_horizontal = !hash::has(placeholder_walls, index_e) && wall_e && is_horizontal_wall_tile(hash::get(tiles, index_e, {}).index);
+            const bool wall_n_vertical = !hash::has(placeholder_walls, index_n) && wall_n && is_vertical_wall_tile(hash::get(tiles, index_n, {}).index);
+            const bool wall_s_vertical = !hash::has(placeholder_walls, index_s) && wall_s && is_vertical_wall_tile(hash::get(tiles, index_s, {}).index);
+
+            if (wall_n && wall_s && !wall_w && floor_e) { // Vertical wall left of corridor
+                hash::set(tiles, index_wall, {wall_right_tile});
+            } else if (wall_n && wall_s && floor_w && !floor_e) { // Vertical wall right of corridor
+                hash::set(tiles, index_wall, {wall_left_tile});
+            } else if (wall_w && wall_e && floor_s && !wall_n) { // Horizontal wall, above corridor
+                hash::set(tiles, index_wall, {wall_horizontal_tile});
+            } else if (wall_w && wall_e && floor_n && !wall_s) { // Horizontal wall, below corridor
+                hash::set(tiles, index_wall, {wall_horizontal_tile});
+            } else if (wall_w && wall_w_horizontal && wall_n && floor_s && floor_e) { // Corner left and up, floor right and down for corridors going upward
+                hash::set(tiles, index_wall, {wall_corner_bottom_right_tile});
+            } else if (wall_e && wall_e_horizontal && wall_n && floor_s && floor_w) { // Corner right and up, floor left and down for corridors going upward
+                hash::set(tiles, index_wall, {wall_corner_bottom_left_tile});
+            } else if (wall_w && wall_w_horizontal && floor_n && wall_s && floor_e) { // Corner left and down, floor right and up for corridors going downward
+                hash::set(tiles, index_wall, {wall_corner_top_right_tile});
+            } else if (wall_e && wall_e_horizontal && floor_n && wall_s && floor_w) { // Corner right and down, floor left and up for corridors going downward
+                hash::set(tiles, index_wall, {wall_corner_top_left_tile});
+            } else if (wall_e && wall_n && wall_n_vertical && floor_s && floor_w) { // Corner right and up, floor left and down for corridors going right
+                hash::set(tiles, index_wall, {corridor_corner_up_right_tile});
+            } else if (wall_e && wall_s && wall_s_vertical && floor_n && floor_w) { // Corner right and down, floor left and up for corridors going right
+                hash::set(tiles, index_wall, {corridor_corner_down_right_tile});
+            } else if (wall_w && wall_n && wall_n_vertical && floor_s && floor_e) { // Corner left and up, floor right and down for corridors going left
+                hash::set(tiles, index_wall, {corridor_corner_up_left_tile});
+            } else if (wall_w && wall_s && wall_s_vertical && floor_n && floor_e) { // Corner left and down, floor right and up for corridors going left
+                hash::set(tiles, index_wall, {corridor_corner_down_left_tile});
+            } else {
+                hash::set(tiles, index_wall, {debug_tile});
             }
         };
 
-        for (auto iter = array::begin(corridors); iter != array::end(corridors); ++iter) {
-            Corridor corridor = *iter;
-
-            GenRoom start_room = hash::get(rooms, corridor.from_room_index, {});
-            GenRoom to_room = hash::get(rooms, corridor.to_room_index, {});
-
-            line::Coordinate a = {start_room.x + start_room.w / 2, start_room.y + start_room.h / 2};
-            line::Coordinate b = {to_room.x + to_room.w / 2, to_room.y + to_room.h / 2};
-
-            Array<line::Coordinate> coordinates = line::zig_zag(allocator, a, b);
-
-            for (int32_t line_i = 0; line_i < (int32_t)array::size(coordinates); ++line_i) {
-                line::Coordinate prev;
-                if (line_i > 0) {
-                    prev = coordinates[line_i - 1];
-                } else {
-                    prev.x = -1;
-                    prev.y = -1;
-                }
-
-                line::Coordinate coord = coordinates[line_i];
-
-                line::Coordinate next;
-                if (line_i < (int32_t)array::size(coordinates) - 1) {
-                    next = coordinates[line_i + 1];
-                } else {
-                    next.x = -1;
-                    next.y = -1;
-                }
-
-                place_floor(prev, coord, next);
-            }
+        // Update placeholder walls
+        for (auto iter = hash::begin(placeholder_walls); iter != hash::end(placeholder_walls); ++iter) {
+            int32_t index = (int32_t)iter->key;
+            place_wall(index);
         }
     }
 

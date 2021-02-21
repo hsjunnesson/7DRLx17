@@ -12,6 +12,10 @@
         "ghost": 23,
         "wall_corner_bottom_left": 28,
         "wall_corner_bottom_right": 31,
+        "corridor_corner_up_right": 42,
+        "corridor_corner_up_left": 43,
+        "corridor_corner_down_right": 44,
+        "corridor_corner_down_left": 45,
         "snake": 18,
         "missing": 140
     }

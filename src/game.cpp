@@ -1,9 +1,9 @@
 #include <cstdlib>
 
 #include "dungen.h"
+#include "game.h"
 #include "log.h"
 #include "texture.h"
-#include "game.h"
 
 namespace game {
 

@@ -7,8 +7,8 @@
 #include <SDL2/SDL.h>
 #pragma warning(pop)
 
-#include "gui.h"
 #include "game.h"
+#include "gui.h"
 
 namespace engine {
 using namespace foundation;

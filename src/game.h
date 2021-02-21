@@ -29,6 +29,11 @@ static uint64_t WallLeft = hash("wall_left");
 static uint64_t WallRight = hash("wall_right");
 static uint64_t WallCornerBottomLeft = hash("wall_corner_bottom_left");
 static uint64_t WallCornerBottomRight = hash("wall_corner_bottom_right");
+static uint64_t CorridorCornerUpRight = hash("corridor_corner_up_right");
+static uint64_t CorridorCornerUpLeft = hash("corridor_corner_up_left");
+static uint64_t CorridorCornerDownRight = hash("corridor_corner_down_right");
+static uint64_t CorridorCornerDownLeft = hash("corridor_corner_down_left");
+
 static uint64_t Floor = hash("floor");
 
 static uint64_t Ghost = hash("ghost");
@@ -43,7 +48,7 @@ static uint64_t Missing = hash("missing");
  * 
  */
 struct Tile {
-    int32_t index = 0;
+    int32_t index = -1;
     SDL_RendererFlip flip = SDL_FLIP_NONE;
     double angle = 0.0;
 };
