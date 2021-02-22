@@ -570,9 +570,9 @@ int dungen_thread(void *data) {
         }
     }
 
-    // Update game's tiles.
+    // Update game's terrain tiles.
     if (SDL_LockMutex(game->mutex) == 0) {
-        game->tiles = tiles;
+        game->terrain_tiles = tiles;
         game->max_width = map_width;
         SDL_UnlockMutex(game->mutex);
     } else {

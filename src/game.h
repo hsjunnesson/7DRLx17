@@ -104,7 +104,7 @@ struct Game {
     int zoom_level;
 
     // The The hash of tile states.
-    Hash<Tile> tiles;
+    Hash<Tile> terrain_tiles;
 
     // The maximum width in tiles. Needed for index to coord translation
     uint32_t max_width;

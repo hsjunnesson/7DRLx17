@@ -24,7 +24,7 @@ Game::Game(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_confi
 , x_offset(0)
 , y_offset(0)
 , zoom_level(1)
-, tiles(Hash<Tile>(allocator))
+, terrain_tiles(Hash<Tile>(allocator))
 , max_width(0) {
     if (!hash::has(atlas.tiles_by_name, tile::Missing)) {
         log_fatal("Atlas does not have the 'missing' named tile.");
@@ -46,14 +46,17 @@ void update(Game &game, uint32_t t, double dt) {
     (void)dt;
 
     switch (game.game_state) {
-    case GameState::None:
+    case GameState::None: {
         transition(game, GameState::Initializing);
         break;
-    case GameState::Playing:
+    }
+    case GameState::Playing: {
         break;
-    case GameState::Quitting:
+    }
+    case GameState::Quitting: {
         transition(game, GameState::Terminate);
         break;
+    }
     default:
         break;
     }
@@ -104,7 +107,7 @@ void render(Game &game, SDL_Renderer *renderer) {
     int tile_size = game.atlas.tile_size;
     int gutter = game.atlas.gutter;
 
-    for (const Hash<Tile>::Entry *it = hash::begin(game.tiles); it != hash::end(game.tiles); ++it) {
+    for (const Hash<Tile>::Entry *it = hash::begin(game.terrain_tiles); it != hash::end(game.terrain_tiles); ++it) {
         uint64_t pos_index = it->key;
         Tile tile = it->value;
         int tile_index = tile.index;
