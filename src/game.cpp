@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <functional>
 
 #include "dungen.h"
 #include "game.h"
@@ -25,6 +26,7 @@ Game::Game(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_confi
 , y_offset(0)
 , zoom_level(1)
 , terrain_tiles(Hash<Tile>(allocator))
+, entity_tiles(Hash<Tile>(allocator))
 , max_width(0) {
     if (!hash::has(atlas.tiles_by_name, tile::Missing)) {
         log_fatal("Atlas does not have the 'missing' named tile.");
@@ -107,14 +109,8 @@ void render(Game &game, SDL_Renderer *renderer) {
     int tile_size = game.atlas.tile_size;
     int gutter = game.atlas.gutter;
 
-    for (const Hash<Tile>::Entry *it = hash::begin(game.terrain_tiles); it != hash::end(game.terrain_tiles); ++it) {
-        uint64_t pos_index = it->key;
-        Tile tile = it->value;
+    std::function draw_tile = [&](uint64_t pos_index, Tile tile) {
         int tile_index = tile.index;
-
-        if (tile_index == tile::Floor) {
-            continue;
-        }
 
         SDL_Rect source;
         int32_t source_x, source_y;
@@ -133,6 +129,18 @@ void render(Game &game, SDL_Renderer *renderer) {
         destination.h = tile_size * game.zoom_level;
 
         SDL_RenderCopyEx(renderer, game.atlas.texture, &source, &destination, tile.angle, nullptr, tile.flip);
+    };
+
+    for (const Hash<Tile>::Entry *it = hash::begin(game.terrain_tiles); it != hash::end(game.terrain_tiles); ++it) {
+        uint64_t pos_index = it->key;
+        Tile tile = it->value;
+        draw_tile(pos_index, tile);
+    }
+
+    for (const Hash<Tile>::Entry *it = hash::begin(game.entity_tiles); it != hash::end(game.entity_tiles); ++it) {
+        uint64_t pos_index = it->key;
+        Tile tile = it->value;
+        draw_tile(pos_index, tile);
     }
 
     SDL_UnlockMutex(game.mutex);
@@ -158,9 +166,10 @@ void transition(Game &game, GameState game_state) {
     game.game_state = game_state;
 
     // When entering a new game state
-    switch (game_state) {
-    case GameState::None:
+    switch (game.game_state) {
+    case GameState::None: {
         break;
+    }
     case GameState::Initializing: {
         log_info("Initializing");
         transition(game, GameState::DunGen);
@@ -172,15 +181,18 @@ void transition(Game &game, GameState game_state) {
         game.dungen_thread = threadID;
         break;
     }
-    case GameState::Playing:
+    case GameState::Playing: {
         log_info("Playing");
         break;
-    case GameState::Quitting:
+    }
+    case GameState::Quitting: {
         log_info("Quitting");
         break;
-    case GameState::Terminate:
+    }
+    case GameState::Terminate: {
         log_info("Terminating");
         break;
+    }
     }
 
     SDL_UnlockMutex(game.mutex);

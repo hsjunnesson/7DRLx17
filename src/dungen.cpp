@@ -18,18 +18,6 @@
 namespace game {
 using namespace foundation;
 
-struct GenRoom {
-    int32_t x, y;
-    int32_t w, h;
-    bool start_room = false;
-    bool boss_room = false;
-};
-
-struct Corridor {
-    int32_t from_room_index;
-    int32_t to_room_index;
-};
-
 int dungen_thread(void *data) {
     Game *game = (Game *)data;
     if (!game) {
@@ -39,9 +27,9 @@ int dungen_thread(void *data) {
     engine::DunGenParams params;
     config::read("assets/dungen_params.json", &params);
 
-    TempAllocator1024 allocator;
+    TempAllocator1024 ta;
 
-    Hash<Tile> tiles = Hash<Tile>(allocator);
+    Hash<Tile> tiles = Hash<Tile>(game->allocator);
 
     int32_t map_width = params.map_width();
 
@@ -58,8 +46,6 @@ int dungen_thread(void *data) {
     std::random_device random_device;
     std::mt19937 random_engine(random_device());
     unsigned int seed = (unsigned int)time(nullptr);
-    //    seed = 1613938286;
-    //    seed = 1613939362;
     random_engine.seed(seed);
 
     log_debug("Dungen seeded with %u", seed);
@@ -72,8 +58,8 @@ int dungen_thread(void *data) {
     int32_t boss_room_index = 0;
 
     // Rooms and corridors collections
-    Hash<GenRoom> rooms = Hash<GenRoom>(allocator);
-    Array<Corridor> corridors = Array<Corridor>(allocator);
+    Hash<Room> rooms = Hash<Room>(game->allocator);
+    Array<Corridor> corridors = Array<Corridor>(game->allocator);
 
     // Decide whether main orientation is vertical or horizontal
     {
@@ -144,7 +130,7 @@ int dungen_thread(void *data) {
             const int32_t room_x = x_offset(random_engine);
             const int32_t room_y = y_offset(random_engine);
 
-            GenRoom room = GenRoom{room_x, room_y, room_width, room_height};
+            Room room = Room{room_index, room_x, room_y, room_width, room_height};
 
             if (room_index == start_room_index) {
                 room.start_room = true;
@@ -166,7 +152,7 @@ int dungen_thread(void *data) {
         int32_t boss_room_x, boss_room_y;
         coord(boss_room_index, boss_room_x, boss_room_y, rooms_count_wide);
 
-        Array<line::Coordinate> shortest_line_path = line::zig_zag(allocator, {(int32_t)start_room_x, (int32_t)start_room_y}, {(int32_t)boss_room_x, (int32_t)boss_room_y});
+        Array<line::Coordinate> shortest_line_path = line::zig_zag(ta, {(int32_t)start_room_x, (int32_t)start_room_y}, {(int32_t)boss_room_x, (int32_t)boss_room_y});
 
         for (int32_t i = 0; i < (int32_t)array::size(shortest_line_path) - 1; ++i) {
             line::Coordinate from = shortest_line_path[i];
@@ -181,14 +167,14 @@ int dungen_thread(void *data) {
 
     // Expand some branches
     {
-        Array<Corridor> branches = Array<Corridor>(allocator);
+        Array<Corridor> branches = Array<Corridor>(ta);
 
         // Returns a corridor to a random adjacent room, which isn't already connected to this room.
         auto expand = [&](int32_t room_index) {
             int32_t room_x, room_y;
             coord(room_index, room_x, room_y, rooms_count_wide);
 
-            Array<int32_t> available_adjacent_room_indices = Array<int32_t>(allocator);
+            Array<int32_t> available_adjacent_room_indices = Array<int32_t>(ta);
 
             auto adjacent_coordinates = {
                 line::Coordinate{room_x + 1, room_y},
@@ -262,7 +248,7 @@ int dungen_thread(void *data) {
 
     // Prune disconnected rooms
     {
-        Queue<int32_t> disconnected_room_indices = Queue<int32_t>(allocator);
+        Queue<int32_t> disconnected_room_indices = Queue<int32_t>(ta);
         for (int32_t i = 0; i < params.room_count(); ++i) {
             bool found = false;
 
@@ -287,23 +273,14 @@ int dungen_thread(void *data) {
 
     // Draw rooms as tiles
     {
+        const int32_t floor_tile = hash::get(game->atlas.tiles_by_name, tile::Floor, 0);
+
         for (auto iter = hash::begin(rooms); iter != hash::end(rooms); ++iter) {
-            GenRoom room = iter->value;
+            Room room = iter->value;
 
             for (int y = 0; y < room.h; ++y) {
                 for (int x = 0; x < room.w; ++x) {
                     int32_t tile_index = 0;
-                    int32_t floor_tile = hash::get(game->atlas.tiles_by_name, tile::Floor, 0);
-
-                    if (room.start_room) {
-                        if (x == room.w / 2 && y == room.h / 2) {
-                            floor_tile = hash::get(game->atlas.tiles_by_name, tile::Snake, 0);
-                        }
-                    } else if (room.boss_room) {
-                        if (x == room.w / 2 && y == room.h / 2) {
-                            floor_tile = hash::get(game->atlas.tiles_by_name, tile::Ghost, 0);
-                        }
-                    }
 
                     if (y == 0) {
                         if (x == 0) {
@@ -337,36 +314,36 @@ int dungen_thread(void *data) {
 
     // Draw corridors as tiles
     {
-        int32_t floor_tile = hash::get(game->atlas.tiles_by_name, tile::Floor, 0);
-        int32_t wall_corner_top_left_tile = hash::get(game->atlas.tiles_by_name, tile::WallCornerTopLeft, 0);
-        int32_t wall_horizontal_tile = hash::get(game->atlas.tiles_by_name, tile::WallHorizontal, 0);
-        int32_t wall_corner_top_right_tile = hash::get(game->atlas.tiles_by_name, tile::WallCornerTopRight, 0);
-        int32_t wall_left_tile = hash::get(game->atlas.tiles_by_name, tile::WallLeft, 0);
-        int32_t wall_right_tile = hash::get(game->atlas.tiles_by_name, tile::WallRight, 0);
-        int32_t wall_corner_bottom_left_tile = hash::get(game->atlas.tiles_by_name, tile::WallCornerBottomLeft, 0);
-        int32_t wall_corner_bottom_right_tile = hash::get(game->atlas.tiles_by_name, tile::WallCornerBottomRight, 0);
-        int32_t corridor_corner_up_right_tile = hash::get(game->atlas.tiles_by_name, tile::CorridorCornerUpRight, 0);
-        int32_t corridor_corner_up_left_tile = hash::get(game->atlas.tiles_by_name, tile::CorridorCornerUpLeft, 0);
-        int32_t corridor_corner_down_right_tile = hash::get(game->atlas.tiles_by_name, tile::CorridorCornerDownRight, 0);
-        int32_t corridor_corner_down_left_tile = hash::get(game->atlas.tiles_by_name, tile::CorridorCornerDownLeft, 0);
+        const int32_t floor_tile = hash::get(game->atlas.tiles_by_name, tile::Floor, 0);
+        const int32_t wall_corner_top_left_tile = hash::get(game->atlas.tiles_by_name, tile::WallCornerTopLeft, 0);
+        const int32_t wall_horizontal_tile = hash::get(game->atlas.tiles_by_name, tile::WallHorizontal, 0);
+        const int32_t wall_corner_top_right_tile = hash::get(game->atlas.tiles_by_name, tile::WallCornerTopRight, 0);
+        const int32_t wall_left_tile = hash::get(game->atlas.tiles_by_name, tile::WallLeft, 0);
+        const int32_t wall_right_tile = hash::get(game->atlas.tiles_by_name, tile::WallRight, 0);
+        const int32_t wall_corner_bottom_left_tile = hash::get(game->atlas.tiles_by_name, tile::WallCornerBottomLeft, 0);
+        const int32_t wall_corner_bottom_right_tile = hash::get(game->atlas.tiles_by_name, tile::WallCornerBottomRight, 0);
+        const int32_t corridor_corner_up_right_tile = hash::get(game->atlas.tiles_by_name, tile::CorridorCornerUpRight, 0);
+        const int32_t corridor_corner_up_left_tile = hash::get(game->atlas.tiles_by_name, tile::CorridorCornerUpLeft, 0);
+        const int32_t corridor_corner_down_right_tile = hash::get(game->atlas.tiles_by_name, tile::CorridorCornerDownRight, 0);
+        const int32_t corridor_corner_down_left_tile = hash::get(game->atlas.tiles_by_name, tile::CorridorCornerDownLeft, 0);
 
-        int32_t debug_tile = hash::get(game->atlas.tiles_by_name, tile::Missing, 0);
+        const int32_t debug_tile = hash::get(game->atlas.tiles_by_name, tile::Missing, 0);
 
         // Added walls which needs to be properly placed.
-        Hash<bool> placeholder_walls = Hash<bool>(allocator);
+        Hash<bool> placeholder_walls = Hash<bool>(ta);
 
         // Function to iterate through corridors, applying a function on each coordinate.
         auto iterate_corridor = [&](std::function<void(line::Coordinate prev, line::Coordinate coord, line::Coordinate next)> apply) {
             for (auto iter = array::begin(corridors); iter != array::end(corridors); ++iter) {
                 Corridor corridor = *iter;
 
-                GenRoom start_room = hash::get(rooms, corridor.from_room_index, {});
-                GenRoom to_room = hash::get(rooms, corridor.to_room_index, {});
+                Room start_room = hash::get(rooms, corridor.from_room_index, {});
+                Room to_room = hash::get(rooms, corridor.to_room_index, {});
 
                 line::Coordinate a = {start_room.x + start_room.w / 2, start_room.y + start_room.h / 2};
                 line::Coordinate b = {to_room.x + to_room.w / 2, to_room.y + to_room.h / 2};
 
-                Array<line::Coordinate> coordinates = line::zig_zag(allocator, a, b);
+                Array<line::Coordinate> coordinates = line::zig_zag(ta, a, b);
 
                 for (int32_t line_i = 0; line_i < (int32_t)array::size(coordinates); ++line_i) {
                     line::Coordinate prev;
@@ -570,7 +547,7 @@ int dungen_thread(void *data) {
         }
     }
 
-    // Update game's terrain tiles.
+    // Update game's state.
     if (SDL_LockMutex(game->mutex) == 0) {
         game->terrain_tiles = tiles;
         game->max_width = map_width;

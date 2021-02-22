@@ -54,6 +54,27 @@ struct Tile {
 };
 
 /**
+ * @brief A room
+ * 
+ */
+struct Room {
+    int32_t room_index;
+    int32_t x, y;
+    int32_t w, h;
+    bool start_room = false;
+    bool boss_room = false;
+};
+
+/**
+ * @brief A corridor between rooms
+ * 
+ */
+struct Corridor {
+    int32_t from_room_index;
+    int32_t to_room_index;
+};
+
+/**
  * @brief An enum that describes a specific game state.
  * 
  */
@@ -103,8 +124,11 @@ struct Game {
     // The camera zoom
     int zoom_level;
 
-    // The The hash of tile states.
+    // The hash of terrain tile states.
     Hash<Tile> terrain_tiles;
+
+    // The hash of entity tile states.
+    Hash<Tile> entity_tiles;
 
     // The maximum width in tiles. Needed for index to coord translation
     uint32_t max_width;
