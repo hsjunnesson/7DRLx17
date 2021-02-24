@@ -107,7 +107,7 @@ enum class GameState {
  */
 struct Level {
     int depth;
-}
+};
 
 // The game state.
 struct Game {
