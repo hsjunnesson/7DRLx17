@@ -22,6 +22,7 @@ Game::Game(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_confi
 , mutex(SDL_CreateMutex())
 , dungen_thread(nullptr)
 , atlas(texture::Atlas(allocator, renderer, atlas_config_filename))
+, level(Level{})
 , x_offset(0)
 , y_offset(0)
 , zoom_level(1)
@@ -175,8 +176,14 @@ void transition(Game &game, GameState game_state) {
         transition(game, GameState::DunGen);
         break;
     }
+
     case GameState::DunGen: {
         log_info("DunGen started");
+
+        if (game.level.depth == 0) {
+            game.level.depth = 1;
+        }
+
         SDL_Thread *threadID = SDL_CreateThread(dungen_thread, "dungen", &game);
         game.dungen_thread = threadID;
         break;

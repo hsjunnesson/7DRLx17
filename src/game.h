@@ -34,6 +34,9 @@ static uint64_t CorridorCornerUpLeft = hash("corridor_corner_up_left");
 static uint64_t CorridorCornerDownRight = hash("corridor_corner_down_right");
 static uint64_t CorridorCornerDownLeft = hash("corridor_corner_down_left");
 
+static uint64_t StairsUp = hash("stairs_up");
+static uint64_t StairsDown = hash("stairs_down");
+
 static uint64_t Floor = hash("floor");
 
 static uint64_t Ghost = hash("ghost");
@@ -98,6 +101,14 @@ enum class GameState {
     Terminate,
 };
 
+/**
+ * @brief A dungeon level.
+ * 
+ */
+struct Level {
+    int depth;
+}
+
 // The game state.
 struct Game {
     Game(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_config_filename);
@@ -117,6 +128,9 @@ struct Game {
 
     // The texture atlas
     texture::Atlas atlas;
+
+    // The depth level of the current game.
+    Level level;
 
     // The camera x and y offset
     int x_offset, y_offset;

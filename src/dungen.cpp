@@ -27,9 +27,9 @@ int dungen_thread(void *data) {
     engine::DunGenParams params;
     config::read("assets/dungen_params.json", &params);
 
-    TempAllocator1024 ta;
+    TempAllocator1024 allocator;
 
-    Hash<Tile> tiles = Hash<Tile>(game->allocator);
+    Hash<Tile> terrain_tiles = Hash<Tile>(allocator);
 
     int32_t map_width = params.map_width();
 
@@ -46,6 +46,7 @@ int dungen_thread(void *data) {
     std::random_device random_device;
     std::mt19937 random_engine(random_device());
     unsigned int seed = (unsigned int)time(nullptr);
+    // seed = 1614001918;
     random_engine.seed(seed);
 
     log_debug("Dungen seeded with %u", seed);
@@ -58,8 +59,8 @@ int dungen_thread(void *data) {
     int32_t boss_room_index = 0;
 
     // Rooms and corridors collections
-    Hash<Room> rooms = Hash<Room>(game->allocator);
-    Array<Corridor> corridors = Array<Corridor>(game->allocator);
+    Hash<Room> rooms = Hash<Room>(allocator);
+    Array<Corridor> corridors = Array<Corridor>(allocator);
 
     // Decide whether main orientation is vertical or horizontal
     {
@@ -152,7 +153,7 @@ int dungen_thread(void *data) {
         int32_t boss_room_x, boss_room_y;
         coord(boss_room_index, boss_room_x, boss_room_y, rooms_count_wide);
 
-        Array<line::Coordinate> shortest_line_path = line::zig_zag(ta, {(int32_t)start_room_x, (int32_t)start_room_y}, {(int32_t)boss_room_x, (int32_t)boss_room_y});
+        Array<line::Coordinate> shortest_line_path = line::zig_zag(allocator, {(int32_t)start_room_x, (int32_t)start_room_y}, {(int32_t)boss_room_x, (int32_t)boss_room_y});
 
         for (int32_t i = 0; i < (int32_t)array::size(shortest_line_path) - 1; ++i) {
             line::Coordinate from = shortest_line_path[i];
@@ -167,14 +168,14 @@ int dungen_thread(void *data) {
 
     // Expand some branches
     {
-        Array<Corridor> branches = Array<Corridor>(ta);
+        Array<Corridor> branches = Array<Corridor>(allocator);
 
         // Returns a corridor to a random adjacent room, which isn't already connected to this room.
         auto expand = [&](int32_t room_index) {
             int32_t room_x, room_y;
             coord(room_index, room_x, room_y, rooms_count_wide);
 
-            Array<int32_t> available_adjacent_room_indices = Array<int32_t>(ta);
+            Array<int32_t> available_adjacent_room_indices = Array<int32_t>(allocator);
 
             auto adjacent_coordinates = {
                 line::Coordinate{room_x + 1, room_y},
@@ -248,7 +249,7 @@ int dungen_thread(void *data) {
 
     // Prune disconnected rooms
     {
-        Queue<int32_t> disconnected_room_indices = Queue<int32_t>(ta);
+        Queue<int32_t> disconnected_room_indices = Queue<int32_t>(allocator);
         for (int32_t i = 0; i < params.room_count(); ++i) {
             bool found = false;
 
@@ -274,6 +275,8 @@ int dungen_thread(void *data) {
     // Draw rooms as tiles
     {
         const int32_t floor_tile = hash::get(game->atlas.tiles_by_name, tile::Floor, 0);
+        const int32_t stairs_down_tile = hash::get(game->atlas.tiles_by_name, tile::StairsDown, 0);
+        const int32_t stairs_up_tile = hash::get(game->atlas.tiles_by_name, tile::StairsUp, 0);
 
         for (auto iter = hash::begin(rooms); iter != hash::end(rooms); ++iter) {
             Room room = iter->value;
@@ -306,13 +309,21 @@ int dungen_thread(void *data) {
                         tile_index = floor_tile;
                     }
 
-                    hash::set(tiles, index(room.x + x, room.y + y, map_width), {tile_index});
+                    hash::set(terrain_tiles, index(room.x + x, room.y + y, map_width), {tile_index});
                 }
+            }
+
+            if (room.start_room) {
+                // TODO: randomize this
+                hash::set(terrain_tiles, index(room.x + room.w / 2, room.y + room.h / 2, map_width), {stairs_up_tile});
+            } else if (room.boss_room) {
+                // TODO: randomize this
+                hash::set(terrain_tiles, index(room.x + room.w / 2, room.y + room.h / 2, map_width), {stairs_down_tile});
             }
         }
     }
 
-    // Draw corridors as tiles
+    // Draw corridors as terrain_tiles
     {
         const int32_t floor_tile = hash::get(game->atlas.tiles_by_name, tile::Floor, 0);
         const int32_t wall_corner_top_left_tile = hash::get(game->atlas.tiles_by_name, tile::WallCornerTopLeft, 0);
@@ -330,7 +341,7 @@ int dungen_thread(void *data) {
         const int32_t debug_tile = hash::get(game->atlas.tiles_by_name, tile::Missing, 0);
 
         // Added walls which needs to be properly placed.
-        Hash<bool> placeholder_walls = Hash<bool>(ta);
+        Hash<bool> placeholder_walls = Hash<bool>(allocator);
 
         // Function to iterate through corridors, applying a function on each coordinate.
         auto iterate_corridor = [&](std::function<void(line::Coordinate prev, line::Coordinate coord, line::Coordinate next)> apply) {
@@ -343,7 +354,7 @@ int dungen_thread(void *data) {
                 line::Coordinate a = {start_room.x + start_room.w / 2, start_room.y + start_room.h / 2};
                 line::Coordinate b = {to_room.x + to_room.w / 2, to_room.y + to_room.h / 2};
 
-                Array<line::Coordinate> coordinates = line::zig_zag(ta, a, b);
+                Array<line::Coordinate> coordinates = line::zig_zag(allocator, a, b);
 
                 for (int32_t line_i = 0; line_i < (int32_t)array::size(coordinates); ++line_i) {
                     line::Coordinate prev;
@@ -391,7 +402,7 @@ int dungen_thread(void *data) {
         iterate_corridor([&](line::Coordinate prev, line::Coordinate coord, line::Coordinate next) {
             (void)prev;
             (void)next;
-            hash::set(tiles, index(coord.x, coord.y, map_width), {floor_tile});
+            hash::set(terrain_tiles, index(coord.x, coord.y, map_width), {floor_tile});
         });
 
         // Place placeholder walls
@@ -402,22 +413,22 @@ int dungen_thread(void *data) {
                     int32_t above = index(coord.x, coord.y - 1, map_width);
                     int32_t below = index(coord.x, coord.y + 1, map_width);
 
-                    if (!hash::has(tiles, above) || hash::get(tiles, above, {}).index != floor_tile) {
+                    if (!hash::has(terrain_tiles, above) || hash::get(terrain_tiles, above, {}).index != floor_tile) {
                         hash::set(placeholder_walls, above, true);
                     }
 
-                    if (!hash::has(tiles, below) || hash::get(tiles, below, {}).index != floor_tile) {
+                    if (!hash::has(terrain_tiles, below) || hash::get(terrain_tiles, below, {}).index != floor_tile) {
                         hash::set(placeholder_walls, below, true);
                     }
                 } else if (prev.x == next.x && prev.y != next.y) { // Vertical line
                     int32_t left = index(coord.x - 1, coord.y, map_width);
                     int32_t right = index(coord.x + 1, coord.y, map_width);
 
-                    if (!hash::has(tiles, left) || hash::get(tiles, left, {}).index != floor_tile) {
+                    if (!hash::has(terrain_tiles, left) || hash::get(terrain_tiles, left, {}).index != floor_tile) {
                         hash::set(placeholder_walls, left, true);
                     }
 
-                    if (!hash::has(tiles, right) || hash::get(tiles, right, {}).index != floor_tile) {
+                    if (!hash::has(terrain_tiles, right) || hash::get(terrain_tiles, right, {}).index != floor_tile) {
                         hash::set(placeholder_walls, right, true);
                     }
                 } else { // Corner
@@ -434,7 +445,7 @@ int dungen_thread(void *data) {
 
                             int32_t adjacent_index = index(coord.x - x, coord.y - y, map_width);
 
-                            if (!hash::has(tiles, adjacent_index) || hash::get(tiles, adjacent_index, {}).index != floor_tile) {
+                            if (!hash::has(terrain_tiles, adjacent_index) || hash::get(terrain_tiles, adjacent_index, {}).index != floor_tile) {
                                 hash::set(placeholder_walls, adjacent_index, true);
                             }
                         }
@@ -457,23 +468,23 @@ int dungen_thread(void *data) {
             const int32_t index_s = index(coord_x, coord_y + 1, map_width);
             const int32_t index_se = index(coord_x + 1, coord_y + 1, map_width);
 
-            const bool wall_nw = (hash::has(tiles, index_nw) && hash::get(tiles, index_nw, {}).index != floor_tile) || hash::has(placeholder_walls, index_nw);
-            const bool wall_n = (hash::has(tiles, index_n) && hash::get(tiles, index_n, {}).index != floor_tile) || hash::has(placeholder_walls, index_n);
-            const bool wall_ne = (hash::has(tiles, index_ne) && hash::get(tiles, index_ne, {}).index != floor_tile) || hash::has(placeholder_walls, index_ne);
-            const bool wall_w = (hash::has(tiles, index_w) && hash::get(tiles, index_w, {}).index != floor_tile) || hash::has(placeholder_walls, index_w);
-            const bool wall_e = (hash::has(tiles, index_e) && hash::get(tiles, index_e, {}).index != floor_tile) || hash::has(placeholder_walls, index_e);
-            const bool wall_sw = (hash::has(tiles, index_sw) && hash::get(tiles, index_sw, {}).index != floor_tile) || hash::has(placeholder_walls, index_sw);
-            const bool wall_s = (hash::has(tiles, index_s) && hash::get(tiles, index_s, {}).index != floor_tile) || hash::has(placeholder_walls, index_s);
-            const bool wall_se = (hash::has(tiles, index_sw) && hash::get(tiles, index_se, {}).index != floor_tile) || hash::has(placeholder_walls, index_se);
+            const bool wall_nw = (hash::has(terrain_tiles, index_nw) && hash::get(terrain_tiles, index_nw, {}).index != floor_tile) || hash::has(placeholder_walls, index_nw);
+            const bool wall_n = (hash::has(terrain_tiles, index_n) && hash::get(terrain_tiles, index_n, {}).index != floor_tile) || hash::has(placeholder_walls, index_n);
+            const bool wall_ne = (hash::has(terrain_tiles, index_ne) && hash::get(terrain_tiles, index_ne, {}).index != floor_tile) || hash::has(placeholder_walls, index_ne);
+            const bool wall_w = (hash::has(terrain_tiles, index_w) && hash::get(terrain_tiles, index_w, {}).index != floor_tile) || hash::has(placeholder_walls, index_w);
+            const bool wall_e = (hash::has(terrain_tiles, index_e) && hash::get(terrain_tiles, index_e, {}).index != floor_tile) || hash::has(placeholder_walls, index_e);
+            const bool wall_sw = (hash::has(terrain_tiles, index_sw) && hash::get(terrain_tiles, index_sw, {}).index != floor_tile) || hash::has(placeholder_walls, index_sw);
+            const bool wall_s = (hash::has(terrain_tiles, index_s) && hash::get(terrain_tiles, index_s, {}).index != floor_tile) || hash::has(placeholder_walls, index_s);
+            const bool wall_se = (hash::has(terrain_tiles, index_sw) && hash::get(terrain_tiles, index_se, {}).index != floor_tile) || hash::has(placeholder_walls, index_se);
 
-            const bool floor_nw = hash::has(tiles, index_nw) && hash::get(tiles, index_nw, {}).index == floor_tile;
-            const bool floor_n = hash::has(tiles, index_n) && hash::get(tiles, index_n, {}).index == floor_tile;
-            const bool floor_ne = hash::has(tiles, index_ne) && hash::get(tiles, index_ne, {}).index == floor_tile;
-            const bool floor_w = hash::has(tiles, index_w) && hash::get(tiles, index_w, {}).index == floor_tile;
-            const bool floor_e = hash::has(tiles, index_e) && hash::get(tiles, index_e, {}).index == floor_tile;
-            const bool floor_sw = hash::has(tiles, index_sw) && hash::get(tiles, index_sw, {}).index == floor_tile;
-            const bool floor_s = hash::has(tiles, index_s) && hash::get(tiles, index_s, {}).index == floor_tile;
-            const bool floor_se = hash::has(tiles, index_se) && hash::get(tiles, index_se, {}).index == floor_tile;
+            const bool floor_nw = hash::has(terrain_tiles, index_nw) && hash::get(terrain_tiles, index_nw, {}).index == floor_tile;
+            const bool floor_n = hash::has(terrain_tiles, index_n) && hash::get(terrain_tiles, index_n, {}).index == floor_tile;
+            const bool floor_ne = hash::has(terrain_tiles, index_ne) && hash::get(terrain_tiles, index_ne, {}).index == floor_tile;
+            const bool floor_w = hash::has(terrain_tiles, index_w) && hash::get(terrain_tiles, index_w, {}).index == floor_tile;
+            const bool floor_e = hash::has(terrain_tiles, index_e) && hash::get(terrain_tiles, index_e, {}).index == floor_tile;
+            const bool floor_sw = hash::has(terrain_tiles, index_sw) && hash::get(terrain_tiles, index_sw, {}).index == floor_tile;
+            const bool floor_s = hash::has(terrain_tiles, index_s) && hash::get(terrain_tiles, index_s, {}).index == floor_tile;
+            const bool floor_se = hash::has(terrain_tiles, index_se) && hash::get(terrain_tiles, index_se, {}).index == floor_tile;
 
             // These signify that the walls around the coordinate are room walls, not placeholder corridor walls.
             const bool wall_w_room = !hash::has(placeholder_walls, index_w) && wall_w;
@@ -496,47 +507,47 @@ int dungen_thread(void *data) {
             } else if (floor_n && floor_s && floor_w && wall_e) { // Horizontal wall cap west between two floor tiles
                 // Do nothing
             } else if (wall_n && wall_s && floor_e) { // Vertical wall left of corridor
-                hash::set(tiles, index_wall, {wall_right_tile});
+                hash::set(terrain_tiles, index_wall, {wall_right_tile});
             } else if (wall_n && wall_s && floor_w) { // Vertical wall right of corridor
-                hash::set(tiles, index_wall, {wall_left_tile});
+                hash::set(terrain_tiles, index_wall, {wall_left_tile});
             } else if (wall_w && wall_e && floor_s) { // Horizontal wall, above corridor
-                hash::set(tiles, index_wall, {wall_horizontal_tile});
+                hash::set(terrain_tiles, index_wall, {wall_horizontal_tile});
             } else if (wall_w && wall_e && floor_n) { // Horizontal wall, below corridor
-                hash::set(tiles, index_wall, {wall_horizontal_tile});
+                hash::set(terrain_tiles, index_wall, {wall_horizontal_tile});
             } else if (wall_w_room && wall_n && floor_s && floor_e) { // Corner left and up, floor right and down for corridors going upward
-                hash::set(tiles, index_wall, {wall_corner_bottom_right_tile});
+                hash::set(terrain_tiles, index_wall, {wall_corner_bottom_right_tile});
             } else if (wall_e_room && wall_n && floor_s && floor_w) { // Corner right and up, floor left and down for corridors going upward
-                hash::set(tiles, index_wall, {wall_corner_bottom_left_tile});
+                hash::set(terrain_tiles, index_wall, {wall_corner_bottom_left_tile});
             } else if (wall_w_room && floor_n && wall_s && floor_e) { // Corner left and down, floor right and up for corridors going downward
-                hash::set(tiles, index_wall, {wall_corner_top_right_tile});
+                hash::set(terrain_tiles, index_wall, {wall_corner_top_right_tile});
             } else if (wall_e_room && floor_n && wall_s && floor_w) { // Corner right and down, floor left and up for corridors going downward
-                hash::set(tiles, index_wall, {wall_corner_top_left_tile});
+                hash::set(terrain_tiles, index_wall, {wall_corner_top_left_tile});
             } else if (wall_e && wall_n_room && floor_s && floor_w) { // Corner right and up, floor left and down for corridors going right
-                hash::set(tiles, index_wall, {corridor_corner_up_right_tile});
+                hash::set(terrain_tiles, index_wall, {corridor_corner_up_right_tile});
             } else if (wall_e && wall_s_room && floor_n && floor_w) { // Corner right and down, floor left and up for corridors going right
-                hash::set(tiles, index_wall, {corridor_corner_down_right_tile});
+                hash::set(terrain_tiles, index_wall, {corridor_corner_down_right_tile});
             } else if (wall_w && wall_n_room && floor_s && floor_e) { // Corner left and up, floor right and down for corridors going left
-                hash::set(tiles, index_wall, {corridor_corner_up_left_tile});
+                hash::set(terrain_tiles, index_wall, {corridor_corner_up_left_tile});
             } else if (wall_w && wall_s_room && floor_n && floor_e) { // Corner left and down, floor right and up for corridors going left
-                hash::set(tiles, index_wall, {corridor_corner_down_left_tile});
+                hash::set(terrain_tiles, index_wall, {corridor_corner_down_left_tile});
             } else if (wall_n && wall_e && floor_w && floor_s) { // Corner right and up above a corridor
-                hash::set(tiles, index_wall, {wall_corner_bottom_left_tile});
+                hash::set(terrain_tiles, index_wall, {wall_corner_bottom_left_tile});
             } else if (wall_n && wall_e && floor_ne) { // Corner right and up below a corridor
-                hash::set(tiles, index_wall, {corridor_corner_up_right_tile});
+                hash::set(terrain_tiles, index_wall, {corridor_corner_up_right_tile});
             } else if (wall_w && wall_s && floor_n && floor_e) { // Corner left and down below a corridor
-                hash::set(tiles, index_wall, {wall_corner_top_right_tile});
+                hash::set(terrain_tiles, index_wall, {wall_corner_top_right_tile});
             } else if (wall_w && wall_s && floor_sw) { // Corner left and down above a corridor
-                hash::set(tiles, index_wall, {corridor_corner_down_left_tile});
+                hash::set(terrain_tiles, index_wall, {corridor_corner_down_left_tile});
             } else if (wall_e && wall_s && floor_se) { // Corner right and down above a corridor
-                hash::set(tiles, index_wall, {corridor_corner_down_right_tile});
+                hash::set(terrain_tiles, index_wall, {corridor_corner_down_right_tile});
             } else if (wall_e && wall_s && floor_nw) { // Corner right and down below a corridor
-                hash::set(tiles, index_wall, {wall_corner_top_left_tile});
+                hash::set(terrain_tiles, index_wall, {wall_corner_top_left_tile});
             } else if (wall_w && wall_n && floor_se) { // Corner left and up above a corridor
-                hash::set(tiles, index_wall, {wall_corner_bottom_right_tile});
+                hash::set(terrain_tiles, index_wall, {wall_corner_bottom_right_tile});
             } else if (wall_w && wall_n && floor_nw) { // Corner left and up below a corridor
-                hash::set(tiles, index_wall, {corridor_corner_up_left_tile});
+                hash::set(terrain_tiles, index_wall, {corridor_corner_up_left_tile});
             } else {
-                hash::set(tiles, index_wall, {debug_tile});
+                hash::set(terrain_tiles, index_wall, {debug_tile});
             }
         };
 
@@ -549,7 +560,11 @@ int dungen_thread(void *data) {
 
     // Update game's state.
     if (SDL_LockMutex(game->mutex) == 0) {
-        game->terrain_tiles = tiles;
+        hash::clear(game->terrain_tiles);
+        for (auto iter = hash::begin(terrain_tiles); iter != hash::end(terrain_tiles); ++iter) {
+            hash::set(game->terrain_tiles, iter->key, iter->value);
+        }
+
         game->max_width = map_width;
         SDL_UnlockMutex(game->mutex);
     } else {
