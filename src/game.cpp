@@ -85,11 +85,15 @@ void on_input(Game &game, input::InputCommand input_command) {
         }
         break;
     }
-    case input::Action::Mouse: {
-        if (input_command.mouse_state.mouse_left_state == input::MouseButtonState::Repeated) {
-            game.x_offset += input_command.mouse_state.mouse_relative_motion.x;
-            game.y_offset += input_command.mouse_state.mouse_relative_motion.y;
+    case input::Action::MouseMoved: {
+        if (input_command.mouse_event.mouse_left_state == input::TriggerState::Repeated) {
+            game.x_offset += input_command.mouse_event.mouse_relative_motion.x;
+            game.y_offset += input_command.mouse_event.mouse_relative_motion.y;
         }
+        break;
+    }
+    case input::Action::MoveDown: {
+        log_debug("Move down %d", input_command.key_event.trigger_state);
         break;
     }
     }

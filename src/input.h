@@ -2,6 +2,7 @@
 
 #pragma warning(push, 0)
 #include "array.h"
+#include "hash.h"
 #include "memory.h"
 #pragma warning(pop)
 
@@ -12,10 +13,15 @@ enum class Action {
     Quit,
     ZoomIn,
     ZoomOut,
-    Mouse,
+    MouseMoved,
+    MouseTrigger,
+    MoveDown,
+    MoveLeft,
+    MoveRight,
+    MoveUp,
 };
 
-enum class MouseButtonState {
+enum class TriggerState {
     None,
     Pressed,
     Released,
@@ -27,19 +33,40 @@ struct Vector2 {
     int32_t y;
 };
 
-struct MouseState {
-    uint32_t timestamp;
+struct KeyEvent {
+    TriggerState trigger_state;
+};
+
+struct MouseEvent {
     Vector2 mouse_position;
     Vector2 mouse_relative_motion;
-    MouseButtonState mouse_left_state;
-    MouseButtonState mouse_right_state;
+    TriggerState mouse_left_state;
+    TriggerState mouse_right_state;
 };
 
-union InputCommand {
+struct InputCommand {
     Action action;
-    MouseState mouse_state;
+
+    union {
+        KeyEvent key_event;
+        MouseEvent mouse_event;
+    };
 };
 
-void process_events(Array<InputCommand> &input_commands);
+// The input system that keeps track of the state of inputs.
+struct Input {
+    Input(Allocator &allocator);
+
+    Allocator &allocator;
+
+    // Current set of input commands.
+    Array<InputCommand> input_commands;
+
+    // Global hash to keep track of which keys are pressed.
+    Hash<bool> keys_pressed;
+};
+
+// Processes all pending input events.
+void process_events(Input &input);
 
 } // namespace input

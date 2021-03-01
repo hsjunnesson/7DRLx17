@@ -44,16 +44,11 @@ int run(Engine &engine) {
     uint32_t current_frame_time = SDL_GetTicks();
     uint32_t delta_time = current_frame_time - prev_frame_time;
 
-    Array<input::InputCommand> input_commands = Array<input::InputCommand>(engine.allocator);
-
     while (running) {
         // Process events
-        array::clear(input_commands);
-        input::process_events(input_commands);
-        if (array::size(input_commands) > 0) {
-            for (uint32_t i = 0; i < array::size(input_commands); ++i) {
-                game::on_input(engine.game, input_commands[i]);
-            }
+        input::process_events(engine.input);
+        for (uint32_t i = 0; i < array::size(engine.input.input_commands); ++i) {
+            game::on_input(engine.game, engine.input.input_commands[i]);
         }
 
         // Update
@@ -139,7 +134,9 @@ int init_engine(EngineParams &params) {
         log_fatal("Couldn't greate gui");
     }
 
-    Engine *engine = MAKE_NEW(allocator, Engine, allocator, window, *game, *gui);
+    input::Input *input = MAKE_NEW(allocator, input::Input, allocator);
+
+    Engine *engine = MAKE_NEW(allocator, Engine, allocator, window, *game, *gui, *input);
     if (!engine) {
         log_fatal("Couldn't create engine");
     }
@@ -157,6 +154,7 @@ int init_engine(EngineParams &params) {
     MAKE_DELETE(allocator, Engine, engine);
     MAKE_DELETE(allocator, Game, game);
     MAKE_DELETE(allocator, Gui, gui);
+    MAKE_DELETE(allocator, Input, input);
 
     SDL_DestroyRenderer(sdl_renderer);
     SDL_DestroyWindow(sdl_window);

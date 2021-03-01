@@ -25,12 +25,13 @@ struct Window {
 };
 
 struct Engine {
-    Engine(Allocator &allocator, Window &window, game::Game &game, gui::Gui &gui)
+    Engine(Allocator &allocator, Window &window, game::Game &game, gui::Gui &gui, input::Input &input)
     : allocator(allocator)
     , frames(0)
     , window(window)
     , game(game)
     , gui(gui)
+    , input(input)
     , clear_color(SDL_Color{0, 0, 0, 255}) {}
 
     Allocator &allocator;
@@ -38,6 +39,7 @@ struct Engine {
     Window &window;
     game::Game &game;
     gui::Gui &gui;
+    input::Input &input;
     SDL_Color clear_color;
 };
 
