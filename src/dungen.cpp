@@ -46,7 +46,7 @@ int dungen_thread(void *data) {
     std::random_device random_device;
     std::mt19937 random_engine(random_device());
     unsigned int seed = (unsigned int)time(nullptr);
-    // seed = 1614001918;
+    seed = 1614631700;
     random_engine.seed(seed);
 
     log_debug("Dungen seeded with %u", seed);
@@ -57,6 +57,10 @@ int dungen_thread(void *data) {
 
     int32_t start_room_index = 0;
     int32_t boss_room_index = 0;
+
+    int32_t stairs_up_pos = 0;
+    int32_t stairs_down_pos = 0;
+
 
     // Rooms and corridors collections
     Hash<Room> rooms = Hash<Room>(allocator);
@@ -275,8 +279,6 @@ int dungen_thread(void *data) {
     // Draw rooms as tiles
     {
         const int32_t floor_tile = hash::get(game->atlas.tiles_by_name, tile::Floor, 0);
-        const int32_t stairs_down_tile = hash::get(game->atlas.tiles_by_name, tile::StairsDown, 0);
-        const int32_t stairs_up_tile = hash::get(game->atlas.tiles_by_name, tile::StairsUp, 0);
 
         for (auto iter = hash::begin(rooms); iter != hash::end(rooms); ++iter) {
             Room room = iter->value;
@@ -312,14 +314,26 @@ int dungen_thread(void *data) {
                     hash::set(terrain_tiles, index(room.x + x, room.y + y, map_width), {tile_index});
                 }
             }
+        }
+    }
 
-            if (room.start_room) {
-                // TODO: randomize this
-                hash::set(terrain_tiles, index(room.x + room.w / 2, room.y + room.h / 2, map_width), {stairs_up_tile});
-            } else if (room.boss_room) {
-                // TODO: randomize this
-                hash::set(terrain_tiles, index(room.x + room.w / 2, room.y + room.h / 2, map_width), {stairs_down_tile});
-            }
+    // Add stairs
+    {
+        const int32_t stairs_down_tile = hash::get(game->atlas.tiles_by_name, tile::StairsDown, 0);
+        const int32_t stairs_up_tile = hash::get(game->atlas.tiles_by_name, tile::StairsUp, 0);
+
+        Room start_room = hash::get(rooms, start_room_index, {});
+        if (start_room.start_room) {
+            // TODO: randomize this
+            stairs_up_pos = index(start_room.x + start_room.w / 2, start_room.y + start_room.h / 2, map_width);
+            hash::set(terrain_tiles, stairs_up_pos, {stairs_up_tile});
+        }
+        
+        Room boss_room = hash::get(rooms, boss_room_index, {});
+        if (boss_room.boss_room) {
+            // TODO: randomize this
+            stairs_down_pos = index(boss_room.x + boss_room.w / 2, boss_room.y + boss_room.h / 2, map_width);
+            hash::set(terrain_tiles, stairs_down_pos, {stairs_down_tile});
         }
     }
 
@@ -566,6 +580,9 @@ int dungen_thread(void *data) {
         }
 
         game->max_width = map_width;
+        game->level.stairs_up_pos = stairs_up_pos;
+        game->level.stairs_down_pos = stairs_down_pos;
+
         SDL_UnlockMutex(game->mutex);
     } else {
         log_fatal("Could not lock mutex %s", SDL_GetError());

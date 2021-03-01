@@ -39,6 +39,7 @@ static uint64_t StairsDown = hash("stairs_down");
 
 static uint64_t Floor = hash("floor");
 
+static uint64_t Player = hash("player");
 static uint64_t Ghost = hash("ghost");
 static uint64_t Snake = hash("snake");
 
@@ -106,7 +107,9 @@ enum class GameState {
  * 
  */
 struct Level {
-    int depth;
+    int32_t stairs_down_pos;
+    int32_t stairs_up_pos;
+    int32_t depth;
 };
 
 // The game state.
@@ -146,6 +149,9 @@ struct Game {
 
     // The maximum width in tiles. Needed for index to coord translation
     uint32_t max_width;
+
+    // The player's position as an index.
+    int32_t player_pos;
 };
 
 /**
@@ -186,7 +192,7 @@ void transition(Game &game, GameState game_state);
  * 
  * @param x The x coord
  * @param y The y coord
- * @param max_width The maxium width.
+ * @param max_width The maximum width.
  * @return constexpr int32_t The index.
  */
 constexpr int32_t index(int32_t const x, int32_t const y, int32_t const max_width) {
@@ -199,11 +205,28 @@ constexpr int32_t index(int32_t const x, int32_t const y, int32_t const max_widt
  * @param index The index.
  * @param x The pass-by-reference x coord to calculate.
  * @param y The pass-by-reference y coord to calculate.
- * @param max_width The maxium width.
+ * @param max_width The maximum width.
  */
 constexpr void coord(int32_t const index, int32_t &x, int32_t &y, int32_t const max_width) {
     x = index % max_width;
     y = index / max_width;
+}
+
+/**
+ * @brief Returns a new index offset by x and y coordinates.
+ * 
+ * @param idx The index.
+ * @param xoffset The x offset.
+ * @param yoffset They y offset.
+ * @param max_width The maximum width.
+ * @return constexpr int32_t The index.
+ */
+constexpr int32_t index_offset(int32_t const idx, int32_t const xoffset, int32_t const yoffset, int32_t const max_width) {
+    int32_t x = 0;
+    int32_t y = 0;
+    coord(idx, x, y, max_width);
+
+    return index(x + xoffset, y + yoffset, max_width);
 }
 
 } // namespace game

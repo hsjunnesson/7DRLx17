@@ -36,7 +36,7 @@ void process_events(Input &input) {
                 }
             } else if (event.type == SDL_KEYUP) {
                 input_command.key_event.trigger_state = input::TriggerState::Released;
-                hash::remove(input.keys_pressed, event.key.keysym.sym);
+                hash::set(input.keys_pressed, event.key.keysym.sym, false);
             }
 
             switch (event.key.keysym.sym) {

@@ -28,7 +28,8 @@ Game::Game(Allocator &allocator, SDL_Renderer *renderer, const char *atlas_confi
 , zoom_level(1)
 , terrain_tiles(Hash<Tile>(allocator))
 , entity_tiles(Hash<Tile>(allocator))
-, max_width(0) {
+, max_width(0)
+, player_pos(0) {
     if (!hash::has(atlas.tiles_by_name, tile::Missing)) {
         log_fatal("Atlas does not have the 'missing' named tile.");
     }
@@ -92,8 +93,34 @@ void on_input(Game &game, input::InputCommand input_command) {
         }
         break;
     }
-    case input::Action::MoveDown: {
-        log_debug("Move down %d", input_command.key_event.trigger_state);
+    case input::Action::MoveDown:
+    case input::Action::MoveLeft:
+    case input::Action::MoveRight:
+    case input::Action::MoveUp: {
+        if (input_command.key_event.trigger_state == input::TriggerState::Pressed) {
+            int32_t x = 0;
+            int32_t y = 0;
+
+            if (input_command.action == input::Action::MoveDown) {
+                y = 1;
+            } else if (input_command.action == input::Action::MoveLeft) {
+                x = -1;
+            } else if (input_command.action == input::Action::MoveRight) {
+                x = 1;
+            } else if (input_command.action == input::Action::MoveUp) {
+                y = -1;
+            }
+
+            int32_t new_pos = index_offset(game.player_pos, x, y, game.max_width);
+
+
+            if (hash::has(game.entity_tiles, game.player_pos)) {
+                Tile tile = hash::get(game.entity_tiles, game.player_pos, {});
+                hash::remove(game.entity_tiles, game.player_pos);
+                game.player_pos = new_pos;
+                hash::set(game.entity_tiles, game.player_pos, tile);
+            }
+        }
         break;
     }
     }
@@ -194,6 +221,11 @@ void transition(Game &game, GameState game_state) {
     }
     case GameState::Playing: {
         log_info("Playing");
+
+        game.player_pos = game.level.stairs_up_pos;
+        const int32_t player_tile = hash::get(game.atlas.tiles_by_name, tile::Player, 0);
+        hash::set(game.entity_tiles, game.player_pos, {player_tile});
+        
         break;
     }
     case GameState::Quitting: {
